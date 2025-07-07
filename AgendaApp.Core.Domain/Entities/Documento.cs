@@ -1,19 +1,22 @@
-﻿namespace AgendaApp.Data.Entities
+﻿using AgendaApp.Core.Domain.Entities;
+
+namespace AgendaApp.Data.Entities
 {
-    public class Categoria
+    public class Documento : Base
     {
         #region Propriedades
-        public Guid Id { get; set; }
-        public string? Descricao { get; set; }
+        public string? Nome { get; set; }
+        public string? TextoHtml { get; set; }
         public bool? FlagSituacao { get; set; }
         public string? DataCriacao { get; set; }
         public string? UsuarioCriacao { get; set; }
         public string? DataAlteracao { get; set; }
         public string? UsuarioAlteracao { get; set; }
+        public Guid TipoDocumentoId { get; set; }
         #endregion
 
         #region Relacionamentos
-        public List<Tarefa>? Tarefas { get; set; }
+        public TipoDocumento? TipoDocumento { get; set; }
         #endregion
     }
 }
