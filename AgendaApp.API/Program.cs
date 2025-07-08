@@ -12,10 +12,10 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddSwaggerDoc();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapperConfig();
-//builder.Services.AddSqlServerConfig(builder.Configuration);
+builder.Services.AddSqlServerConfig(builder.Configuration);
 builder.Services.AddDependencyInjection();
 builder.Services.AddFluentValidationConfig();
-builder.Services.AddAuthorization();
+//builder.Services.AddAuthorization();
 //builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
 builder.Services
