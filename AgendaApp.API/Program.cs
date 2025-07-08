@@ -1,37 +1,35 @@
 using AgendaApp.API.Extensions;
-using AgendaApp.Data.Contexts;
-using Microsoft.EntityFrameworkCore;
+using AgendaApp.Core.Domain.Middlewares;
+
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1) lê diretamente do appsettings.json
-var connectionString = builder.Configuration
-    .GetConnectionString("DefaultConnection");
-
-// 2) registra o DataContext no DI
-builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(connectionString)
-);
-
-// Add services to the container.
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at
-https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+builder.Services.AddControllers()
+    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+//builder.Services.AddJwtBearer(builder.Configuration);
+//builder.Services.AddSwaggerDoc();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddAutoMapperConfig();
+//builder.Services.AddSqlServerConfig(builder.Configuration);
 builder.Services.AddDependencyInjection();
-var app = builder.Build();
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//builder.Services.AddFluentValidationConfig();
+builder.Services.AddAuthorization();
+//builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
+builder.Services
+    .AddAutoMapperConfig()
+    .AddFluentValidationConfig()
+    .AddControllers();
+
+var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
+//app.UseSwaggerDoc();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
 
 public partial class Program { }
-

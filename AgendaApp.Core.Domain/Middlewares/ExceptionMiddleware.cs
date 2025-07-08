@@ -3,7 +3,7 @@ using AgendaApp.Core.Domain.Models;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 
-namespace PeopleNetSST.Core.Domain.Middlewares
+namespace AgendaApp.Core.Domain.Middlewares
 {
     public class ExceptionMiddleware
     {
