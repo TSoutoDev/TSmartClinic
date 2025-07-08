@@ -1,3 +1,4 @@
+using AgendaApp.API.Extensions;
 using AgendaApp.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,8 @@ builder.Services.AddControllers();
 https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDependencyInjection();
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -29,4 +32,6 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+public partial class Program { }
 
