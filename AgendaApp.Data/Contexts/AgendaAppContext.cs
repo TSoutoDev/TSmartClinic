@@ -20,6 +20,7 @@ namespace AgendaApp.Data.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new CategoriaMap());
+            modelBuilder.ApplyConfiguration(new TarefasMap());
 
         }
 

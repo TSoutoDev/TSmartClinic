@@ -8,11 +8,17 @@ namespace AgendaApp.API.Mapper
 {
     public class AutoMapperConfig : Profile
     {
-        public AutoMapperConfig() 
+        public AutoMapperConfig()
         {
             CreateMap<Categoria, CategoriaInsertRequestDTO>().ReverseMap();
             CreateMap<Categoria, CategoriaUpdateRequestDTO>().ReverseMap();
             CreateMap<Categoria, CategoriaResponseDTO>().ReverseMap();
+            CreateMap<Tarefa, TarefaInsertRequestDTO>().ReverseMap();
+            CreateMap<Tarefa, TarefaUpdateRequestDTO>().ReverseMap();
+            CreateMap<Tarefa, TarefaResponseDTO>()
+            .ForMember(dest => dest.CategoriaId, opt => opt.MapFrom(src => src.CategoriaId))
+                .ReverseMap();
+
             //CreateMap<Servico, ServicoRequestDto>().ReverseMap();
             //CreateMap<Servico, ServicoResponseDto>().ReverseMap();
         }
