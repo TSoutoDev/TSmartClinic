@@ -11,9 +11,9 @@ namespace AgendaApp.Data.Entities
         public TimeSpan Hora { get; set; }
         public PrioridadeTarefa? Prioridade { get; set; }
         public bool? FlagSituacao { get; set; }
-        public string? DataCriacao { get; set; }
+        public DateTime? DataCriacao { get; set; }
         public string? UsuarioCriacao { get; set; }
-        public string? DataAlteracao { get; set; }
+        public DateTime? DataAlteracao { get; set; }
         public string? UsuarioAlteracao { get; set; }
         public int CategoriaId { get; set; }
         #endregion

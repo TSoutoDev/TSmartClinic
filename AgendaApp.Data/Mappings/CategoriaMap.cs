@@ -19,8 +19,8 @@ namespace AgendaApp.Data.Mappings
             builder.Property(c => c.DataCriacao).HasColumnName("DataCriacao").HasColumnType("date");
             builder.Property(c => c.UsuarioCriacao).HasColumnName("UsuarioCriacao").HasMaxLength(100);
             builder.Property(c => c.DataAlteracao).HasColumnName("DataAlteracao").HasColumnType("date");
-            builder.Property(c => c.UsuarioAlteracao).HasColumnName("UsuarioAlteracao").HasMaxLength(100);
-           
+            builder.Property(c => c.UsuarioAlteracao).HasColumnName("UsuarioAlteracao").HasMaxLength(100); 
+
         }
     }
 }

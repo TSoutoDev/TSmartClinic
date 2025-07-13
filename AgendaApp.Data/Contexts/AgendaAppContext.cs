@@ -1,4 +1,5 @@
 ﻿using AgendaApp.Data.Entities;
+using AgendaApp.Data.Mappings;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 namespace AgendaApp.Data.Contexts
@@ -7,9 +8,9 @@ namespace AgendaApp.Data.Contexts
     /// Classe de contexto para conexãodo EntityFramework com o banco de dados.
     /// </summary>
 
-    public class DataContext : DbContext
+    public class AgendaAppContext : DbContext
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+        public AgendaAppContext(DbContextOptions<AgendaAppContext> options) : base(options) { }
 
         public DbSet<Categoria> Categoria { get; set; }
         public DbSet<Documento> Documento { get; set; }
@@ -18,7 +19,8 @@ namespace AgendaApp.Data.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            modelBuilder.ApplyConfiguration(new CategoriaMap());
+
         }
 
     }

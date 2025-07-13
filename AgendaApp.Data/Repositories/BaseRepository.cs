@@ -2,6 +2,8 @@
 using AgendaApp.Core.Domain.Exceptions;
 using AgendaApp.Core.Domain.Helpers.FilterHelper;
 using AgendaApp.Core.Domain.Interfaces.Repositories;
+using AgendaApp.Data.Contexts;
+using AgendaApp.Data.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -14,13 +16,16 @@ namespace AgendaApp.Data.Repositories
         protected readonly DbContext? _dbContext;
         protected readonly DbSet<TEntity>? _dbSet;
 
-        public BaseRepository(DbContext? dbContext, DbSet<TEntity>? dbSet)
+        // No BaseRepository
+      
+        public BaseRepository(AgendaAppContext dbContext)
         {
             _dbContext = dbContext;
-            _dbSet = dbSet;
+            _dbSet = dbContext.Set<TEntity>(); // aqui que estoura
         }
 
-        public TEntity Atualizar(TEntity entity)
+
+        public virtual TEntity Atualizar(TEntity entity)
         {
             try
             {
@@ -40,7 +45,7 @@ namespace AgendaApp.Data.Repositories
         }
 
 
-        public void Excluir(TEntity entity)
+        public virtual void Excluir(TEntity entity)
         {
             try
             {
@@ -57,7 +62,7 @@ namespace AgendaApp.Data.Repositories
             }
         }
 
-        public TEntity Inserir(TEntity entity)
+        public virtual TEntity Inserir(TEntity entity)
         {
             try
             {
@@ -76,7 +81,7 @@ namespace AgendaApp.Data.Repositories
             }
         }
 
-        public List<TEntity> Listar(BaseFiltro filtro, params Expression<Func<TEntity, object>>[] properties)
+        public virtual List<TEntity> Listar(BaseFiltro filtro, params Expression<Func<TEntity, object>>[] properties)
         {
             var query = MontarFiltro(filtro, properties);
 
@@ -88,7 +93,10 @@ namespace AgendaApp.Data.Repositories
             return query.ToList();
         }
 
-        public TEntity ObterPorId(int id, params Expression<Func<TEntity, object>>[] properties)
+        public void Dispose()
+            => _dbContext?.Dispose();
+
+        public virtual TEntity ObterPorId(int id, params Expression<Func<TEntity, object>>[] properties)
         {
             var query = _dbSet as IQueryable<TEntity>;
 
@@ -97,12 +105,6 @@ namespace AgendaApp.Data.Repositories
 
             return query?.FirstOrDefault(x => x.Id == id);
 
-        }
-
-
-        public void Dispose()
-        {
-            _dbContext?.Dispose();
         }
 
         protected IQueryable<TEntity> MontarFiltro(BaseFiltro filtro, params Expression<Func<TEntity, object>>[] properties)

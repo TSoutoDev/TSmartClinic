@@ -9,7 +9,7 @@ namespace AgendaApp.API.Extensions
         {
             var connectionString = configuration.GetConnectionString("BdAgendaApp");
 
-            services.AddDbContext<DataContext>(
+            services.AddDbContext<AgendaAppContext>(
                 options => options.UseSqlServer(connectionString)
             );
 

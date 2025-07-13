@@ -8,7 +8,7 @@ namespace AgendaApp.Core.Domain.Entities
 {
     public abstract class Base
     {
-        public virtual int Id { get; set; }
+        public int Id { get; set; }
         public virtual void Atualizar(object obj) { }
     }
 }

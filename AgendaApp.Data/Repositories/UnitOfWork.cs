@@ -5,32 +5,19 @@ namespace AgendaApp.Data.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly DataContext? _dataContext;
+        private readonly AgendaAppContext? _agendaAppContext;
 
-        public UnitOfWork(DataContext? dataContext)
+        public UnitOfWork(AgendaAppContext? AgendaAppContext)
         {
-            _dataContext = dataContext;
+            _agendaAppContext = AgendaAppContext;
         }
 
-        public void BeginTransaction()
-        {
-           _dataContext?.Database.BeginTransaction();
-        }
+        public void BeginTransaction() => _agendaAppContext?.Database.BeginTransaction();
+    
+        public void Commit() => _agendaAppContext?.Database.CommitTransaction();
+        
+        public void Rollback() => _agendaAppContext?.Database.RollbackTransaction();
 
-        public void Commit()
-        {
-            _dataContext?.Database.CommitTransaction();
-        }
-
-        public void Dispose()
-        {
-            _dataContext?.Dispose();
-        }
-
-        public void Rollback()
-        {
-            _dataContext?.Database.RollbackTransaction();
-        }
-       // public void Dispose() => _dataContext?.Database.Dispose();
+        public void Dispose() => _agendaAppContext?.Dispose();  
     }
 }

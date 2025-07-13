@@ -17,7 +17,7 @@ namespace AgendaApp.Core.Domain.Service
             _baseRepository = baseRepository;
         }
 
-        public TEntity Atualizar(int id, TEntity entity)
+        public virtual TEntity Atualizar(int id, TEntity entity)
         {
             //Recupera o registro no banco
             TEntity entityBanco = _baseRepository?.ObterPorId(id);
@@ -34,7 +34,7 @@ namespace AgendaApp.Core.Domain.Service
             return entity;
         }
 
-        public void Excluir(int id)
+        public virtual void Excluir(int id)
         {
             //Recupera o registro no banco
             TEntity entityBanco = _baseRepository?.ObterPorId(id);
@@ -45,7 +45,7 @@ namespace AgendaApp.Core.Domain.Service
             _baseRepository.Excluir(entityBanco);
         }
 
-        public TEntity Inserir(TEntity entity)
+        public virtual TEntity Inserir(TEntity entity)
         {
             //limpa os campos texto
             entity.RemoverEspacosEmBranco();
@@ -53,12 +53,12 @@ namespace AgendaApp.Core.Domain.Service
             return _baseRepository?.Inserir(entity);
         }
 
-        public List<TEntity> Listar(BaseFiltro filtro)
+        public virtual List<TEntity> Listar(BaseFiltro filtro)
         {
             return _baseRepository.Listar(filtro);
         }
 
-        public TEntity ObterPorId(int id)
+        public virtual TEntity ObterPorId(int id)
         {
             return _baseRepository?.ObterPorId(id);
         }
