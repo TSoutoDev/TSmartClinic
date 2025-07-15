@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AgendaApp.Core.Domain\AgendaApp.Core.Domain.csproj" />
+    <ProjectReference Include="..\AgendaApp.Core.Infra.CrossCutting\AgendaApp.Core.Infra.CrossCutting.csproj" />
     <ProjectReference Include="..\AgendaApp.Data\AgendaApp.Data.csproj" />
   </ItemGroup>
 

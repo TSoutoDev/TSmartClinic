@@ -1,0 +1,105 @@
+{
+  "Routes": [
+    //CATEGORIA
+    {
+      "DownstreamPathTemplate": "/api/categorias/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/categorias/{id}",
+      "UpstreamHttpMethod": [ "GET", "PATCH", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/categorias/listar",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/categorias/listar",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/categorias",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/categorias",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+
+    //TAREFA
+    {
+      "DownstreamPathTemplate": "/api/tarefa/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/tarefa/{id}",
+      "UpstreamHttpMethod": [ "GET", "PATCH", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/tarefa/listar",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/tarefa/listar",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/tarefa",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/tarefa",
+      "UpstreamHttpMethod": [ "POST" ]
+    }
+  ],
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Ocelot": "Debug"
+    }
+  }
+}
+
