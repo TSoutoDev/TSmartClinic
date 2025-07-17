@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AgendaApp.Data.Mappings
+namespace AgendaApp.Data.Configurations
 {
-    public class TipoDocumentoMap : IEntityTypeConfiguration<TipoDocumento>
+    public class TipoDocumentoConfiguration : IEntityTypeConfiguration<TipoDocumento>
     {
         public void Configure(EntityTypeBuilder<TipoDocumento> builder)
         {

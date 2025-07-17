@@ -16,13 +16,12 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 //builder.Services.AddJwtBearer(builder.Configuration);
 builder.Services.AddSwaggerDoc();
 builder.Services.AddHttpContextAccessor();
-//builder.Services.AddAutoMapperConfig();
+builder.Services.AddAutoMapperConfig();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddSqlServerConfig(builder.Configuration);
 builder.Services.AddDbContext<AgendaAppContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 
 builder.Services.AddDependencyInjection();
 builder.Services.AddFluentValidationConfig();

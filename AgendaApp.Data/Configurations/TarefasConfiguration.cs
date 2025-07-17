@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AgendaApp.Data.Mappings
+namespace AgendaApp.Data.Configurations
 {
-    public class TarefasMap : IEntityTypeConfiguration<Tarefa>
+    public class TarefasConfiguration : IEntityTypeConfiguration<Tarefa>
     {
         public void Configure(EntityTypeBuilder<Tarefa> builder)
         {

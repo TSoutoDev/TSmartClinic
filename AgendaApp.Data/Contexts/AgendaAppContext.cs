@@ -1,5 +1,6 @@
-﻿using AgendaApp.Data.Entities;
-using AgendaApp.Data.Mappings;
+﻿using AgendaApp.Core.Domain.Entities;
+using AgendaApp.Data.Configurations;
+using AgendaApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 namespace AgendaApp.Data.Contexts
@@ -16,11 +17,14 @@ namespace AgendaApp.Data.Contexts
         public DbSet<Documento> Documento { get; set; }
         public DbSet<Tarefa> Tarefa { get; set; }
         public DbSet<TipoDocumento> TipoDocumento { get; set; }
+        public DbSet<Usuario> Usuario { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new CategoriaMap());
-            modelBuilder.ApplyConfiguration(new TarefasMap());
+            modelBuilder.ApplyConfiguration(new CategoriaConfiguration());
+            modelBuilder.ApplyConfiguration(new TarefasConfiguration());
+          //  modelBuilder.ApplyConfiguration(new TipoDocumentoMap());
+
 
         }
 
