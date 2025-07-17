@@ -6,5 +6,6 @@ namespace AgendaApp.Core.Domain.Interfaces.Services
     {
         Usuario ObterPorEmail(string email);
         void Bloquear(int id);
+        List<string> ObterPermissaoUsuario(int usuarioId, int sistemaId);
     }
 }

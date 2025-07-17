@@ -11,7 +11,11 @@ namespace AgendaApp.API.Repositories
         {
         }
 
-    
+        public List<string> ObterPermissaoUsuario(int usuarioId, int sistemaId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Usuario ObterPorEmail(string email)
         {
             var query = _dbSet as IQueryable<Usuario>;

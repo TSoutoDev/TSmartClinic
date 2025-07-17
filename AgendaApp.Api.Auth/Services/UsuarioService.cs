@@ -3,11 +3,13 @@ using AgendaApp.Core.Domain.Interfaces.Repositories;
 using AgendaApp.Core.Domain.Interfaces.Services;
 using AgendaApp.Core.Domain.Service;
 
-namespace AgendaApp.API.Services
+namespace AgendaApp.Api.Auth.Services
 {
+
     public class UsuarioService : BaseService<Usuario>, IUsuarioService
     {
         private readonly IUsuarioRepository? _usuarioRepository;
+
         public UsuarioService(IUsuarioRepository usuarioRepository) : base(usuarioRepository)
         {
             _usuarioRepository = usuarioRepository;
@@ -15,11 +17,11 @@ namespace AgendaApp.API.Services
 
         public void Bloquear(int id)
         {
-            var usuario = _usuarioRepository.ObterPorId(id);
+            var usuario = _usuarioRepository?.ObterPorId(id);
 
             usuario.Bloquear();
 
-            _usuarioRepository.Atualizar(usuario);
+            _usuarioRepository?.Atualizar(usuario);
         }
 
         public List<string> ObterPermissaoUsuario(int usuarioId, int sistemaId)
@@ -29,7 +31,7 @@ namespace AgendaApp.API.Services
 
         public Usuario ObterPorEmail(string email)
         {
-            return _usuarioRepository.ObterPorEmail(email);
+            return _usuarioRepository?.ObterPorEmail(email);
         }
     }
 }
