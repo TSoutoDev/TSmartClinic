@@ -5,5 +5,9 @@
         public string? NomeModulo { get; set; }
         public string? Descricao { get; set; }
         public bool? Ativo { get; set; }
+
+        #region Relacionamentos
+        public List<Funcionalidade>? Funcionalidades { get; set; }
+        #endregion
     }
 }
