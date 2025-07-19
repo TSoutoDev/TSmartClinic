@@ -7,8 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="9.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.3" />
   </ItemGroup>
 
@@ -17,12 +18,6 @@
     <ProjectReference Include="..\TSmartClinic.Core.Infra.CrossCutting\TSmartClinic.Core.Infra.CrossCutting.csproj" />
     <ProjectReference Include="..\TSmartClinic.Core.Infra.Security\TSmartClinic.Core.Infra.Security.csproj" />
     <ProjectReference Include="..\TSmartClinic.Data\TSmartClinic.Data.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Mapper\" />
-    <Folder Include="Extensions\" />
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

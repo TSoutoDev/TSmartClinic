@@ -30,7 +30,8 @@ namespace TSmartClinic.Data.Contexts
         public DbSet<Tarefa> Tarefa { get; set; }
         public DbSet<TipoDocumento> TipoDocumento { get; set; }
         public DbSet<Usuario> Usuario { get; set; }
-        
+        public DbSet<UsuarioClinicaPerfil> UsuarioClinicaPerfil { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -48,7 +49,9 @@ namespace TSmartClinic.Data.Contexts
             modelBuilder.ApplyConfiguration(new OperacaoPerfilConfiguration());
             modelBuilder.ApplyConfiguration(new PacienteConfiguration());
             modelBuilder.ApplyConfiguration(new PerfilConfiguration());
-          //  modelBuilder.ApplyConfiguration(new TipoDocumentoConfiguration());
+            modelBuilder.ApplyConfiguration(new UsuarioClinicaPerfilConfiguration());
+            modelBuilder.ApplyConfiguration(new UsuarioConfiguration());
+            //  modelBuilder.ApplyConfiguration(new TipoDocumentoConfiguration());
         }
 
     }

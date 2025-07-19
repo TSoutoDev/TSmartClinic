@@ -11,7 +11,7 @@ namespace TSmartClinic.API.Repositories
         {
         }
 
-        public List<string> ObterPermissaoUsuario(int usuarioId, int sistemaId)
+        public List<string> ObterPermissaoUsuario(int usuarioId, int clinicaId, int moduloId)
         {
             throw new NotImplementedException();
         }

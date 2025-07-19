@@ -22,9 +22,9 @@ namespace TSmartClinic.API.Services
             _usuarioRepository.Atualizar(usuario);
         }
 
-        public List<string> ObterPermissaoUsuario(int usuarioId, int sistemaId)
+        public List<string> ObterPermissaoUsuario(int usuarioId, int clinicaId, int moduloId)
         {
-            return _usuarioRepository.ObterPermissaoUsuario(usuarioId, sistemaId);
+            throw new NotImplementedException();
         }
 
         public Usuario ObterPorEmail(string email)

@@ -47,7 +47,7 @@ namespace TSmartClinic.Api.Auth.Services
                 var usuarioAutenticacao = _mapper.Map<AutenticacaoModel>(usuario);
 
                 //var usuarioSistema = usuario.UsuariosSistema.FirstOrDefault(); REVER
-               var permissoes = _usuarioService.ObterPermissaoUsuario(usuario.Id, 1);
+               var permissoes = _usuarioService.ObterPermissaoUsuario(usuario.Id, loginRequestDto.ClinicaId, loginRequestDto.ModuloId);
 
                 var accessToken = _tokenService.GerarToken(usuarioAutenticacao, permissoes);
 
