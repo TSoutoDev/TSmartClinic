@@ -17,8 +17,11 @@ namespace TSmartClinic.Data.Contexts
         public DbSet<Convenio> Convenio { get; set; }
         public DbSet<Clinica> Clinica { get; set; }
         public DbSet<Documento> Documento { get; set; }
+        public DbSet<Estado> Estado { get; set; }
+        public DbSet<Endereco> Endereco { get; set; }
         public DbSet<Funcionalidade> Funcionalidade { get; set; }
         public DbSet<Modulo> Modulo { get; set; }
+        public DbSet<Municipio> Municipio { get; set; }
         public DbSet<Nicho> Nicho { get; set; }
         public DbSet<Operacao> Operacao { get; set; }
         public DbSet<OperacaoPerfil> OperacaoPerfil { get; set; }
@@ -34,9 +37,12 @@ namespace TSmartClinic.Data.Contexts
             modelBuilder.ApplyConfiguration(new CategoriaConfiguration());
             modelBuilder.ApplyConfiguration(new ClinicaConfiguration());
             modelBuilder.ApplyConfiguration(new ConvenioConfiguration());
+            modelBuilder.ApplyConfiguration(new EstadoConfiguration());
+            modelBuilder.ApplyConfiguration(new EnderecoConfiguration());
             modelBuilder.ApplyConfiguration(new TarefasConfiguration());
             modelBuilder.ApplyConfiguration(new FuncionalidadeConfiguration());
             modelBuilder.ApplyConfiguration(new ModuloConfiguration());
+            modelBuilder.ApplyConfiguration(new MunicipioConfiguration());
             modelBuilder.ApplyConfiguration(new NichoConfiguration());
             modelBuilder.ApplyConfiguration(new OperacaoConfiguration());
             modelBuilder.ApplyConfiguration(new OperacaoPerfilConfiguration());
