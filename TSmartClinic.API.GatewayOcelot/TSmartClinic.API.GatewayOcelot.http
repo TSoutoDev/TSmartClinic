@@ -1,4 +1,4 @@
-@TSmartClinic.API.GatewayOcelot_HostAddress = http://localhost:5133
+@TSmartClinic.API.GatewayOcelot_HostAddress = http://localhost:5049
 
 GET {{TSmartClinic.API.GatewayOcelot_HostAddress}}/weatherforecast/
 Accept: application/json

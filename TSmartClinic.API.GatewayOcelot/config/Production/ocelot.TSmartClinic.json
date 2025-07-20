@@ -1,0 +1,51 @@
+{
+  "Routes": [
+    //CATEGORIAS
+    {
+      "DownstreamPathTemplate": "/api/categorias/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/categorias/{id}",
+      "UpstreamHttpMethod": [ "GET", "PATCH", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/categorias/listar",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/categorias/listar",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/categorias",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/categorias",
+      "UpstreamHttpMethod": [ "POST" ]
+    }
+
+  ]
+}
