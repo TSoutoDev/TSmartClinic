@@ -1,0 +1,65 @@
+﻿@model TSmartClinic.Presentation.Models.AccountViewModel
+
+@{
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+    ViewBag.Titulo = "Login";
+}
+
+@using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form-signin" }))
+{
+    <div class="row">
+
+        <div class="col-md-6 text-center" style="padding: 60px;">
+            <span class="helper"></span>
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <img src="~/images/peoplenetlogo-novo-peq.png" class="img-fluid" />
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+            </div>
+
+            <h5 class="card-title text-center acesso-ao-sistema">
+                <i class="fas fa-sign-in-alt"></i>&nbsp;Acesso ao Sistema
+            </h5>
+
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="floatingInput" name="Email" placeholder="name@example.com">
+                <label for="floatingInput"><i class="fa fa-envelope" style="color: #ccc;"></i>&nbsp;Email</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="floatingInput" name="Senha" placeholder="name@example.com">
+                <label for="floatingInput"><i class="fa fa-key" style="color: #ccc;"></i>&nbsp;Senha</label>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 text-end">
+                    <a href="#" onclick="loading()">Esqueci minha Senha</a>
+                </div>
+            </div>
+
+            <br />
+
+            <button class="btn btn-primary btn-block text-uppercase"
+                    type="submit" style="font-size: 11pt;">
+                <i class="fa fa-chevron-circle-right"></i>&nbsp;Entrar
+            </button>
+
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <img src="~/images/hcm_logo.png" height="24" />
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+}

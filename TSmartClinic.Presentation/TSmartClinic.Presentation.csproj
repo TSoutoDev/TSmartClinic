@@ -23,7 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TSmartClinic.Api.Auth\TSmartClinic.Api.Auth.csproj" />
     <ProjectReference Include="..\TSmartClinic.Core.Domain\TSmartClinic.Core.Domain.csproj" />
+    <ProjectReference Include="..\TSmartClinic.Core.Infra.CrossCutting\TSmartClinic.Core.Infra.CrossCutting.csproj" />
   </ItemGroup>
 
 </Project>

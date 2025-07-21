@@ -10,6 +10,11 @@ namespace TSmartClinic.Core.Infra.CrossCutting.Extensions
     {
         public static IServiceCollection AddJwtBearer(this IServiceCollection services, IConfiguration configuration)
         {
+
+            var secretKey = configuration["TokenSettings:SecretKey"];
+            if (string.IsNullOrWhiteSpace(secretKey))
+                throw new InvalidOperationException("TokenSettings:SecretKey não configurado corretamente!");
+
             services.AddAuthentication(auth =>
             {
                 auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -25,7 +30,7 @@ namespace TSmartClinic.Core.Infra.CrossCutting.Extensions
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = configuration["TokenSettings:Issuer"],
                     ValidAudience = configuration["TokenSettings:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenSettings:SecretKey"])),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
 
                     ClockSkew = TimeSpan.Zero
                 };
