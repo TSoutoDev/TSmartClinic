@@ -7,7 +7,7 @@ namespace TSmartClinic.API.Extensions
     {
         public static IServiceCollection AddSqlServerConfig(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("BdAgendaApp");
+            var connectionString = configuration.GetConnectionString("TSmartClinic");
 
             services.AddDbContext<TSmartClinicContext>(
                 options => options.UseSqlServer(connectionString)

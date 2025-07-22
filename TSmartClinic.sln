@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - Core", "4 - Core", "{4E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5 - Infra", "5 - Infra", "{DF8BC645-AAE7-42D4-9DDC-D2AAA88FA85C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - API", "3 - API", "{BF1CF92A-631F-4EB1-9F57-234855C1DD77}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - API TSmartClinic", "3 - API TSmartClinic", "{BF1CF92A-631F-4EB1-9F57-234855C1DD77}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.1 - Domain", "3.1 - Domain", "{11D88B6F-561F-4EF7-BBC1-5D86E4D4C49F}"
 EndProject
@@ -40,6 +40,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSmartClinic.Core.Infra.Security", "TSmartClinic.Core.Infra.Security\TSmartClinic.Core.Infra.Security.csproj", "{AA395219-D040-4BE6-8EC5-DA0C1635D0D0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSmartClinic.API.GatewayOcelot", "TSmartClinic.API.GatewayOcelot\TSmartClinic.API.GatewayOcelot.csproj", "{946B38CA-0909-47A9-A1FC-3AA143F52A00}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E55D346C-1870-40A0-BE34-A6B3B578C83A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

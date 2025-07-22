@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using TSmartClinic.Core.Domain.Interfaces.Providers;
-using TSmartClinic.Presentation.Services.Interfaces;
 using System.Security.Claims;
 using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Presentation.Models;
+using TSmartClinic.Presentation.Services.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace TSmartClinic.Presentation.Controllers
 {
@@ -29,7 +29,7 @@ namespace TSmartClinic.Presentation.Controllers
 
         public IActionResult Login()
         {
-            if (Request.Cookies["peoplenetsst-autx"] == null)
+            if (Request.Cookies["TSmartClinic-autx"] == null)
                 GravarCookieTentativa(1);
 
             return View(new AccountViewModel());
@@ -44,7 +44,7 @@ namespace TSmartClinic.Presentation.Controllers
                 {
                     var identity = new ClaimsIdentity(new[]
                         {
-                            new Claim(ClaimTypes.Name, JsonConvert.SerializeObject("Flavio Rianelli")),
+                            new Claim(ClaimTypes.Name, JsonConvert.SerializeObject("Tiago Souto")),
                             new Claim(ClaimTypes.Role, "Administrador")
                         },
                         CookieAuthenticationDefaults.AuthenticationScheme
@@ -54,7 +54,7 @@ namespace TSmartClinic.Presentation.Controllers
                     HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                     //Excluir o cookie de tentativas
-                    if (Request.Cookies["peoplenetsst-autx"] != null) Response.Cookies.Delete("peoplenetsst-autx", OpcoesCookies());
+                    if (Request.Cookies["TSmartClinic-autx"] != null) Response.Cookies.Delete("TSmartClinic-autx", OpcoesCookies());
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -97,7 +97,7 @@ namespace TSmartClinic.Presentation.Controllers
                         HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                         //Excluir o cookie de tentativas
-                        if (Request.Cookies["peoplenetsst-autx"] != null) Response.Cookies.Delete("peoplenetsst-autx", OpcoesCookies());
+                        if (Request.Cookies["TSmartClinic-autx"] != null) Response.Cookies.Delete("TSmartClinic-autx", OpcoesCookies());
 
                         return RedirectToAction("Consulta", "Setor");
                     }
@@ -119,7 +119,7 @@ namespace TSmartClinic.Presentation.Controllers
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            HttpContext.Response.Cookies.Delete("peoplenetsst-autx", OpcoesCookies());
+            HttpContext.Response.Cookies.Delete("TSmartClinic-autx", OpcoesCookies());
 
             HttpContext.Session.Clear();
 
@@ -129,7 +129,7 @@ namespace TSmartClinic.Presentation.Controllers
         private void GravarCookieTentativa(int tentativa)
         {
             Response.Cookies.Append(
-                "peoplenetsst-autx",
+                "TSmartClinic-autx",
                 _criptografiaProvider.Criptografar($"{DateTime.Now.ToString("yyyyMMddHHmmss")}-{tentativa.ToString()}-3"),
                 OpcoesCookies()
             );
@@ -148,11 +148,11 @@ namespace TSmartClinic.Presentation.Controllers
 
         private void IncrementaTentativa()
         {
-            if (Request.Cookies["peoplenetsst-autx"] != null)
+            if (Request.Cookies["TSmartClinic-autx"] != null)
             {
                 try
                 {
-                    var cookie = _criptografiaProvider.Decriptografar(Request.Cookies["peoplenetsst-autx"].ToString());
+                    var cookie = _criptografiaProvider.Decriptografar(Request.Cookies["TSmartClinic-autx"].ToString());
                     var tentativa = Int32.Parse(cookie.Split("-")[1]);
                     var totalTentativas = Int32.Parse(cookie.Split("-")[2]);
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 
-namespace TSmartClinic.Api.TabelasBasicas.Extensions
+namespace TSmartClinic.Api.TSmartClinic.Extensions
 {
     public static class SwaggerDocExtension
     {
