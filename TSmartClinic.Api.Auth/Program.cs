@@ -12,6 +12,8 @@ builder.Services.AddJwtBearer(builder.Configuration);
 builder.Services.AddAutoMapperConfig();
 builder.Services.AddSqlServerConfig(builder.Configuration);
 builder.Services.AddSwaggerDoc();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 builder.Services.AddDependencyInjection(builder.Configuration);
 
 var app = builder.Build();
@@ -19,7 +21,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    //app.UseSwaggerUI();
+    app.UseSwaggerUI();
 }
 
 app.UseSwaggerDoc();

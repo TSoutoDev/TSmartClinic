@@ -1,5 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 
+
 namespace TSmartClinic.Api.Auth.Extensions
 {
     public static class SwaggerDocExtension
@@ -63,7 +64,7 @@ namespace TSmartClinic.Api.Auth.Extensions
         public static IApplicationBuilder UseSwaggerDoc(this IApplicationBuilder app)
         {
             app.UseSwagger();
-            app.UseSwagger();
+            app.UseSwaggerUI();
 
             return app;
         }

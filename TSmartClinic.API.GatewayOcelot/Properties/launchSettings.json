@@ -4,11 +4,11 @@
     "anonymousAuthentication": true,
     "iisExpress": {
       "applicationUrl": "http://localhost:40445",
-      "sslPort": 0
+      "sslPort": 44345
     }
   },
   "profiles": {
-    "http": {
+    "TSmartClinic.API.GatewayOcelot": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
