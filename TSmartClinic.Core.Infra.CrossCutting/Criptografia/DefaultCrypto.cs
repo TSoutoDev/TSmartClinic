@@ -23,8 +23,11 @@ namespace TSmartClinic.Core.Infra.CrossCutting.Criptografia
             using var sw = new StreamWriter(cs);
 
             sw.Write(plainText);
+            sw.Flush();
+            cs.FlushFinalBlock();
 
-            return Convert.ToBase64String(ms.ToArray());
+            var cripto = Convert.ToBase64String(ms.ToArray());
+            return cripto;
         }
 
         public string Decrypt(string cipherText, string key)
