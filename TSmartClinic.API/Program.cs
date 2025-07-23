@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddJwtBearer(builder.Configuration);
 builder.Services.AddSwaggerDoc();

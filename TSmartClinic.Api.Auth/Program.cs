@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using TSmartClinic.Api.Auth.Extensions;
 using TSmartClinic.API.Extensions;
+using TSmartClinic.Core.Infra.CrossCutting.Criptografia;
 using TSmartClinic.Core.Infra.CrossCutting.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);

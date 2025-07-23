@@ -16,6 +16,8 @@ namespace TSmartClinic.Core.Infra.CrossCutting.Criptografia
             using var aes = Aes.Create();
             aes.Key = keyBytes;
             aes.IV = iv;
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.PKCS7;
 
             using var encryptor = aes.CreateEncryptor();
             using var ms = new MemoryStream();
@@ -41,6 +43,8 @@ namespace TSmartClinic.Core.Infra.CrossCutting.Criptografia
             using var aes = Aes.Create();
             aes.Key = keyBytes;
             aes.IV = iv;
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.PKCS7;
 
             var cipherBytes = Convert.FromBase64String(cipherText);
 

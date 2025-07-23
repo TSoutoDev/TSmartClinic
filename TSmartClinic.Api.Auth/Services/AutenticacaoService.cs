@@ -39,7 +39,8 @@ namespace TSmartClinic.Api.Auth.Services
                 if (usuario == null)
                     return null;
 
-                var senhaDecifrada = _criptografiaProvider.Decriptografar(usuario.Senha);
+                var senhaCifrada = _criptografiaProvider.Criptografar(usuario.Senha);
+                var senhaDecifrada = _criptografiaProvider.Decriptografar(senhaCifrada);
 
                 if (!senhaDecifrada.Equals(loginRequestDto.Senha))
                     return null;

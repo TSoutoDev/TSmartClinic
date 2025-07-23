@@ -8,10 +8,11 @@ namespace TSmartClinic.Core.Infra.CrossCutting.Extensions
 {
     public static class JwtBearerExtension
     {
-        public static IServiceCollection AddJwtBearer(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddJwtBearer(this IServiceCollection services, 
+            IConfiguration configuration)
         {
 
-            var secretKey = "c2lkZWluZm9fcGVvcGxlbmV0X3NhdWRlX29jdXBhY2lvbmFs";//configuration["TokenSettings:SecretKey"];
+            var secretKey = configuration["TokenSettings:SecretKey"];
             if (string.IsNullOrWhiteSpace(secretKey))
                 throw new InvalidOperationException("TokenSettings:SecretKey não configurado corretamente!");
 

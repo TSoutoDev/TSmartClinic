@@ -5,7 +5,7 @@ namespace TSmartClinic.Core.Infra.CrossCutting.Providers
 {
     public class CriptografiaProvider : ICriptografiaProvider
     {
-        private const string CHAVE_CRIPTOGRAFIA = "c2lkZWluZm9fcGVvcGxlbmV0X3NhdWRlX29jdXBhY2lvbmFs";
+        private const string CHAVE_CRIPTOGRAFIA = "85C7989FTSmartClinicApplication5B8D2AE68DFC";
         private readonly DefaultCrypto _objCrypt;
 
         public CriptografiaProvider()
