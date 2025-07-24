@@ -21,7 +21,7 @@ namespace TSmartClinic.Api.Auth.Extensions
             services.AddTransient<IAutenticacaoService, AutenticacaoService>();
             services.AddTransient<ICriptografiaProvider, CriptografiaProvider>();
             services.AddTransient<ITokenService, TokenService>();
-
+     
             services.Configure<TokenSettings>(configuration.GetSection("TokenSettings"));
 
             return services;

@@ -1,8 +1,11 @@
 ﻿using TSmartClinic.API.Repositories;
 using TSmartClinic.API.Services;
+using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Core.Domain.Service;
+using TSmartClinic.Core.Infra.CrossCutting.Criptografia;
+using TSmartClinic.Core.Infra.CrossCutting.Providers;
 using TSmartClinic.Data.Repositories;
 
 namespace TSmartClinic.API.Extensions
@@ -23,7 +26,9 @@ namespace TSmartClinic.API.Extensions
             services.AddTransient<IUsuarioRepository, UsuarioRepository>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-           // services.AddTransient<ITokenService, TokenService>();
+            services.AddTransient<ICriptografiaProvider, CriptografiaProvider>();
+           
+            // services.AddTransient<ITokenService, TokenService>();
 
             return services;
         }

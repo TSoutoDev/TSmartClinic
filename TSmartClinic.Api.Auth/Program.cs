@@ -3,6 +3,7 @@ using TSmartClinic.Api.Auth.Extensions;
 using TSmartClinic.API.Extensions;
 using TSmartClinic.Core.Infra.CrossCutting.Criptografia;
 using TSmartClinic.Core.Infra.CrossCutting.Extensions;
+using TSmartClinic.Core.Infra.CrossCutting.Providers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Services.AddSwaggerDoc();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDependencyInjection(builder.Configuration);
+// Registrar configurações
+builder.Services.Configure<CryptoSettings>(builder.Configuration.GetSection("CryptoSettings"));
 
 var app = builder.Build();
 

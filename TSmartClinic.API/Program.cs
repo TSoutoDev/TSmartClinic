@@ -5,6 +5,7 @@ using TSmartClinic.API.Extensions;
 using TSmartClinic.API.Handles;
 using TSmartClinic.Core.Domain.Middlewares;
 using TSmartClinic.Core.Infra.CrossCutting.Extensions;
+using TSmartClinic.Core.Infra.CrossCutting.Providers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,9 @@ builder.Services.AddDependencyInjection();
 builder.Services.AddFluentValidationConfig();
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+// Registrar configurações
+builder.Services.Configure<CryptoSettings>(builder.Configuration.GetSection("CryptoSettings"));
+
 
 var app = builder.Build();
 

@@ -39,8 +39,8 @@ namespace TSmartClinic.Api.Auth.Services
                 if (usuario == null)
                     return null;
 
-                var senhaCifrada = _criptografiaProvider.Criptografar(usuario.Senha);
-                var senhaDecifrada = _criptografiaProvider.Decriptografar(senhaCifrada);
+               // var senhaCifrada = _criptografiaProvider.Criptografar(usuario.Senha);
+                var senhaDecifrada = _criptografiaProvider.Decriptografar(usuario.Senha);
 
                 if (!senhaDecifrada.Equals(loginRequestDto.Senha))
                     return null;
@@ -56,7 +56,9 @@ namespace TSmartClinic.Api.Auth.Services
                 {
                     AccessToken = accessToken,
                     Nome = usuario.Nome,
-                    Email = usuario.Email
+                    Email = usuario.Email,
+                    ClinicaId = loginRequestDto.ClinicaId,
+                    ModuloId = loginRequestDto.ModuloId
                 };
 
             }
