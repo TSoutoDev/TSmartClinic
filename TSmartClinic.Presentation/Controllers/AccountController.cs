@@ -46,7 +46,7 @@ namespace TSmartClinic.Presentation.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = _autenticacaoService.Logar(model).Result;
+                var response = _autenticacaoService.Logar(model).Result; // da erro
 
                 if (!response.Sucesso)
                 {
