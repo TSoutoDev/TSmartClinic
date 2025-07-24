@@ -12,16 +12,19 @@ namespace TSmartClinic.Presentation.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly IAccessTokenService _accessTokenService;
         private readonly IAutenticacaoService _autenticacaoService;
         private readonly ICriptografiaProvider _criptografiaProvider;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AccountController(
+            IAccessTokenService accessTokenService,
             IAutenticacaoService autenticacaoService,
             ICriptografiaProvider criptografiaProvider,
             IHttpContextAccessor httpContextAccessor
         )
         {
+            _accessTokenService = accessTokenService;
             _autenticacaoService = autenticacaoService;
             _criptografiaProvider = criptografiaProvider;
             _httpContextAccessor = httpContextAccessor;
@@ -35,49 +38,26 @@ namespace TSmartClinic.Presentation.Controllers
             return View(new AccountViewModel());
         }
 
+
+
+
         [HttpPost]
         public IActionResult Login(AccountViewModel model)
         {
             if (ModelState.IsValid)
             {
-                try
+                var response = _autenticacaoService.Logar(model).Result;
+
+                if (!response.Sucesso)
                 {
-                    var identity = new ClaimsIdentity(new[]
-                        {
-                            new Claim(ClaimTypes.Name, JsonConvert.SerializeObject("Tiago Souto")),
-                            new Claim(ClaimTypes.Role, "Administrador")
-                        },
-                        CookieAuthenticationDefaults.AuthenticationScheme
-                    );
-
-                    var principal = new ClaimsPrincipal(identity);
-                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
-                    //Excluir o cookie de tentativas
-                    if (Request.Cookies["TSmartClinic-autx"] != null) Response.Cookies.Delete("TSmartClinic-autx", OpcoesCookies());
-
-                    return RedirectToAction("Index", "Home");
-                }
-                catch (Exception e)
-                {
-                    TempData["MensagemErro"] = e.Message;
-                }
-
-
-
-
-                var retorno = _autenticacaoService.Logar(model);
-
-                if (!retorno.Sucesso)
-                {
-                    switch (retorno.StatusCode)
+                    switch (response.StatusCode)
                     {
                         case 404:
                             IncrementaTentativa();
                             break;
 
                         default:
-                            TempData["MensagemErro"] = retorno.Mensagem;
+                            TempData["MensagemErro"] = response.Mensagem;
                             break;
                     }
                 }
@@ -85,21 +65,36 @@ namespace TSmartClinic.Presentation.Controllers
                 {
                     try
                     {
-                        var identity = new ClaimsIdentity(new[]
-                            {
-                                new Claim(ClaimTypes.Name, JsonConvert.SerializeObject("Flavio Rianelli")),
-                                new Claim(ClaimTypes.Role, "Administrador")
-                            },
-                            CookieAuthenticationDefaults.AuthenticationScheme
-                        );
+                        var autenticacao = response.Itens.FirstOrDefault();
 
+                        _accessTokenService.Salvar(autenticacao.AccessToken);
+
+                        var handler = new JwtSecurityTokenHandler();
+                        var token = handler.ReadJwtToken(autenticacao.AccessToken);
+
+                        var permissoes = token.Claims
+                            .Where(x => x.Type == "permissao")
+                            .SelectMany(x => x.Value.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                            .Distinct()
+                            .ToList();
+
+                        var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Name, autenticacao.Nome),
+                            new Claim(ClaimTypes.Email, autenticacao.Email)
+                        };
+
+                        claims.Add(new Claim("permissao", string.Join(',', permissoes)));
+
+                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         var principal = new ClaimsPrincipal(identity);
+
                         HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                         //Excluir o cookie de tentativas
                         if (Request.Cookies["TSmartClinic-autx"] != null) Response.Cookies.Delete("TSmartClinic-autx", OpcoesCookies());
 
-                        return RedirectToAction("Consulta", "Setor");
+                        return RedirectToAction("Login", "Account");
                     }
                     catch (Exception e)
                     {
@@ -117,14 +112,17 @@ namespace TSmartClinic.Presentation.Controllers
 
         public IActionResult Logout()
         {
-            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            //HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            HttpContext.Response.Cookies.Delete("TSmartClinic-autx", OpcoesCookies());
+            //HttpContext.Response.Cookies.Delete("peoplenetsst-autx", OpcoesCookies());
 
-            HttpContext.Session.Clear();
+            //HttpContext.Session.Clear();
+
+            _autenticacaoService.Logout();
 
             return RedirectToAction("Login", "Account");
         }
+
 
         private void GravarCookieTentativa(int tentativa)
         {
@@ -134,6 +132,9 @@ namespace TSmartClinic.Presentation.Controllers
                 OpcoesCookies()
             );
         }
+
+
+
 
         private CookieOptions OpcoesCookies()
         {

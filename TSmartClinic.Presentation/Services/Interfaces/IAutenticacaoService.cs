@@ -4,6 +4,7 @@ namespace TSmartClinic.Presentation.Services.Interfaces
 {
     public interface IAutenticacaoService
     {
-        ResponseViewModel<AccountViewModel> Logar(AccountViewModel accountViewModel);
+        Task<ResponseViewModel<AccountViewModel>> Logar(AccountViewModel accountViewModel);
+        Task<ResponseViewModel<AccountViewModel>> Logout();
     }
 }

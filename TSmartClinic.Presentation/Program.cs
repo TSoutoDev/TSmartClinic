@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using TSmartClinic.Core.Domain.Entities;
+using TSmartClinic.Core.Infra.CrossCutting.Providers;
 using TSmartClinic.Presentation.Extentions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Console.WriteLine("Chave lida: " + builder.Configuration["CryptoSettings:Chave"]);
+
 
 builder.Services.AddControllersWithViews();
 
@@ -21,6 +25,8 @@ builder.Services.AddDependencyInjection();
 builder.Services.AddUrlApi(builder.Configuration);
 builder.Services.AddMapper();
 builder.Services.AddFluentValidationConfig();
+// Registrar configurações
+builder.Services.Configure<CryptoSettings>(builder.Configuration.GetSection("CryptoSettings"));
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -49,6 +55,19 @@ builder.Services.AddAntiforgery(options =>
     options.Cookie.Name = "XSRF-TOKEN";   // Nome do cookie para o token anti-CSRF
     options.Cookie.HttpOnly = false;       // O cookie pode ser lido por JavaScript
 });
+
+
+
+//var sectionName = "CryptoSettings";
+//var section = builder.Configuration.GetSection(sectionName);
+//if (section == null)
+//    throw new Exception("Seção nula: " + sectionName);
+//else if (!section.Exists())
+//    throw new Exception("Seção não existe: " + sectionName);
+
+//builder.Services.Configure<CryptoSettings>(section);
+
+
 
 var app = builder.Build();
 
