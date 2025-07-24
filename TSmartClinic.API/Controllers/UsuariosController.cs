@@ -8,11 +8,14 @@ using TSmartClinic.Core.Domain.Interfaces.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TSmartClinic.API.DTOs.Responses;
+using Microsoft.AspNetCore.Authorization;
+using TSmartClinic.API.Handles;
 
 namespace TSmartClinic.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsuariosController : BaseController<Usuario, IUsuarioService, UsuarioFiltro, UsuarioInsertRequestDTO, UsuarioUpdateRequestDTO, UsuarioResponseDTO>
     {
         private readonly IUsuarioService _usuarioService;
@@ -45,6 +48,12 @@ namespace TSmartClinic.API.Controllers
             _usuarioService?.Bloquear(id);
 
             return StatusCode(200);
+        }
+
+        [AuthorizePermission("Usuarios_Incluir")]
+        public override ActionResult<UsuarioResponseDTO> Inserir(UsuarioInsertRequestDTO objRequest)
+        {
+            return base.Inserir(objRequest);
         }
     }
 }

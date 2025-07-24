@@ -35,6 +35,7 @@ namespace TSmartClinic.API.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(204)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(500)]
         public virtual ActionResult<TResponseDTO> ObterPorId(int id)
         {
@@ -46,6 +47,7 @@ namespace TSmartClinic.API.Controllers
         }
         [HttpPost("listar")]
         [ProducesResponseType(200)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(500)]
         public virtual ActionResult<ResponseDTO<TResponseDTO>> Listar(TFiltro filtro)
         {
@@ -65,6 +67,7 @@ namespace TSmartClinic.API.Controllers
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(500)]
         public virtual ActionResult<TResponseDTO> Inserir(TInsertRequestDTO objRequest)
         {
@@ -78,6 +81,7 @@ namespace TSmartClinic.API.Controllers
         [HttpPatch("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(500)]
         public virtual ActionResult<TResponseDTO> Atualizar(int id, TUpdateRequestDTO objRequest)
         {
@@ -90,6 +94,7 @@ namespace TSmartClinic.API.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(500)]
         public virtual ActionResult Excluir(int id)
         {
