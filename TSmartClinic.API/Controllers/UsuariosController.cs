@@ -15,7 +15,7 @@ namespace TSmartClinic.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class UsuariosController : BaseController<Usuario, IUsuarioService, UsuarioFiltro, UsuarioInsertRequestDTO, UsuarioUpdateRequestDTO, UsuarioResponseDTO>
     {
         private readonly IUsuarioService _usuarioService;
@@ -24,7 +24,7 @@ namespace TSmartClinic.API.Controllers
             _usuarioService = usuarioService;
         }
 
-        [AuthorizePermission("Usuarios_Acessar")]
+        //[AuthorizePermission("Usuarios_Acessar")]
         [HttpGet("obter-por-email/{email}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(204)]
@@ -38,7 +38,7 @@ namespace TSmartClinic.API.Controllers
             return StatusCode(200, Mapper.Map<UsuarioResponseDTO>(obj));
         }
 
-        [AuthorizePermission("Usuarios_Editar")]
+      //  [AuthorizePermission("Usuarios_Editar")]
         [HttpPatch("{id}/bloquear")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
@@ -50,31 +50,31 @@ namespace TSmartClinic.API.Controllers
             return StatusCode(200);
         }
 
-        [AuthorizePermission("Usuarios_Acessar")]
+       // [AuthorizePermission("Usuarios_Acessar")]
         public override ActionResult<ResponseDTO<UsuarioResponseDTO>> Listar(UsuarioFiltro filtro)
         {
             return base.Listar(filtro);
         }
 
-        [AuthorizePermission("Usuarios_Acessar")]
+       // [AuthorizePermission("Usuarios_Acessar")]
         public override ActionResult<UsuarioResponseDTO> ObterPorId(int id)
         {
             return base.ObterPorId(id);
         }
 
-        [AuthorizePermission("Usuarios_Incluir")]
+      //  [AuthorizePermission("Usuarios_Incluir")]
         public override ActionResult<UsuarioResponseDTO> Inserir(UsuarioInsertRequestDTO objRequest)
         {
             return base.Inserir(objRequest);
         }
 
-        [AuthorizePermission("Usuarios_Editar")]
+      //  [AuthorizePermission("Usuarios_Editar")]
         public override ActionResult<UsuarioResponseDTO> Atualizar(int id, UsuarioUpdateRequestDTO objRequest)
         {
             return base.Atualizar(id, objRequest);
         }
 
-        [AuthorizePermission("Usuarios_Excluir")]
+      //  [AuthorizePermission("Usuarios_Excluir")]
         public override ActionResult Excluir(int id)
         {
             return base.Excluir(id);

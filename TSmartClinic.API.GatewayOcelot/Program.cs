@@ -6,12 +6,14 @@ using TSmartClinic.Core.Infra.CrossCutting.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// CORREÇÃO AQUI 👇👇
+
 builder.Configuration
     .SetBasePath(builder.Environment.ContentRootPath)
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true) // <--- necessário!
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
     .AddOcelot($"{builder.Environment.ContentRootPath}/config/{builder.Environment.EnvironmentName}", builder.Environment)
     .AddEnvironmentVariables();
+
 
 // Agora sim pode usar a config carregada corretamente
 builder.Services.AddJwtBearer(builder.Configuration);

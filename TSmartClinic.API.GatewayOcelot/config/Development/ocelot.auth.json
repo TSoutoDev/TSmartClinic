@@ -6,10 +6,10 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5296 //
+          "Port": 5296
         }
       ],
-      "UpstreamPathTemplate": "/auth/{id}",
+      "UpstreamPathTemplate": "/auth/login",
       "UpstreamHttpMethod": [ "POST" ]
     },
     {
@@ -18,11 +18,18 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5296 //
+          "Port": 5296
         }
       ],
       "UpstreamPathTemplate": "/auth/logout",
-      "UpstreamHttpMethod": [ "POST" ]
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
     }
-  ]
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5049"
+  }
 }
