@@ -11,7 +11,7 @@ namespace TSmartClinic.Presentation.Services
 {
     public class UsuarioService : BaseService<UsuarioFilterViewModel, UsuarioViewModel>, IUsuarioService
     {
-        public UsuarioService(IAccessTokenService accessTokenService, IOptions<UrlApiSettings>? urlApiSettings) : base(urlApiSettings)
+        public UsuarioService(IAccessTokenService accessTokenService, IOptions<UrlApiSettings>? urlApiSettings) : base(accessTokenService, urlApiSettings, "usuarios")
         {
         }
 
