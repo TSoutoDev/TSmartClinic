@@ -15,6 +15,7 @@ namespace TSmartClinic.Presentation.Services
         {
         }
 
+
         public async Task Bloquear(int id)
         {
             using (var client = new HttpClient())
