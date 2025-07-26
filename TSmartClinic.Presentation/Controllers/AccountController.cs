@@ -94,7 +94,8 @@ namespace TSmartClinic.Presentation.Controllers
                         //Excluir o cookie de tentativas
                         if (Request.Cookies["TSmartClinic-autx"] != null) Response.Cookies.Delete("TSmartClinic-autx", OpcoesCookies());
 
-                        return RedirectToAction("Login", "Account");
+                        return RedirectToAction("Index", "Home");
+                       // return RedirectToAction("Login", "Account");
                     }
                     catch (Exception e)
                     {
@@ -108,6 +109,7 @@ namespace TSmartClinic.Presentation.Controllers
             }
 
             return View(model);
+
         }
 
         public IActionResult Logout()
