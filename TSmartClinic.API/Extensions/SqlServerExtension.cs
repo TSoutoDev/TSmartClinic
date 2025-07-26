@@ -9,8 +9,14 @@ namespace TSmartClinic.API.Extensions
         {
             var connectionString = configuration.GetConnectionString("TSmartClinic");
 
-            services.AddDbContext<TSmartClinicContext>(
-                options => options.UseSqlServer(connectionString)
+            services.AddDbContext<TSmartClinicContext>(options =>
+                options.UseSqlServer(connectionString, sqlServerOptions =>
+                    sqlServerOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,                            // Quantidade de tentativas
+                        maxRetryDelay: TimeSpan.FromSeconds(10),    // Tempo entre tentativas
+                        errorNumbersToAdd: null                     // Erros adicionais (opcional)
+                    )
+                )
             );
 
             return services;

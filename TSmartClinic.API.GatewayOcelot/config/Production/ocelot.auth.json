@@ -2,29 +2,30 @@
   "Routes": [
     {
       "DownstreamPathTemplate": "/api/auth/login",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5296 //
+          "Port": 5296
         }
       ],
-      "UpstreamPathTemplate": "/auth/{id}",
+      "UpstreamPathTemplate": "/auth/login",
       "UpstreamHttpMethod": [ "POST" ]
     },
     {
       "DownstreamPathTemplate": "/api/auth/logout",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5296 //
+          "Port": 5296
         }
       ],
       "UpstreamPathTemplate": "/auth/logout",
       "UpstreamHttpMethod": [ "POST" ]
     }
   ],
+  "AggregateRoutes": [],
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:5049"
   }

@@ -6,8 +6,9 @@ using TSmartClinic.Api.Auth.Interfaces.Services;
 
 namespace TSmartClinic.Api.Auth.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+   
     public class AuthController : ControllerBase
     {
         private readonly IAutenticacaoService _autenticacaoService;

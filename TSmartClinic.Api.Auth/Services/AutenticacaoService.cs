@@ -48,7 +48,10 @@ namespace TSmartClinic.Api.Auth.Services
                 var usuarioAutenticacao = _mapper.Map<AutenticacaoModel>(usuario);
 
                 //var usuarioSistema = usuario.UsuariosSistema.FirstOrDefault(); REVER
-               var permissoes = _usuarioService.ObterPermissaoUsuario(usuario.Id, loginRequestDto.ClinicaId, loginRequestDto.ModuloId);
+
+               //var permissoes = _usuarioService.ObterPermissaoUsuario(usuario.Id, loginRequestDto.ClinicaId, loginRequestDto.ModuloId);
+                var permissoes = _usuarioService.ObterPermissaoUsuario(usuario.Id, 1, 1);
+
 
                 var accessToken = _tokenService.GerarToken(usuarioAutenticacao, permissoes);
 
@@ -57,8 +60,8 @@ namespace TSmartClinic.Api.Auth.Services
                     AccessToken = accessToken,
                     Nome = usuario.Nome,
                     Email = usuario.Email,
-                    ClinicaId = loginRequestDto.ClinicaId,
-                    ModuloId = loginRequestDto.ModuloId
+                    ClinicaId = 1,// loginRequestDto.ClinicaId,
+                    ModuloId = 1,// loginRequestDto.ModuloId
                 };
 
             }

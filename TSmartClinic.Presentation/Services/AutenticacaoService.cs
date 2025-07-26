@@ -38,6 +38,14 @@ namespace TSmartClinic.Presentation.Services
 
             using (var client = new HttpClient())
             {
+
+                //string url = $"{_baseUrlController}/login";
+                //var response2 = await client.PostAsJsonAsync("http://localhost:5296/api/auth/login", accountViewModel);
+
+                //var responseBody = await response2.Content.ReadAsStringAsync(); // para debug
+                //Console.WriteLine(responseBody); // ou coloque um breakpoint aqui
+
+
                 HttpResponseMessage response = await client.PostAsJsonAsync($"{_baseUrlController}/login", accountViewModel);
 
                 retorno.StatusCode = response.StatusCode.GetHashCode();

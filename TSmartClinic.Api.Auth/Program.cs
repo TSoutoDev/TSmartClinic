@@ -13,6 +13,7 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddJwtBearer(builder.Configuration);
 builder.Services.AddAutoMapperConfig();
 builder.Services.AddSqlServerConfig(builder.Configuration);
+
 builder.Services.AddSwaggerDoc();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
