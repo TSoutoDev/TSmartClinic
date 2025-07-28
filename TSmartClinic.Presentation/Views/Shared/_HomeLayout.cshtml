@@ -53,6 +53,45 @@
                 left: 0;
             }
 
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #layout-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
+
+        .page-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        footer.footer {
+            flex-shrink: 0;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            padding: 16px;
+            text-align: center;
+            border-top: 1px solid #dee2e6;
+        }
+
+
     </style>
 
 </head>
@@ -112,7 +151,7 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-end">
                             <!-- item-->
-                            <a class="dropdown-item" href="#"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Minha COnta</span></a>
+                            <a class="dropdown-item" href="#"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Minha Conta</span></a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item text-danger" href="/Account/Logout"><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> <span key="t-logout">Sair do Sistema</span></a>
                         </div>
@@ -140,9 +179,9 @@
 
                                             <!-- Início do menu Funcionários -->
                                             <li>
-                                                <a href=/Funcionario/Consulta key="t-blog">
+                                                <a href=/Paciente/Consulta key="t-blog">
                                                     <i class="bx bx-user"></i>
-                                                    <span key="t-dashboards">Funcionários</span>
+                                                    <span key="t-dashboards">Pacientes</span>
                                                 </a>
                                             </li>
 
@@ -151,7 +190,7 @@
                                                 @*  <a href="javascript: void(0);" class="has-arrow waves-effect"> *@
                                                 <a href=/Empresa/Central key="t-blog">
                                                     <i class="bx bx-building-house"></i>
-                                                    <span key="t-layouts">Empresa</span>
+                                                    <span key="t-layouts">Clínicas</span>
                                                 </a>
                                                 @* <ul class="sub-menu" aria-expanded="false">
                                                 <li><a href=/Grupo/Consulta key="t-blog">Grupos</a></li>
@@ -163,7 +202,7 @@
                                             </li>
 
                                             <!-- Início do menu SST -->
-                                            <li>
+                                         @*    <li>
                                                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                                                     <i class="bx bx-shield"></i>
                                                     <span key="t-layouts">SST</span>
@@ -173,7 +212,7 @@
                                                         <a href="javascript: void(0);" class="has-arrow" key="t-vertical">PGR</a>
                                                         <ul class="sub-menu" aria-expanded="true">
                                                             @* <li><a href=key ="t-blog">*Associação de Riscos</a></li> *@
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Associação de Riscos</a></li>
+                                                        @*    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Associação de Riscos</a></li>
                                                             <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Avaliação dos Riscos</a></li>
                                                             <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Reconhecimento dos <br />Riscos</a></li>
                                                             <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Priorização e Medidas <br />de Controle</a></li>
@@ -268,7 +307,7 @@
 
                                                 </ul>
                                             </li>
-
+ *@
                                             <!-- Início do menu Atendimentos -->
                                             <li>
                                                 <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -338,7 +377,7 @@
                                                 </a>
                                             </li>
 
-
+@* 
                                             <!-- Início do menu Indicadores -->
                                             <li>
                                                 <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -353,7 +392,7 @@
                                                     <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Indicadores de Saúde</a></li>
 
                                                 </ul>
-                                            </li>
+                                            </li> *@
 
                                             <!-- Início do menu Cadastros Básicos -->
                                             <li>
@@ -523,14 +562,14 @@
                                                 </ul>
                                             </li>
 
-                                            <!-- Início do menu Biometria -->
+                                         @*    <!-- Início do menu Biometria -->
                                             <li>
                                                 <a href=key ="t-blog">
                                                     <i class="bx bx-fingerprint"></i>
                                                     <span key="t-dashboards">Biometria</span>
                                                 </a>
                                             </li>
-
+ *@
                                             <!-- Início do menu Configurações -->
                                             <li>
                                                 <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -539,7 +578,7 @@
                                                 </a>
                                                 <ul class="sub-menu" aria-expanded="true">
 
-                                                    <li>
+                                      @*               <li>
                                                         <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Opções</a>
                                                         <ul class="sub-menu" aria-expanded="true">
                                                             <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Posto de Trabalho</a></li>
@@ -561,16 +600,17 @@
                                                             <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Motivos de Afastamento <br />(Tabela 18)</a></li>
                                                             <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Mapeamento de Motivos <br />de Afastamento</a></li>
                                                         </ul>
-                                                    </li>
+                                                    </li> *@
 
                                                     <li>
                                                         <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Controle de Acesso</a>
                                                         <ul class="sub-menu" aria-expanded="true">
                                                             <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Perfil de Acesso</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Configurações de Contas <br />de Usuários</a></li>
+                                                            <li><a href="/Usuarios/Consulta" key="t-blog">Contas de Usuários</a></li>
+                                                            
                                                         </ul>
                                                     </li>
-
+@* 
                                                     <li>
                                                         <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Importação de Dados</a>
                                                         <ul class="sub-menu" aria-expanded="true">
@@ -585,7 +625,7 @@
                                                             <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Importação de Exames <br />Laboratoriais</a></li>
                                                         </ul>
                                                     </li>
-
+ *@
                                                 </ul>
                                             </li>
 
@@ -626,7 +666,7 @@
 
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item"><a href="javascript: void(0);">PeopleNet SST</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">TSSmartClinic</a></li>
                                         <li class="breadcrumb-item">Cadastros Básicos</li>
                                         <li class="breadcrumb-item active">Setores</li>
                                     </ol>
@@ -680,11 +720,11 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-6">
-                            <script>document.write(new Date().getFullYear())</script> © PeopleNet.
+                            <script>document.write(new Date().getFullYear())</script> © TSmartClinic.
                         </div>
                         <div class="col-sm-6">
                             <div class="text-sm-right d-none d-sm-block">
-                                PeopleNet SST | Versão X.X
+                                TsmartClinic | Versão 1.0
                             </div>
                         </div>
                     </div>

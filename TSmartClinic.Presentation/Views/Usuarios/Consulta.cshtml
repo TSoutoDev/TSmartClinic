@@ -1,0 +1,90 @@
+﻿@using TSmartClinic.Presentation.Models
+@model TSmartClinic.Presentation.Models.ResponseViewModel<UsuarioViewModel>
+
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewBag.Titulo = "Consulta de Usuario";
+}
+
+<div class="card">
+    <div class="card-body">
+        <ul class="nav nav-tabs" role="tablist" id="tabBusca">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#busca_padrao" role="tab">
+                    <span class="d-block d-sm-none"><i class="fas fa-search"></i></span>
+                    <span class="d-none d-sm-block">Busca padrão</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content pt-3 text-muted">
+            <div class="tab-pane active" id="busca_padrao" role="tabpanel">
+                @using (Html.BeginForm("BuscaPadrao", "Usuarios", FormMethod.Post))
+                {
+                    <div class="row">
+                        <div class="col-md-5">
+                            <input type="text"
+                                   name="nome"
+                                   placeholder="Digite aqui para efetuar a busca"
+                                   class="form-control"
+                                   autocomplete="off"
+                                   value="@(ViewBag.Filtro?.Nome != null ? ViewBag.Filtro.Nome : "")" />
+                        </div>
+
+                        <div class=" col-md-2">
+                            <select class="form-select" name="ativo" autocomplete="off">
+                                <!option value="true">Ativo</!option>
+                                <!option value="false" @(ViewBag.Filtro != null && !ViewBag.Filtro.Ativo ? "selected" : "")>Inativo</!option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-success" onclick="loading()" style="height: 38px;">
+                                <i class="fa fa-search"></i>&nbsp;Pesquisar
+                            </button>
+                        </div>
+
+                        <div class="col-md-3 text-end">
+                            <a href="~/Usuarios/cadastro" class="btn btn-primary" onclick="loading()" style="height: 38px;">
+                                <i class="fa fa-check"></i>&nbsp;Novo Usuario
+                            </a>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model != null && Model.Itens.Count > 0)
+{
+    <div class="card">
+        <div class="card-body">
+            <table id="gridResultados" class="table table-hover table-striped">
+                <thead class="table-header">
+                    <tr>
+                        <th class="col-md-3" width="200">Nome</th>
+                        <th class="col-md-3" width="200">Categoria</th>
+                        <th class="col-md-3" width="50">Sigla Conselho</th>
+                        <th class="col-md-2" width="50">Número Conselho</th>
+                        <th class="col-md-2" width="50">Externo</th>
+                        <th class="col-md-2" width="50">Ofensor</th>
+                        <th class="col-md-3" width="200">Clínica</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{
+                        foreach (var item in Model.Itens)
+                        {
+                            <tr class="clickable" onclick="javascript:location.href='Cadastro/@item.Id'">
+                                <td>@item.Nome?.ToUpper()</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

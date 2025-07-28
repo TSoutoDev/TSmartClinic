@@ -1,0 +1,206 @@
+﻿
+@model TSmartClinic.Presentation.Models.UsuarioViewModel
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewBag.Titulo = "Cadastro de Usuario";
+}
+
+@using (Html.BeginForm())
+{
+    @if (Model != null && Model.Id.HasValue)
+    {
+        <input asp-for="Id" type="hidden" />
+    }
+
+    <style>
+        .card {
+            border: none;
+            box-shadow: none;
+            overflow: hidden;
+        }
+
+        .bx-cloud-upload {
+            font-size: 25px;
+            color: #007bff;
+        }
+
+        .logo {
+            width: auto; /* ou defina um valor fixo */
+            height: 28px;
+            vertical-align: middle;
+            position: relative;
+            top: -3px; /* Ajuste conforme necessário */
+        }
+
+    </style>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <label>Email</label><br />
+                    @Html.TextBoxFor(model => model.Email, new { @class = "form-control Email", @autocomplete = "off", type = "email" })
+                    @*  <span class="text-danger">
+                        @Html.ValidationMessageFor(model => model.Modelo)
+                    </span> *@
+                </div>
+
+                <div class="col-md-6">
+                    <label for="Nome">Nome</label>
+                    @Html.TextBoxFor(model => model.Nome, new { @class = "form-control", @autocomplete = "off", @placeholder = "Digite o nome do Usuario" })
+                    <span class="text-danger">
+                        @Html.ValidationMessageFor(model => model.Nome)
+                    </span>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <!-- Tipo de Usuário -->
+                <div class="col-md-3">
+                    <label for="TipoUsuarioId" class="form-label">Tipo de Usuário</label>
+                    <select @* asp-for="TipoUsuarioId" *@ class="form-select">
+                        <option value=""></option>
+                        <option value="2">Usuário Cliente</option>
+                        <option value="3">Usuário Suporte Sidetech</option>
+                        <option value="4">Usuário Suporte Alterdata</option>
+                    </select>
+                </div>
+
+                <!-- Campo de upload -->
+                <div class="col-md-6 mt-0">
+                    <label for="UploadFoto" class="form-label">Foto</label>
+                    <div class="input-group">
+                        <input type="file"
+                               class="form-control"
+                               id="UploadFoto"
+                               accept=".bmp,.jpg,.jpeg,.png"
+                               title="Formatos permitidos: .bmp, .jpg, .jpeg, .png"
+                               autocomplete="off" />
+                    </div>
+                    <small class="form-text text-muted">
+                        Formatos permitidos: .bmp, .jpg, .jpeg, .png
+                    </small>
+                </div>
+
+                <!-- Campo oculto que vai na model -->
+                <input type="hidden"
+                       id="FotoBase64"
+                       name="Foto"
+                       value="@(Model.Foto != null && Model.Foto.Length > 0 ? Convert.ToBase64String(Model.Foto) : "")" />
+
+
+                <!-- Data Expiração Senha -->
+                <div class="col-md-3">
+                    <label asp-for="DataExpiracaoSenha" class="form-label">Data de Expiração Senha</label>
+                    <input asp-for="DataExpiracaoSenha" class="form-control" type="date" />
+                    <span class="text-danger">
+                        @Html.ValidationMessageFor(model => model.DataExpiracaoSenha)
+                    </span>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <!-- Chave Seletora Agendamento (Switch) -->
+                <div class="col-md-2 d-flex align-items-center">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input"
+                               id="ContaExpiraSwitch"
+                               type="checkbox" />
+                        <label class="form-check-label ms-2" for="ContaExpiraSwitch">
+                            Conta Expira?
+                        </label>
+                    </div>
+                </div>
+
+                
+                <div class="col-md-3">
+                    <label for="Celular">Celular</label>
+                    @Html.TextBoxFor(model => model.Celular, new { @class = "form-control", @autocomplete = "off", @maxlength = "10" })
+                    <span class="text-danger">
+                        @Html.ValidationMessageFor(model => model.Celular)
+                    </span>
+                </div>
+
+    
+            </div>
+
+            <div class="row mt-4">
+                <div class="mt-3 row">
+                    <div class="col-md-2">
+                        <label>Situação</label>
+                        <select asp-for="Ativo" class="form-select" disabled="@(!Model.Id.HasValue ? "disabled" : null)">
+                            <option value="true">Ativo</option>
+                            <option value="false">Inativo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <input type="submit"
+                           asp-permissao="CADASTRO_USUARIO_INCLUIR,CADASTRO_USUARIO_ALTERAR"
+                           value="Gravar"
+                           onclick="loading()"
+                           class="btn btn-success" />
+
+                    @if (Model.Id.HasValue)
+                    {
+                        <input asp-action="Excluir"
+                               asp-permissao="CADASTRO_USUARIO_EXCLUIR"
+                               type="submit"
+                               value="Excluir"
+                               onclick="loading()"
+                               class="btn btn-danger" />
+                    }
+
+                    <a href="/Usuarios/Consulta" class="btn btn-secondary">Voltar</a>
+                </div>
+            </div>
+
+            <script>
+                // Habilita ou desabilita o campo DataExpiracaoConta:
+                document.addEventListener('DOMContentLoaded', function () {
+                    const switchContaExpira = document.getElementById('ContaExpiraSwitch');
+                    const inputDataExpiracao = document.getElementById('DataExpiracaoConta');
+
+                    function toggleInput() {
+                        if (switchContaExpira.checked) {
+                            inputDataExpiracao.disabled = false;
+                        } else {
+                            inputDataExpiracao.disabled = true;
+                            // Se quiser limpar o campo também:
+                            inputDataExpiracao.value = '';
+                        }
+                    }
+
+                    // Executa ao carregar a página
+                    toggleInput();
+
+                    // Executa sempre que mudar o switch
+                    switchContaExpira.addEventListener('change', toggleInput);
+                });
+            </script>
+
+
+            <script>
+                //converter a imagem em Base64 e preencher o input oculto:
+                document.getElementById('UploadFoto').addEventListener('change', function (evt) {
+                    const file = evt.target.files[0];
+                    if (!file) {
+                        document.getElementById('FotoBase64').value = '';
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const base64String = e.target.result.split(',')[1]; // Remove o prefixo
+                        document.getElementById('FotoBase64').value = base64String;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            </script>
+
+
+
+        </div>
+    </div>
+}
