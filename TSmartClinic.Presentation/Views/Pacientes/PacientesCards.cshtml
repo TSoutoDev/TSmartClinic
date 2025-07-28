@@ -1,0 +1,256 @@
+﻿@*
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewBag.Titulo = "Pacientes";
+}
+
+<style>
+    .card-menu {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border-radius: 12px;
+        border: none;
+    }
+
+    .card-menu:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-icon {
+        font-size: 40px;
+        color: #0d6efd;
+        margin-bottom: 15px;
+    }
+
+    .card-title {
+        font-weight: 600;
+        font-size: 18px;
+    }
+
+    .card-description {
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    .card-button {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        right: 15px;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Card: Central de Pacientes -->
+        <div class="col-md-4 mb-4">
+            <div class="card card-menu h-100 shadow-sm position-relative">
+                <div class="card-body text-center d-flex flex-column">
+                    <i class="fa fa-users card-icon"></i>
+                    <h5 class="card-title">Central de Pacientes</h5>
+                    <p class="card-description">Gerencie os dados dos pacientes cadastrados no sistema.</p>
+
+                    <a href="@Url.Action("Consulta", "Pacientes")"
+                       class="btn btn-outline-primary card-button">
+                        <i class="fa fa-chevron-right"></i>&nbsp;Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ *@
+@* 
+
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewBag.Titulo = "Buscar Paciente";
+}
+
+<style>
+    .search-section {
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        border-radius: 12px;
+    }
+
+    .search-box {
+        width: 100%;
+        max-width: 700px;
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .search-input {
+        height: 55px;
+        font-size: 18px;
+        padding-left: 50px;
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+    }
+
+    .search-icon {
+        position: absolute;
+        top: 16px;
+        left: 20px;
+        font-size: 20px;
+        color: #6c757d;
+    }
+
+    .search-button {
+        height: 55px;
+        font-size: 18px;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="search-section">
+        <div class="search-box">
+            <h3 class="text-center mb-4">Buscar Paciente</h3>
+
+            @using (Html.BeginForm("ResultadoBusca", "Pacientes", FormMethod.Post))
+            {
+                <div class="position-relative mb-4">
+                    <i class="fa fa-search search-icon"></i>
+                    <input type="text" name="filtro" class="form-control search-input"
+                           placeholder="Digite nome, CPF ou telefone do paciente" autocomplete="off" />
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary search-button" onclick="loading()">
+                        <i class="fa fa-search"></i> Pesquisar
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+ *@
+
+
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewBag.Titulo = "Central do Paciente";
+}
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+    .profile-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .status-badge {
+        font-size: 14px;
+        color: #28a745;
+        font-weight: bold;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #6c757d;
+    }
+
+    .info-value {
+        font-size: 16px;
+    }
+
+    .module-card {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        transition: 0.3s ease-in-out;
+    }
+
+        .module-card:hover {
+            background: #e9ecef;
+            cursor: pointer;
+            transform: translateY(-3px);
+        }
+
+    .module-icon {
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: #0d6efd;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="profile-card">
+        <div class="row align-items-center">
+            <div class="col-md-2 text-center">
+                <img src="~/images/avatar.png" class="avatar" alt="Foto do Paciente" />
+            </div>
+            <div class="col-md-7">
+                <h4>@Model.Nome</h4>
+                <p class="status-badge"><i class="fa-solid fa-circle-check me-1"></i> Ativo</p>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><span class="info-label">CPF:</span> <span class="info-value">@Model.CPF</span></p>
+                        <p><span class="info-label">Matrícula:</span> <span class="info-value">@Model.Matricula</span></p>
+                        <p><span class="info-label">Nascimento:</span> <span class="info-value">@Model.DataNascimento.ToString("dd/MM/yyyy")</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><span class="info-label">Empresa:</span> <span class="info-value">@Model.Empresa</span></p>
+                        <p><span class="info-label">Setor:</span> <span class="info-value">@Model.Setor</span></p>
+                        <p><span class="info-label">Função:</span> <span class="info-value">@Model.Funcao</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 text-end">
+                <a class="btn btn-outline-primary mb-2" href="#"><i class="fa fa-search"></i> Ver Registro</a>
+                <br />
+                <a class="btn btn-secondary" href="javascript:history.back()">Voltar</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4 g-3">
+        @{
+            var modulos = new[] {
+                new { Icon = "fa-list", Label = "Histórico" },
+                new { Icon = "fa-user-shield", Label = "SST" },
+                new { Icon = "fa-star", Label = "Avaliações" },
+                new { Icon = "fa-folder", Label = "Arquivos" },
+                new { Icon = "fa-chalkboard-teacher", Label = "Treinamentos" },
+                new { Icon = "fa-pen", Label = "Anotações" },
+                new { Icon = "fa-clock", Label = "Linha do Tempo" },
+                new { Icon = "fa-users", Label = "Gestão" },
+                new { Icon = "fa-user-tag", Label = "Competências" },
+                new { Icon = "fa-briefcase", Label = "Cargos e Salários" },
+                new { Icon = "fa-file-signature", Label = "Solicitações" }
+                };
+
+            foreach (var m in modulos)
+            {
+                <div class="col-md-4">
+                    <div class="module-card">
+                        <div class="module-icon"><i class="fa @m.Icon"></i></div>
+                        <div>@m.Label</div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
