@@ -5,20 +5,23 @@ using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Core.Domain.Models;
 using AutoMapper;
+using TSmartClinic.Core.Domain.Entities;
 
 namespace TSmartClinic.Api.Auth.Services
 {
     public class AutenticacaoService : IAutenticacaoService
     {
         private readonly IUsuarioService? _usuarioService;
+        private readonly IUsuarioClinicaPerfilService? _usuarioClinicaPerfilService;
         private readonly ICriptografiaProvider _criptografiaProvider;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
 
-        public AutenticacaoService(IUsuarioService? usuarioService, ICriptografiaProvider criptografiaProvider = null, ITokenService tokenService = null, IMapper mapper = null, IHttpContextAccessor httpContextAccessor = null)
+        public AutenticacaoService(IUsuarioService? usuarioService, IUsuarioClinicaPerfilService usuarioClinicaPerfil, ICriptografiaProvider criptografiaProvider = null, ITokenService tokenService = null, IMapper mapper = null, IHttpContextAccessor httpContextAccessor = null)
         {
             _usuarioService = usuarioService;
+            _usuarioClinicaPerfilService = usuarioClinicaPerfil;
             _criptografiaProvider = criptografiaProvider;
             _tokenService = tokenService;
             _mapper = mapper;
@@ -49,21 +52,24 @@ namespace TSmartClinic.Api.Auth.Services
 
                 //var usuarioSistema = usuario.UsuariosSistema.FirstOrDefault(); REVER
 
-               //var permissoes = _usuarioService.ObterPermissaoUsuario(usuario.Id, loginRequestDto.ClinicaId, loginRequestDto.ModuloId);
-                var permissoes = _usuarioService.ObterPermissaoUsuario(usuario.Id, 1, 1);
+                //var permissoes = _usuarioService.ObterPermissaoUsuario(usuario.Id, loginRequestDto.ClinicaId, loginRequestDto.ModuloId);
+
+                var clinicasUsuario = _usuarioClinicaPerfilService.ObterClinicasDoUsuario(usuario.Id);
+                 
+                var permissoes = _usuarioService.ObterPermissaoUsuario(usuario.Id, clinicasUsuario); 
 
 
                 var accessToken = _tokenService.GerarToken(usuarioAutenticacao, permissoes);
 
-                return new LoginResponseDto
+                var response =  new LoginResponseDto
                 {
                     AccessToken = accessToken,
                     Nome = usuario.Nome,
                     Email = usuario.Email,
-                    ClinicaId = 1,// loginRequestDto.ClinicaId,
-                    ModuloId = 1,// loginRequestDto.ModuloId
+                    ListClinicas = clinicasUsuario,// loginRequestDto.ClinicaId,
                 };
 
+                return response;
             }
             catch (AcessoNegadoException adx)
             {

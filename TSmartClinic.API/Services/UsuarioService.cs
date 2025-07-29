@@ -26,11 +26,6 @@ namespace TSmartClinic.API.Services
             _usuarioRepository.Atualizar(usuario);
         }
 
-        public List<string> ObterPermissaoUsuario(int usuarioId, int clinicaId, int moduloId)
-        {
-            throw new NotImplementedException();
-        }
-
         public Usuario ObterPorEmail(string email)
         {
             return _usuarioRepository.ObterPorEmail(email);
@@ -54,6 +49,11 @@ namespace TSmartClinic.API.Services
             }
 
             return base.Atualizar(id, usuario);
+        }
+
+        public List<string> ObterPermissaoUsuario(int usuarioId, List<Clinica> clinicasUsuario)
+        {
+            throw new NotImplementedException();
         }
     }
 }

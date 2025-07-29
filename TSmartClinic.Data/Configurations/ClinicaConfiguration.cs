@@ -22,6 +22,7 @@ namespace TSmartClinic.Data.Configurations
             builder.Property(c => c.Ativo).HasColumnName("Ativo").IsRequired();
             builder.Property(c => c.DataCadastro).HasColumnName("DataCadastro").HasColumnType("date");
             builder.Property(c => c.NichoId).HasColumnName("NichoId").IsRequired();
+            
 
             //mapeamento do relacionamento (1pN)
             builder.HasOne(c => c.Nicho) //tarefa TEM 1 Categoria

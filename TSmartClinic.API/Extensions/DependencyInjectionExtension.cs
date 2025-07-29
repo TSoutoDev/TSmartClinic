@@ -4,7 +4,6 @@ using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Core.Domain.Service;
-using TSmartClinic.Core.Infra.CrossCutting.Criptografia;
 using TSmartClinic.Core.Infra.CrossCutting.Providers;
 using TSmartClinic.Data.Repositories;
 
@@ -18,7 +17,7 @@ namespace TSmartClinic.API.Extensions
             services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
             services.AddTransient<ICategoriaService, CategoriaService>();
             services.AddTransient<IUsuarioService, UsuarioService>();
-
+  
             //Repositorios
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddTransient<ICategoriaRepository, CategoriaRepository>();

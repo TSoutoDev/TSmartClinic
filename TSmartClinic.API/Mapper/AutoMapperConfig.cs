@@ -23,6 +23,8 @@ namespace AgendaApp.API.Mapper
             CreateMap<Usuario, UsuarioUpdateRequestDTO>().ReverseMap();
             CreateMap<Usuario, UsuarioResponseDTO>();
 
+  
+
             //CreateMap<Servico, ServicoRequestDto>().ReverseMap();
             //CreateMap<Servico, ServicoResponseDto>().ReverseMap();
         }

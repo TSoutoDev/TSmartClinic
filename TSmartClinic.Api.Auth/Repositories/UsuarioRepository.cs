@@ -12,36 +12,65 @@ namespace TSmartClinic.Api.Auth.Repositories
         {
             _context = TSmartClinicContext;
         }
-
-        public List<string> ObterPermissaoUsuario(int usuarioId, int clinicaId, int moduloId )
+        public List<string> ObterPermissaoUsuario(int usuarioId, List<Clinica> clinicasUsuario)
         {
-            // 1. Buscar o perfil do usuário para a clínica
-            var perfilId = _context.UsuarioClinicaPerfil
-                .Where(u => u.UsuarioId == usuarioId && u.ClinicaId == clinicaId)
-                .Select(u => u.PerfilId)
-                .FirstOrDefault();
-
-            if (perfilId == 0)
+            if (clinicasUsuario == null || !clinicasUsuario.Any())
                 return new List<string>();
 
+            // 1. Obter todos os PerfilIds do usuário para essas clínicas
+            var clinicaIds = clinicasUsuario.Select(c => c.Id).ToList();
 
-            // 2. Buscar permissões associadas a esse perfil
-            var query = from opPerfil in _context.OperacaoPerfil
-                        join operacao in _context.Operacao on opPerfil.OperacaoId equals operacao.Id
-                        join funcionalidade in _context.Funcionalidade on operacao.FuncionalidadeId equals funcionalidade.Id
-                        where opPerfil.PerfilId == perfilId
-                        select new { operacao.Descricao, funcionalidade.ModuloId };
-
-            // 3. Filtrar por módulo se necessário
-            if (moduloId != null)
-            {
-                query = query.Where(p => p.ModuloId == moduloId);
-            }
-
-            return query.Select(p => p.Descricao)
+            var perfilIds = _context.UsuarioClinicaPerfil
+                .Where(ucp => ucp.Id == usuarioId && clinicaIds.Contains(ucp.ClinicaId))
+                .Select(ucp => ucp.PerfilId)
                 .Distinct()
                 .ToList();
+
+            if (!perfilIds.Any())
+                return new List<string>();
+
+            // 2. Buscar permissões (operações) desses perfis
+            var permissoes = (from opPerfil in _context.OperacaoPerfil
+                              join operacao in _context.Operacao on opPerfil.OperacaoId equals operacao.Id
+                              join funcionalidade in _context.Funcionalidade on operacao.FuncionalidadeId equals funcionalidade.Id
+                              where perfilIds.Contains(opPerfil.PerfilId)
+                              select operacao.Descricao)
+                             .Distinct()
+                             .ToList();
+
+            return permissoes;
         }
+        //public List<string> ObterPermissaoUsuario(int usuarioId, int clinicaId )
+        //{
+        //    // 1. Buscar o perfil do usuário para a clínica
+        //    var perfilId = _context.UsuarioClinicaPerfil
+        //        .Where(u => u.UsuarioId == usuarioId && u.ClinicaId == clinicaId)
+        //        .Select(u => u.PerfilId)
+        //        .FirstOrDefault();
+
+        //    if (perfilId == 0)
+        //        return new List<string>();
+
+
+        //    // 2. Buscar permissões associadas a esse perfil
+        //    var query = from opPerfil in _context.OperacaoPerfil
+        //                join operacao in _context.Operacao on opPerfil.OperacaoId equals operacao.Id
+        //                join funcionalidade in _context.Funcionalidade on operacao.FuncionalidadeId equals funcionalidade.Id
+        //                where opPerfil.PerfilId == perfilId
+        //                select new { operacao.Descricao, funcionalidade.ModuloId };
+
+        //    // 3. Filtrar por módulo se necessário
+        //    //if (moduloId != null)
+        //    //{
+        //    //    query = query.Where(p => p.ModuloId == moduloId);
+        //    //}
+
+        //    return query.Select(p => p.Descricao)
+        //        .Distinct()
+        //        .ToList();
+        //}
+
+
 
         public Usuario ObterPorEmail(string email)
         {

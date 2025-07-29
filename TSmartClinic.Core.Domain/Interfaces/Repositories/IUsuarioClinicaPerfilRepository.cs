@@ -1,7 +1,10 @@
-﻿namespace TSmartClinic.Core.Domain.Interfaces.Repositories
+﻿using TSmartClinic.Core.Domain.Entities;
+
+namespace TSmartClinic.Core.Domain.Interfaces.Repositories
 {
-    public interface IUsuarioClinicaPerfilRepository 
+    public interface IUsuarioClinicaPerfilRepository : IBaseRepository<UsuarioClinicaPerfil>
     {
-        List<string> ObterPermissaoPorIds(int usuarioId, int clinicaId);
+        Clinica ObterClinicaPadraoDoUsuario(int usuarioId);
+        List<Clinica> ObterClinicasDoUsuario(int usuarioId);
     }
 }

@@ -12,7 +12,16 @@ namespace TSmartClinic.Data.Configurations
             builder.ToTable("UsuarioClinicaPerfil");
 
             // Chave composta
-            builder.HasKey(ee => new { ee.UsuarioId, ee.ClinicaId, ee.PerfilId });
+            builder.HasKey(ee => new { ee.Id, ee.ClinicaId, ee.PerfilId });
+
+
+            builder.Property(c => c.Id).HasColumnName("UsuarioId");
+            // Configura coluna ClinicaPadrao (opcional se seguir convenção)
+            builder.Property(ee => ee.ClinicaPadrao)
+                   .HasColumnName("ClinicaPadrao")
+                   .HasColumnType("bit")
+                   .IsRequired()
+                   .HasDefaultValue(false); // ou 0
         }
     }
 }

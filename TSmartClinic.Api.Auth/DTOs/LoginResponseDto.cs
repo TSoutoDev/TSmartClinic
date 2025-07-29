@@ -1,4 +1,6 @@
-﻿namespace TSmartClinic.Api.Auth.DTOs
+﻿using TSmartClinic.Core.Domain.Entities;
+
+namespace TSmartClinic.Api.Auth.DTOs
 {
     public class LoginResponseDto
     {
@@ -7,5 +9,7 @@
         public string? Email { get; set; }
         public int ClinicaId { get; set; }
         public int ModuloId { get; set; }
+        public List<Clinica>? ListClinicas { get; set; }
+
     }
 }
