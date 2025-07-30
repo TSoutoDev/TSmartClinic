@@ -1,0 +1,101 @@
+﻿@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewBag.Titulo = "Central do Paciente";
+}
+@using TSmartClinic.Presentation.Models
+@model TSmartClinic.Presentation.Models.ResponseViewModel<PacienteViewModel>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+    .module-card {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 10px; /* de 15px para 10px */
+        text-align: center;
+        transition: 0.3s ease-in-out;
+        cursor: pointer;
+    }
+
+        .module-card:hover {
+            background: #e9ecef;
+            transform: translateY(-2px); /* menos deslocamento */
+        }
+
+    .module-icon {
+        font-size: 18px; /* de 24px para 18px */
+        margin-bottom: 8px; /* de 10px para 8px */
+        color: #0d6efd;
+    }
+
+    .module-card div {
+        font-size: 14px; /* reduzir tamanho da label */
+        font-weight: 600;
+    }
+
+    .avatar-wrapper {
+        width: 120px;
+        height: 120px;
+    }
+
+    .avatar {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .status-badge {
+        font-size: 0.9rem;
+        color: #28a745;
+        font-weight: 600;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #6c757d;
+        margin-right: 5px;
+    }
+
+    .info-value {
+        font-size: 0.95rem;
+    }
+
+</style>
+
+<div class="container mt-4">
+    @await Html.PartialAsync("_PacientesDados", Model)
+
+</div>
+
+
+<div class="row mt-4 g-2">
+    @{
+        var modulos = new[] {
+    new { Icon = "fa-list", Label = "Histórico" },
+    new { Icon = "fa-user-shield", Label = "SST" },
+    new { Icon = "fa-star", Label = "Avaliações" },
+    new { Icon = "fa-folder", Label = "Arquivos" },
+    new { Icon = "fa-chalkboard-teacher", Label = "Treinamentos" },
+    new { Icon = "fa-pen", Label = "Anotações" },
+    new { Icon = "fa-clock", Label = "Linha do Tempo" },
+    new { Icon = "fa-users", Label = "Gestão" },
+    new { Icon = "fa-user-tag", Label = "Competências" },
+    new { Icon = "fa-briefcase", Label = "Cargos e Salários" },
+    new { Icon = "fa-file-signature", Label = "Solicitações" }
+    };
+
+        foreach (var m in modulos)
+        {
+            <div class="col-6 col-md-3 col-lg-2">
+                <div class="module-card">
+                    <div class="module-icon"><i class="fa @m.Icon"></i></div>
+                    <div>@m.Label</div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+

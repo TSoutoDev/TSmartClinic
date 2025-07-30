@@ -1,0 +1,81 @@
+﻿@using TSmartClinic.Presentation.Models
+@model TSmartClinic.Presentation.Models.ResponseViewModel<PacienteViewModel>
+
+@{
+    var paciente = Model.Itens.FirstOrDefault(); // Pegando o primeiro da lista
+}
+<style>
+    /* CSS do passo 2 */
+    .paciente-info {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 1rem;
+        background: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .paciente-dados {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+        .paciente-dados .item {
+            flex: 1 1 45%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .paciente-dados dt {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .paciente-dados dd {
+            margin: 0;
+            padding-left: 0.5rem;
+            color: #555;
+            font-size: 1rem;
+            border-left: 3px solid #007bff;
+        }
+
+</style>
+
+@if (paciente != null)
+{
+    <div class="paciente-info">
+        <dl class="paciente-dados">
+            <div class="item">
+                <dt>Nome:</dt>
+                <dd>@paciente.NomePaciente</dd>
+            </div>
+            <div class="item">
+                <dt>CPF:</dt>
+                <dd>@paciente.CPF</dd>
+            </div>
+            <div class="item">
+                <dt>Nascimento:</dt>
+                <dd>@(paciente.DataNascimento?.ToString("dd/MM/yyyy") ?? "-")</dd>
+            </div>
+            <div class="item">
+                <dt>Convênio:</dt>
+                <dd>@paciente.Convenio</dd>
+            </div>
+            <div class="item">
+                <dt>Telefone:</dt>
+                <dd>@paciente.Telefone</dd>
+            </div>
+            <div class="item">
+                <dt>Email:</dt>
+                <dd>@paciente.Email</dd>
+            </div>
+        </dl>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">Nenhum paciente encontrado.</div>
+}

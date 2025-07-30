@@ -1,0 +1,32 @@
+/* === card-estilo.css === */
+
+/* Fundo claro do card */
+.bg-light-blue {
+    background-color: #f8f9fa; /* cinza bem claro */
+    border-radius: 10px;
+}
+
+/* Ícone com degradê */
+.gradient-icon {
+    display: inline-block;
+    font-size: 2.5rem;
+    background: linear-gradient(to right, rgba(52,131,160,.9), rgba(18,46,56,.9));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Botão com o mesmo degradê */
+.btn-gradient {
+    background: linear-gradient(to right, rgba(52,131,160,.9), rgba(18,46,56,.9));
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    transition: opacity 0.3s ease;
+    text-decoration: none;
+}
+
+    .btn-gradient:hover {
+        opacity: 0.9;
+        color: #fff;
+    }

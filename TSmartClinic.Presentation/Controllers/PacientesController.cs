@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TSmartClinic.Core.Domain.Entities;
+using TSmartClinic.Presentation.Models;
 
 namespace TSmartClinic.Presentation.Controllers
 {
@@ -10,21 +12,43 @@ namespace TSmartClinic.Presentation.Controllers
         //}
 
         [HttpGet]
-        public IActionResult PacientesCards()
+        public IActionResult CardsPacientes()
         {
+            return View();
+           // return View(); // View de busca limpa e central
+        }
+
+        [HttpGet]
+        public IActionResult CentralPaciente()
+        {
+
+            //MOC de DADOS
+            // Simulação de um paciente vindo do banco
             var paciente = new PacienteViewModel
             {
-                Nome = "ANDERSON TESTE 140622",
-                CPF = "459.581.520-41",
-                Matricula = "202021",
-                DataNascimento = new DateTime(1990, 1, 14),
-                Empresa = "PEOPLENET",
-                Setor = "AUDITORIA 33",
-                Funcao = "Supervisor de Suporte"
+                NomePaciente = "João da Silva",
+                CPF = "123.456.789-00",
+                DataNascimento = new DateTime(1990, 5, 12),
+                Convenio = new Convenio
+                {
+                    NomeConvenio = "Unimed",
+                },
+                Telefone = "(11) 98765-4321",
+                Email = "joao@email.com"
             };
 
-            return View(paciente);
-           // return View(); // View de busca limpa e central
+            // Envolvendo no ResponseViewModel
+            ResponseViewModel<PacienteViewModel> response = new ResponseViewModel<PacienteViewModel>
+            {
+                Sucesso = true,
+                StatusCode = 200,
+                Mensagem = "Paciente encontrado com sucesso.",
+                Itens = new List<PacienteViewModel> { paciente }
+            };
+
+            return View(response);
+         //   return View();
+            // return View(); // View de busca limpa e central
         }
 
         [HttpPost]
@@ -36,16 +60,6 @@ namespace TSmartClinic.Presentation.Controllers
             return RedirectToAction("Consulta", new { filtro });
         }
 
-        public class PacienteViewModel
-        {
-            public string Nome { get; set; }
-            public string CPF { get; set; }
-            public string Matricula { get; set; }
-            public DateTime DataNascimento { get; set; }
-            public string Empresa { get; set; }
-            public string Setor { get; set; }
-            public string Funcao { get; set; }
-        }
 
     }
 
