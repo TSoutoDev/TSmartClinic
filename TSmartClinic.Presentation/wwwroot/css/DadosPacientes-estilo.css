@@ -1,0 +1,226 @@
+/* Container principal do card de paciente */
+.paciente-card {
+    display: flex; /* Layout em linha */
+    align-items: center; /* Alinha verticalmente */
+    gap: 2rem; /* Espaço entre os itens */
+    padding: 1.5rem; /* Espaçamento interno */
+    background-color: #fff; /* Fundo branco */
+    border-radius: 10px; /* Cantos arredondados */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    width: 100%; /* Ocupa toda a largura do pai */
+    max-width: 1100px; /* Limita a largura máxima */
+    margin-top: 0; /* sem espaço superior */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fonte padrão */
+}
+
+    /* Área da foto do paciente */
+    .paciente-card .foto {
+        width: 120px; /* Largura da imagem */
+        height: 120px; /* Altura da imagem */
+        background-color: #e0e0e0; /* Fundo cinza claro (fallback) */
+        border-radius: 10px; /* Cantos arredondados */
+        background-image: url('/img/usuario-default.png'); /* Imagem padrão */
+        background-size: cover; /* Cobre toda a área */
+        background-position: center; /* Centraliza a imagem */
+        align-self: center; /* Centraliza verticalmente no flex */
+    }
+
+    /* Container dos dados do paciente */
+    .paciente-card .dados {
+        display: flex; /* Layout em linha */
+        flex-wrap: wrap; /* Quebra para nova linha se necessário */
+        flex: 1; /* Ocupa o espaço restante */
+        gap: 0.8rem 1.2rem; /* Espaçamento entre os itens */
+    }
+
+    /* Cada item de dado (CPF, Email, etc.) */
+    .paciente-card .item {
+        display: flex;
+        align-items: center;
+        gap: 6px; /* espaço entre o label e o valor */
+        flex: 1 1 45%; /* mantém duas colunas lado a lado */
+    }
+
+    /* Título do dado (ex: CPF:) */
+    .paciente-card dt {
+        margin: 0;
+        font-weight: 600;
+        white-space: nowrap; /* evita quebra do texto */
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+        /* Ícone dentro do título */
+        .paciente-card dt i {
+            margin-right: 0.5rem; /* Espaço entre ícone e texto */
+            color: #007bff; /* Azul padrão Bootstrap */
+        }
+
+    /* Valor do dado (ex: 123.456.789-00) */
+    .paciente-card dd {
+        margin: 0;
+        flex: 1;
+        color: #111827;
+    }
+
+/* Status do paciente (ex: Ativo) */
+.paciente-status {
+    color: #28a745; /* Verde */
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+    /* Ícone do status */
+    .paciente-status i {
+        margin-right: 0.5rem;
+    }
+
+/* RESPONSIVIDADE: ajustes para telas menores */
+@media (max-width: 768px) {
+    /* Card vira coluna no mobile */
+    .paciente-card {
+        flex-direction: column; /* Empilha os itens */
+        align-items: flex-start; /* Alinha à esquerda */
+    }
+
+        /* Cada item ocupa linha inteira */
+        .paciente-card .item {
+            flex: 1 1 100%;
+        }
+
+        /* Foto centralizada */
+        .paciente-card .foto {
+            align-self: center;
+        }
+}
+/* Avatar base */
+.foto {
+    --size: 120px; /* tamanho padrão (pode sobrescrever) */
+    --bg: #f3f4f6; /* fundo padrão (claro) */
+    --ring: transparent; /* contorno opcional */
+    --text: #1f2937; /* cor do texto (claro) */
+    --circle: #e5e7eb; /* cor do círculo (claro) */
+
+    width: var(--size);
+    height: var(--size);
+    aspect-ratio: 1 / 1; /* garante quadrado */
+    border-radius: 50%;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    box-shadow: 0 0 0 2px var(--ring);
+}
+
+/* Estados opcionais */
+.foto--loading {
+    background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 37%, #f3f4f6 63%);
+    background-size: 400% 100%;
+    animation: fotoShimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes fotoShimmer {
+    0% {
+        background-position: 100% 0;
+    }
+
+    100% {
+        background-position: 0 0;
+    }
+}
+
+.foto--error {
+    --ring: #ef4444; /* vermelho sutil */
+}
+
+/* Imagem real */
+.foto__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Avatar SVG (iniciais) */
+.foto__avatar {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+    .foto__avatar circle {
+        fill: var(--circle);
+    }
+
+    .foto__avatar text {
+        fill: var(--text);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+        font-weight: 700;
+        /* fonte escala com o tamanho do container; ajuste o fator se quiser maior/menor */
+        font-size: calc(var(--size) * 0.38);
+        line-height: 1;
+    }
+
+/* Tamanhos utilitários */
+.foto--sm {
+    --size: 48px;
+}
+
+.foto--md {
+    --size: 80px;
+}
+
+.foto--lg {
+    --size: 120px;
+}
+/* default */
+.foto--xl {
+    --size: 160px;
+}
+
+/* Acessibilidade (se for focável por teclado) */
+.foto:focus-visible {
+    outline: 2px solid #2563eb; /* azul */
+    outline-offset: 2px;
+}
+
+/* Dark mode automático */
+@media (prefers-color-scheme: dark) {
+    .foto {
+        --bg: #0f172a; /* slate-900 aprox */
+        --text: #e5e7eb; /* claro */
+        --circle: #1f2937; /* slate-800 aprox */
+    }
+}
+/* Container para alinhar nome + status */
+.nome-status {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem; /* espaço entre nome e status */
+    margin-bottom: 6px; /* separa do restante */
+}
+
+    .nome-status h4 {
+        margin: 0;
+        font-size: 1.6rem; /* aumentei de 1.4rem para 1.6rem */
+        font-weight: 700;
+        color: #222;
+    }
+
+/* Ajusta o status ao lado do nome */
+.paciente-status {
+    margin: 0;
+    font-size: 1rem;
+    color: #28a745;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+    .paciente-status i {
+        margin-right: 4px;
+    }

@@ -9,11 +9,24 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
 <style>
+    /* CARD PRINCIPAL */
+    .card-principal {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        padding: 1.5rem;
+        margin: 1.5rem auto;
+        max-width: 1200px;
+        min-height: calc(100vh - 150px); /* ocupa altura total menos header/footer */
+        overflow-y: auto; /* habilita rolagem se passar do limite */
+    }
+
+    /* CARDS DOS MÓDULOS */
     .module-card {
         background: #f8f9fa;
         border: 1px solid #dee2e6;
         border-radius: 8px;
-        padding: 10px; /* de 15px para 10px */
+        padding: 10px;
         text-align: center;
         transition: 0.3s ease-in-out;
         cursor: pointer;
@@ -21,20 +34,21 @@
 
         .module-card:hover {
             background: #e9ecef;
-            transform: translateY(-2px); /* menos deslocamento */
+            transform: translateY(-2px);
         }
 
     .module-icon {
-        font-size: 18px; /* de 24px para 18px */
-        margin-bottom: 8px; /* de 10px para 8px */
+        font-size: 18px;
+        margin-bottom: 8px;
         color: #0d6efd;
     }
 
     .module-card div {
-        font-size: 14px; /* reduzir tamanho da label */
+        font-size: 14px;
         font-weight: 600;
     }
 
+    /* AVATAR E INFORMAÇÕES DO PACIENTE */
     .avatar-wrapper {
         width: 120px;
         height: 120px;
@@ -61,41 +75,44 @@
     .info-value {
         font-size: 0.95rem;
     }
-
 </style>
 
-<div class="container mt-4">
-    @await Html.PartialAsync("_PacientesDados", Model)
+<!-- MAIN CARD -->
+<div class="card card-principal">
+    <div class="container">
+        <!-- DADOS DO PACIENTE -->
+        @await Html.PartialAsync("_PacientesDados", Model)
 
+        <!-- CARDS DOS MÓDULOS -->
+        <div class="row mt-4 g-2">
+            @{
+                var modulos = new[] {
+                        new { Icon = "fa-list", Label = "Histórico" },
+                        new { Icon = "fa-user-shield", Label = "SST" },
+                        new { Icon = "fa-star", Label = "Avaliações" },
+                        new { Icon = "fa-folder", Label = "Arquivos" },
+                        new { Icon = "fa-chalkboard-teacher", Label = "Treinamentos" },
+                        new { Icon = "fa-pen", Label = "Anotações" },
+                        new { Icon = "fa-clock", Label = "Linha do Tempo" },
+                        new { Icon = "fa-users", Label = "Gestão" },
+                        new { Icon = "fa-user-tag", Label = "Competências" },
+                        new { Icon = "fa-briefcase", Label = "Cargos e Salários" },
+                        new { Icon = "fa-file-signature", Label = "Solicitações" },
+                        // duplicados apenas de exemplo...
+                      
+         
+                        };
+
+                foreach (var m in modulos)
+                {
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <div class="module-card">
+                            <div class="module-icon"><i class="fa @m.Icon"></i></div>
+                            <div>@m.Label</div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
 </div>
-
-
-<div class="row mt-4 g-2">
-    @{
-        var modulos = new[] {
-    new { Icon = "fa-list", Label = "Histórico" },
-    new { Icon = "fa-user-shield", Label = "SST" },
-    new { Icon = "fa-star", Label = "Avaliações" },
-    new { Icon = "fa-folder", Label = "Arquivos" },
-    new { Icon = "fa-chalkboard-teacher", Label = "Treinamentos" },
-    new { Icon = "fa-pen", Label = "Anotações" },
-    new { Icon = "fa-clock", Label = "Linha do Tempo" },
-    new { Icon = "fa-users", Label = "Gestão" },
-    new { Icon = "fa-user-tag", Label = "Competências" },
-    new { Icon = "fa-briefcase", Label = "Cargos e Salários" },
-    new { Icon = "fa-file-signature", Label = "Solicitações" }
-    };
-
-        foreach (var m in modulos)
-        {
-            <div class="col-6 col-md-3 col-lg-2">
-                <div class="module-card">
-                    <div class="module-icon"><i class="fa @m.Icon"></i></div>
-                    <div>@m.Label</div>
-                </div>
-            </div>
-        }
-    }
-</div>
-
-

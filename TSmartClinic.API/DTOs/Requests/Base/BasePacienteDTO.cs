@@ -11,8 +11,8 @@ namespace TSmartClinic.API.DTOs.Requests.Base
         public string? Email { get; set; }
         public string? Observacoes { get; set; }
         public bool? Ativo { get; set; }
-
         public int? ConvenioId { get; set; }
+        public byte[]? Foto { get; set; }
 
     }
 }

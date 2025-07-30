@@ -2,77 +2,97 @@
 @model TSmartClinic.Presentation.Models.ResponseViewModel<PacienteViewModel>
 
 @{
-    var paciente = Model.Itens.FirstOrDefault(); // Pegando o primeiro da lista
+    var paciente = Model.Itens.FirstOrDefault();
+    var tituloPagina = "Central do Paciente";
+    var iconeTitulo = "fa-user"; // troque por outro se quiser
 }
-<style>
-    /* CSS do passo 2 */
-    .paciente-info {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 1rem;
-        background: #f9f9f9;
-        border-radius: 8px;
-        box-shadow: 0 0 8px rgba(0,0,0,0.1);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
 
-    .paciente-dados {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1.5rem;
-    }
 
-        .paciente-dados .item {
-            flex: 1 1 45%;
-            display: flex;
-            flex-direction: column;
-        }
 
-        .paciente-dados dt {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 0.25rem;
-        }
-
-        .paciente-dados dd {
-            margin: 0;
-            padding-left: 0.5rem;
-            color: #555;
-            font-size: 1rem;
-            border-left: 3px solid #007bff;
-        }
-
-</style>
 
 @if (paciente != null)
 {
-    <div class="paciente-info">
-        <dl class="paciente-dados">
-            <div class="item">
-                <dt>Nome:</dt>
-                <dd>@paciente.NomePaciente</dd>
+
+    <h2 class="titulo-pagina">
+        <i class="fa @iconeTitulo titulo-icone" aria-hidden="true"></i>
+        @tituloPagina
+
+    </h2>
+    
+    <div class="paciente-card">
+        @{
+            var nomePaciente = paciente.NomePaciente ?? "Paciente";
+
+            // Iniciais (até 2 letras)
+            var partes = nomePaciente.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var iniciais = new string(partes
+            .Where(p => !string.IsNullOrWhiteSpace(p))
+            .Take(2)
+            .Select(p => char.ToUpperInvariant(p[0]))
+            .ToArray());
+
+            // Verifica se tem foto (byte[])
+            bool temFoto = paciente?.Foto != null && paciente.Foto.Length > 0;
+
+            // Assume JPEG como padrão (poderia ser image/png se necessário)
+            var contentType = "image/jpeg";
+
+            // Gera Base64 se houver foto
+            string? fotoBase64 = temFoto ? Convert.ToBase64String(paciente!.Foto!) : null;
+        }
+
+        <!-- Foto / Avatar -->
+        <div class="foto">
+            @if (temFoto)
+            {
+                <img src="data:@contentType;base64,@fotoBase64"
+                     alt="Foto do paciente @nomePaciente"
+                     class="foto__img" />
+            }
+            else
+            {
+                <svg class="foto__avatar" viewBox="0 0 64 64" role="img">
+                    <circle cx="32" cy="32" r="32"></circle>
+                    <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle">@iniciais</text>
+                    <title>@nomePaciente</title>
+                </svg>
+            }
+        </div>
+
+        <!-- Dados do paciente -->
+        <div style="flex: 1;">
+          
+
+            <div class="nome-status">
+                <h4>@paciente.NomePaciente</h4>
+                <span class="paciente-status">
+                    <i class="fa fa-check-circle"></i> Ativo
+                </span>
             </div>
-            <div class="item">
-                <dt>CPF:</dt>
-                <dd>@paciente.CPF</dd>
-            </div>
-            <div class="item">
-                <dt>Nascimento:</dt>
-                <dd>@(paciente.DataNascimento?.ToString("dd/MM/yyyy") ?? "-")</dd>
-            </div>
-            <div class="item">
-                <dt>Convênio:</dt>
-                <dd>@paciente.Convenio</dd>
-            </div>
-            <div class="item">
-                <dt>Telefone:</dt>
-                <dd>@paciente.Telefone</dd>
-            </div>
-            <div class="item">
-                <dt>Email:</dt>
-                <dd>@paciente.Email</dd>
-            </div>
-        </dl>
+
+            <dl class="dados">
+                <div class="item">
+                    <dt><i class="fa fa-id-card"></i> CPF:</dt>
+                    <dd>@paciente.CPF</dd>
+                </div>
+                <div class="item">
+                    <dt><i class="fa fa-calendar"></i> Nascimento:</dt>
+                    <dd>@(paciente.DataNascimento?.ToString("dd/MM/yyyy") ?? "-")</dd>
+                </div>
+                <div class="item">
+                    <dt><i class="fa fa-phone"></i> Telefone:</dt>
+                    <dd>@paciente.Telefone</dd>
+                </div>
+                <div class="item">
+                    <dt><i class="fa fa-envelope"></i> Email:</dt>
+                    <dd>@paciente.Email</dd>
+                </div>
+                <div class="item">
+                    <dt><i class="fa fa-stethoscope"></i> Convênio:</dt>
+                    <dd>@(paciente.Convenio is null ? "-" : paciente.Convenio.NomeConvenio)</dd>
+                </div>
+            </dl>
+        </div>
     </div>
 }
 else

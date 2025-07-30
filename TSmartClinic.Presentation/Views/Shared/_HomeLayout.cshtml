@@ -29,13 +29,18 @@
     <!-- App Css-->
     <link href="~/assets/css/app.min.css" id="app-style" rel="stylesheet" />
 
-    <!-- Cards Css-->
+    <!-- Css Customizado-->
     <link rel="stylesheet" href="~/css/card-estilo.css" />
+    <link href="~/css/DadosPacientes-estilo.css" id="app-style" rel="stylesheet" />
 
     <!-- Site -->
     <link href="~/css/site.css" id="app-style" rel="stylesheet" />
 
 
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+    
     <style>
         .clickable:hover {
             cursor: pointer;
@@ -49,46 +54,42 @@
             .card-header h5::after {
                 content: '';
                 display: block;
-                width: 250%; /* define a largura da linha para 50% da largura do elemento pai */
+                width: 250%;
                 height: 1px;
-                background: linear-gradient(to right, #dee2e6, rgba(222, 226, 230, 0)); /* gradiente de cor que vai do cinza à transparência */
+                background: linear-gradient(to right, #dee2e6, rgba(222,226,230,0));
                 position: absolute;
-                bottom: -10px; /* distância da linha abaixo do título */
+                bottom: -10px;
                 left: 0;
             }
 
         html, body {
             height: 100%;
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            padding: 0;
+            overflow: hidden; /* Evita barra de rolagem no body */
         }
 
         #layout-wrapper {
             display: flex;
             flex-direction: column;
-            flex: 1;
-            min-height: 100vh;
-            overflow: hidden;
+            height: 100vh; /* Ocupa a altura total da tela */
         }
 
         .main-content {
-            flex: 1;
+            flex: 1; /* Ocupa todo o espaço disponível */
             display: flex;
             flex-direction: column;
-            overflow: auto;
+            min-height: 0; /* Permite que o conteúdo seja rolável */
         }
 
         .page-content {
             flex: 1;
-            display: flex;
-            flex-direction: column;
+            overflow-y: auto; /* HABILITA A ROLAGEM */
+            padding: 1rem;
         }
 
         footer.footer {
-            flex-shrink: 0;
-            overflow: hidden;
+            flex-shrink: 0; /* Não deixa o footer colapsar */
             background-color: #f8f9fa;
             padding: 16px;
             text-align: center;
@@ -146,7 +147,7 @@
                         </div>
                     </div>
                 </div>
-               @*  <div class="d-flex">
+                 <div class="d-flex">
                     <div class="dropdown d-inline-block">
                         <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img class="rounded-circle header-profile-user" src="~/images/users/avatar.png" alt="Header Avatar">
@@ -161,7 +162,7 @@
                         </div>
                     </div>
 
-                </div> *@
+                </div> 
             </div>
         </header>
 
@@ -184,7 +185,7 @@
                                             <!-- Início do menu Pacientes -->
                                             <li>
                                                 <a href="/Pacientes/CardsPacientes" key="t-blog">
-                                                    <i class='bx bx-user-circle'></i>
+                                                    <i class="bx bx-user"></i>
                                                     <span>Pacientes</span>
                                                 </a>
                                             </li>
@@ -668,12 +669,7 @@
 
                                             </div> 
                                             </li>*@
-                                            <li>
-                                                <a href="/MinhaConta">
-                                                    <i class="bx bx-user"></i>
-                                                    <span key="t-minha-conta">Minha Conta</span>
-                                                </a>
-                                            </li>
+                                           
 
                                         </ul>
                                     </div>
@@ -807,9 +803,12 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
+
     <!-- App js -->
     <script src="~/assets/js/app.js"></script>
     <script src="~/js/site.js"></script>
+
+
 
     @RenderSection("Scripts", required: false)
 </body>

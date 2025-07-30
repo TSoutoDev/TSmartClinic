@@ -23,6 +23,7 @@ namespace TSmartClinic.Data.Configurations
             builder.Property(c => c.Ativo).HasColumnName("Ativo").IsRequired();
             builder.Property(c => c.DataCadastro).HasColumnName("DataCadastro").HasColumnType("date");
             builder.Property(c => c.ConvenioId).HasColumnName("ConvenioId");
+            builder.Property(c => c.Foto).HasColumnName("Foto");
 
             //mapeamento do relacionamento (1pN)
             builder.HasOne(p => p.Convenio)
