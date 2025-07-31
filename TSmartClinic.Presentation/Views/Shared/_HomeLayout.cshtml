@@ -1,7 +1,7 @@
 ﻿<!doctype html>
 <html lang="en">
 <head>
-    <title>TSmartClinic</title>
+    <title>@ViewBag.Titulo - TSmartClinic</title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -40,7 +40,7 @@
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 
-    
+
     <style>
         .clickable:hover {
             cursor: pointer;
@@ -62,11 +62,25 @@
                 left: 0;
             }
 
+        .titulo-com-icone {
+            display: flex;
+            align-items: center;
+            font-size: 28px !important; /* Força o tamanho do texto */
+            font-weight: 600 !important; /* Força o peso */
+        }
+
+
+        .icone-titulo {
+            font-size: 34px; /* Tamanho do ícone */
+            color: #6c757d; /* Cinza */
+        }
+
+
+
         html, body {
             height: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Evita barra de rolagem no body */
         }
 
         #layout-wrapper {
@@ -82,6 +96,11 @@
             min-height: 0; /* Permite que o conteúdo seja rolável */
         }
 
+        .page-title-box h4 {
+            position: relative;
+            z-index: 5;
+        }
+
         .page-content {
             flex: 1;
             overflow-y: auto; /* HABILITA A ROLAGEM */
@@ -95,7 +114,6 @@
             text-align: center;
             border-top: 1px solid #dee2e6;
         }
-
 
     </style>
 
@@ -147,7 +165,7 @@
                         </div>
                     </div>
                 </div>
-                 <div class="d-flex">
+                <div class="d-flex">
                     <div class="dropdown d-inline-block">
                         <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img class="rounded-circle header-profile-user" src="~/images/users/avatar.png" alt="Header Avatar">
@@ -162,7 +180,7 @@
                         </div>
                     </div>
 
-                </div> 
+                </div>
             </div>
         </header>
 
@@ -207,7 +225,7 @@
                                             </li>
 
                                             <!-- Início do menu SST -->
-                                         @*    <li>
+                                            @*    <li>
                                                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                                                     <i class="bx bx-shield"></i>
                                                     <span key="t-layouts">SST</span>
@@ -217,7 +235,7 @@
                                                         <a href="javascript: void(0);" class="has-arrow" key="t-vertical">PGR</a>
                                                         <ul class="sub-menu" aria-expanded="true">
                                                             @* <li><a href=key ="t-blog">*Associação de Riscos</a></li> *@
-                                                        @*    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Associação de Riscos</a></li>
+                                            @*    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Associação de Riscos</a></li>
                                                             <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Avaliação dos Riscos</a></li>
                                                             <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Reconhecimento dos <br />Riscos</a></li>
                                                             <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Priorização e Medidas <br />de Controle</a></li>
@@ -382,7 +400,7 @@
                                                 </a>
                                             </li>
 
-@* 
+                                            @* 
                                             <!-- Início do menu Indicadores -->
                                             <li>
                                                 <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -567,7 +585,7 @@
                                                 </ul>
                                             </li>
 
-                                         @*    <!-- Início do menu Biometria -->
+                                            @*    <!-- Início do menu Biometria -->
                                             <li>
                                                 <a href=key ="t-blog">
                                                     <i class="bx bx-fingerprint"></i>
@@ -583,7 +601,7 @@
                                                 </a>
                                                 <ul class="sub-menu" aria-expanded="true">
 
-                                      @*               <li>
+                                                    @*               <li>
                                                         <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Opções</a>
                                                         <ul class="sub-menu" aria-expanded="true">
                                                             <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Posto de Trabalho</a></li>
@@ -612,10 +630,10 @@
                                                         <ul class="sub-menu" aria-expanded="true">
                                                             <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Perfil de Acesso</a></li>
                                                             <li><a href="/Usuarios/Consulta" key="t-blog">Contas de Usuários</a></li>
-                                                            
+
                                                         </ul>
                                                     </li>
-@* 
+                                                    @* 
                                                     <li>
                                                         <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Importação de Dados</a>
                                                         <ul class="sub-menu" aria-expanded="true">
@@ -651,7 +669,7 @@
                                             </li>
 
                                             <!-- Início do menu Usuario -->
-                                          @*  <li>
+                                            @*  <li>
                                            <div class="d-flex">
                                                 <div class="dropdown d-inline-block">
                                                     <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -669,7 +687,7 @@
 
                                             </div> 
                                             </li>*@
-                                           
+
 
                                         </ul>
                                     </div>
@@ -683,99 +701,106 @@
 
         <div class="main-content">
             <div class="page-content">
-                <div class="container-fluid">
+                <div class="main-content" style="padding-top: 70px;">
+                    <div class="container-fluid">
 
-                    <!-- start page title -->
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="page-title-box d-flex align-items-center justify-content-between">
-                                <h4 class="mb-0 font-size-18">@ViewBag.Titulo</h4>
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box d-flex align-items-center justify-content-between">
+                                    <div class="titulo-com-icone">
+                                        <i class="bx bx-layer me-2 icone-titulo"></i>
+                                        @ViewBag.Titulo
+                                    </div>
 
-                                <div class="page-title-right">
-                                    <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item"><a href="javascript: void(0);">TSSmartClinic</a></li>
-                                        <li class="breadcrumb-item">Cadastros Básicos</li>
-                                        <li class="breadcrumb-item active">Setores</li>
-                                    </ol>
+
+
+
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">TSSmartClinic</a></li>
+                                            <li class="breadcrumb-item">Cadastros Básicos</li>
+                                            <li class="breadcrumb-item active">Setores</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (TempData["MensagemSucesso"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>@TempData["MensagemSucesso"]</strong>
+                            </div>
+                        }
+                        else if (TempData["MensagemErro"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>@TempData["MensagemErro"]</strong>
+                            </div>
+                        }
+                        else if (TempData["MensagemAlerta"] != null)
+                        {
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <strong>@TempData["MensagemAlerta"]</strong>
+                            </div>
+                        }
+
+                        @{
+                            string paginador = "CLIENTE";
+
+                            if (ViewBag?.Paginador != null) { paginador = ViewBag.Paginador; }
+
+                            <input type='hidden' id="Paginador" value="@paginador" />
+
+                        }
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                @*             <div class="card">
+                            <div class="card-body"> *@
+                                @RenderBody()
+                                @*  </<div>
+                            </div> *@
+                            </div>
+                        </div>
+                    </div> <!-- container-fluid -->
+                </div>
+                <!-- End Page-content -->
+
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <script>document.write(new Date().getFullYear())</script> © TSmartClinic.
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="text-sm-right d-none d-sm-block">
+                                    TsmartClinic | Versão 1.0
                                 </div>
                             </div>
                         </div>
                     </div>
+                </footer>
 
-                    @if (TempData["MensagemSucesso"] != null)
-                    {
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <strong>@TempData["MensagemSucesso"]</strong>
-                        </div>
-                    }
-                    else if (TempData["MensagemErro"] != null)
-                    {
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>@TempData["MensagemErro"]</strong>
-                        </div>
-                    }
-                    else if (TempData["MensagemAlerta"] != null)
-                    {
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            <strong>@TempData["MensagemAlerta"]</strong>
-                        </div>
-                    }
-
-                    @{
-                        string paginador = "CLIENTE";
-
-                        if (ViewBag?.Paginador != null) { paginador = ViewBag.Paginador; }
-
-                        <input type='hidden' id="Paginador" value="@paginador" />
-
-                    }
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            @*             <div class="card">
-                            <div class="card-body"> *@
-                            @RenderBody()
-                            @*  </<div>
-                            </div> *@
-                        </div>
-                    </div>
-                </div> <!-- container-fluid -->
             </div>
-            <!-- End Page-content -->
-
-            <footer class="footer">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <script>document.write(new Date().getFullYear())</script> © TSmartClinic.
+            <!-- end main content-->
+            <div id="modalTrocarEmpresa" class="modal fade modal-trocar-empresa" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Seleção de Empresa</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="text-sm-right d-none d-sm-block">
-                                TsmartClinic | Versão 1.0
-                            </div>
+                        <div class="modal-body">
+                            <span id="mensagemSemEmpresaAtiva">Você não possui nenhuma empresa ativa,  favor selecione.</span>
+                            <input id="autocompleteempresamodal" class="form-control" autocomplete="on" placeholder="Informe parte do nome da empresa" />
+                            <div id="sugestaoEmpresasModal" class="autocomplete-empresas"></div>
                         </div>
-                    </div>
-                </div>
-            </footer>
-
-        </div>
-        <!-- end main content-->
-        <div id="modalTrocarEmpresa" class="modal fade modal-trocar-empresa" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Seleção de Empresa</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <span id="mensagemSemEmpresaAtiva">Você não possui nenhuma empresa ativa,  favor selecione.</span>
-                        <input id="autocompleteempresamodal" class="form-control" autocomplete="on" placeholder="Informe parte do nome da empresa" />
-                        <div id="sugestaoEmpresasModal" class="autocomplete-empresas"></div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
     <environment include="Development">

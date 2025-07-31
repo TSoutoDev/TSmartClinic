@@ -96,6 +96,8 @@
             align-self: center;
         }
 }
+
+
 /* Avatar base */
 .foto {
     --size: 120px; /* tamanho padrão (pode sobrescrever) */
