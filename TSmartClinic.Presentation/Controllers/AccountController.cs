@@ -7,6 +7,7 @@ using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
+using TSmartClinic.Core.Domain.Entities;
 
 namespace TSmartClinic.Presentation.Controllers
 {
@@ -16,18 +17,21 @@ namespace TSmartClinic.Presentation.Controllers
         private readonly IAutenticacaoService _autenticacaoService;
         private readonly ICriptografiaProvider _criptografiaProvider;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUsuarioService _usuarioService;
 
         public AccountController(
             IAccessTokenService accessTokenService,
             IAutenticacaoService autenticacaoService,
             ICriptografiaProvider criptografiaProvider,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor, 
+            IUsuarioService usuarioService
         )
         {
             _accessTokenService = accessTokenService;
             _autenticacaoService = autenticacaoService;
             _criptografiaProvider = criptografiaProvider;
             _httpContextAccessor = httpContextAccessor;
+            _usuarioService = usuarioService;
         }
 
         public IActionResult Login()
@@ -65,6 +69,11 @@ namespace TSmartClinic.Presentation.Controllers
                 {
                     try
                     {
+
+                        // Aqui você busca o usuário no banco (simulado abaixo)
+                       // var usuario = _usuarioService.ObterPorEmail(model.Email);
+
+
                         var autenticacao = response.Itens.FirstOrDefault();
 
                         _accessTokenService.Salvar(autenticacao.AccessToken);
@@ -93,6 +102,11 @@ namespace TSmartClinic.Presentation.Controllers
 
                         //Excluir o cookie de tentativas
                         if (Request.Cookies["TSmartClinic-autx"] != null) Response.Cookies.Delete("TSmartClinic-autx", OpcoesCookies());
+
+                        // Salvar na sessão
+                        HttpContext.Session.SetString("Usuario_Nome", autenticacao.Nome);
+                        HttpContext.Session.SetString("Usuario_Email", autenticacao.Email);
+
 
                         return RedirectToAction("Index", "Home");
                        // return RedirectToAction("Login", "Account");

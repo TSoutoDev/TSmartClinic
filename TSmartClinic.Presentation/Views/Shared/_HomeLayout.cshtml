@@ -1,4 +1,16 @@
-﻿<!doctype html>
+﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Antiforgery
+@inject IAntiforgery Antiforgery
+@Html.AntiForgeryToken()
+@inject IHttpContextAccessor HttpContextAccessor
+@using Newtonsoft.Json
+
+
+@{
+    var nome = HttpContextAccessor.HttpContext.Session.GetString("Usuario_Nome");
+    var email = HttpContextAccessor.HttpContext.Session.GetString("Usuario_Email");
+}
+<!doctype html>
 <html lang="en">
 <head>
     <title>@ViewBag.Titulo - TSmartClinic</title>
@@ -165,22 +177,33 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex">
-                    <div class="dropdown d-inline-block">
-                        <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="rounded-circle header-profile-user" src="~/images/users/avatar.png" alt="Header Avatar">
-                            <span class="d-none d-xl-inline-block ms-1" key="t-henry">Sergio Mendes</span>
-                            <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Email -->
+                  
+                    <span class="user-email">@email</span>
+
+                    <!-- Separador visual com div -->
+                    <div style="width: 1px; height: 24px; background-color: #ccc;"></div>
+
+                    <!-- Dropdown com nome e avatar -->
+                    <div class="dropdown">
+                        <button type="button" class="btn header-item d-flex align-items-center"
+                                id="page-header-user-dropdown" data-bs-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            <img class="rounded-circle" src="~/images/users/avatar.png" alt="Avatar" style="width: 30px; height: 30px; object-fit: cover;">
+                            <span class="d-none d-xl-inline-block ms-2">@nome</span>
+                            <i class="mdi mdi-chevron-down d-none d-xl-inline-block ms-1"></i>
                         </button>
+
                         <div class="dropdown-menu dropdown-menu-end">
-                            <!-- item-->
-                            <a class="dropdown-item" href="#"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Minha Conta</span></a>
+                            <a class="dropdown-item" href="#"><i class="bx bx-user font-size-16 align-middle me-1"></i> Minha Conta</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="/Account/Logout"><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> <span key="t-logout">Sair do Sistema</span></a>
+                            <a class="dropdown-item text-danger" href="/Account/Logout"><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> Sair do Sistema</a>
                         </div>
                     </div>
-
                 </div>
+
+
             </div>
         </header>
 
