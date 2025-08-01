@@ -1,0 +1,186 @@
+/* ===========================
+   Quick Patient Search (Topbar)
+   =========================== */
+
+/* Variáveis gerais (borda sutil) */
+:root {
+    --qp-border: rgba(60,60,67,.18);
+    --qp-border-hover: rgba(60,60,67,.28);
+}
+
+/* Container: MAIS LARGURA lateral sem alterar a altura do campo */
+/* Reduz um pouco a largura máxima/ideal */
+.quick-patient-search {
+    width: clamp(300px, 36vw, 560px); /* antes: clamp(400px, 48vw, 800px) */
+    min-width: 380px;
+    max-width: 720px;
+}
+
+@media (min-width: 1600px) {
+    .quick-patient-search {
+        width: clamp(340px, 40vw, 700px); /* antes: clamp(420px, 52vw, 920px) */
+        max-width: 860px;
+    }
+}
+
+/* Campo em formato "pill" (altura controlada por --qp-h) */
+.quick-patient-input {
+    --qp-h: 38px; /* <<< ajuste a altura aqui (36–44px) */
+    background: #fff;
+    border: 1px solid var(--qp-border);
+    border-radius: 9999px; /* pill */
+    padding: 2px;
+    transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+    background-clip: padding-box;
+}
+
+    /* Hover com leve realce na borda */
+    .quick-patient-input:hover {
+        border-color: var(--qp-border-hover);
+    }
+
+    /* Foco com realce e leve efeito "vidro" */
+    .quick-patient-input:focus-within {
+        border-color: var(--bs-primary);
+        box-shadow: 0 0 0 .25rem rgba(var(--bs-primary-rgb, 13,110,253), .15);
+        backdrop-filter: saturate(1.2) blur(2px);
+    }
+
+    /* Prefixo (icone/avatar) e input com a MESMA altura */
+    .quick-patient-input .input-group-text,
+    .quick-patient-input .form-control {
+        height: var(--qp-h);
+    }
+
+    /* Prefixo estilizado */
+    .quick-patient-input .input-group-text {
+        background: transparent;
+        border: 0;
+        border-radius: 9999px 0 0 9999px;
+        display: inline-flex;
+        align-items: center;
+        padding-left: .8rem; /* + respiro lateral */
+        padding-right: .65rem;
+        opacity: .9;
+    }
+
+    /* Input limpo */
+    .quick-patient-input .form-control {
+        background: transparent;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding-left: .2rem; /* + respiro lateral */
+        padding-right: .2rem;
+        line-height: 1.2;
+        caret-color: var(--bs-body-color, #212529);
+    }
+
+        /* Placeholder elegante */
+        .quick-patient-input .form-control::placeholder {
+            color: #8f9aa3;
+            opacity: .9;
+        }
+
+/* Dropdown bonito, arredondado e alinhado ao campo */
+.quick-patient-dropdown {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + .4rem);
+    display: block; /* controlado via JS com display none/block */
+    padding: .35rem;
+    border: 1px solid var(--qp-border);
+    border-radius: .85rem;
+    background: #fff;
+    z-index: 1200; /* acima do header/sidebar */
+    max-height: 340px;
+    overflow: auto;
+    animation: qp-fade .12s ease-out;
+}
+
+    /* Itens com cantos arredondados, espaçamento e feedback */
+    .quick-patient-dropdown .dropdown-item {
+        border-radius: .6rem;
+        padding: .55rem .75rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: .75rem; /* espaço entre avatar e texto */
+    }
+
+        .quick-patient-dropdown .dropdown-item + .dropdown-item {
+            margin-top: 2px; /* separação suave */
+        }
+
+        .quick-patient-dropdown .dropdown-item:hover {
+            background: var(--bs-gray-100);
+        }
+
+        .quick-patient-dropdown .dropdown-item.active,
+        .quick-patient-dropdown .dropdown-item:focus {
+            background: var(--bs-primary-bg-subtle, #e7f1ff);
+            border: 1px solid var(--bs-primary-border-subtle, #cfe2ff);
+            outline: none;
+        }
+
+        .quick-patient-dropdown .dropdown-item small {
+            opacity: .8;
+        }
+
+/* Micro animação de entrada */
+@keyframes qp-fade {
+    from {
+        opacity: 0;
+        transform: translateY(-2px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsivo: esconda em telas pequenas (ou troque por modal) */
+@media (max-width: 992px) {
+    .quick-patient-search {
+        display: none;
+    }
+}
+
+/* ===== Avatares ===== */
+
+/* Avatar "bolinha" dentro do campo: cresce conforme a altura do campo */
+.qp-avatar {
+    width: calc(var(--qp-h) - 10px);
+    height: calc(var(--qp-h) - 10px);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #7aa6ff, #4b7bff);
+    color: #fff;
+    font-size: calc(var(--qp-h) / 2.4);
+    line-height: 1;
+}
+
+/* Avatar nos itens da lista (maior e consistente) */
+.qp-item-avatar {
+    width: 40px; /* pode ajustar para 36–44px */
+    height: 40px;
+    border-radius: 50%;
+    flex: 0 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #d0d7e2; /* fallback quando não houver imagem */
+    color: #fff;
+    font-weight: 700;
+    overflow: hidden;
+}
+
+    .qp-item-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }

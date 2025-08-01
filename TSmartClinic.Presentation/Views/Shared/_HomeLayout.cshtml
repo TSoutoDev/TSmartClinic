@@ -9,7 +9,14 @@
 @{
     var nome = HttpContextAccessor.HttpContext.Session.GetString("Usuario_Nome");
     var email = HttpContextAccessor.HttpContext.Session.GetString("Usuario_Email");
+    var nomeClinica = HttpContextAccessor.HttpContext.Session.GetString("Clinica_Nome");
+    var nomeCnpj = HttpContextAccessor.HttpContext.Session.GetString("Clinica_Cnpj");
 }
+
+
+
+
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -44,7 +51,7 @@
     <!-- Css Customizado-->
     <link rel="stylesheet" href="~/css/card-estilo.css" />
     <link href="~/css/DadosPacientes-estilo.css" id="app-style" rel="stylesheet" />
-
+    <link href="~/css/busca-rapida-paciente.css" id="app-style" rel="stylesheet" />
     <!-- Site -->
     <link href="~/css/site.css" id="app-style" rel="stylesheet" />
 
@@ -136,7 +143,9 @@
     <!-- Begin page -->
     <div id="layout-wrapper">
         <header id="page-topbar">
-            <div class="navbar-header">
+
+        
+
                 <div class="d-flex">
                     <!-- LOGO -->
                     <div class="navbar-brand-box">
@@ -164,8 +173,36 @@
                         <i class="fa fa-fw fa-bars"></i>
                     </button>
 
+                <div class="navbar-header">
+                    <!-- Busca rápida de Paciente -->
+                    <!-- Busca rápida de Paciente -->
+                    <div class="quick-patient-search ms-3" id="quickPatientSearch">
+                        <div class="input-group input-group-sm quick-patient-input">
+                            <span class="input-group-text">
+                                <!-- Avatar do campo -->
+                                <span class="qp-avatar" aria-hidden="true">
+                                    <i class="bx bx-user"></i>
+                                </span>
+                                <span class="visually-hidden">Buscar Paciente</span>
+                            </span>
+
+                            <input id="pacienteSearch"
+                                   class="form-control"
+                                   type="text"
+                                   placeholder="Buscar paciente por nome, CPF ou código..."
+                                   autocomplete="off"
+                                   aria-label="Buscar paciente" />
+                        </div>
+
+                        <!-- Sugestões -->
+                        <div id="pacienteSugestoes" class="dropdown-menu quick-patient-dropdown shadow-lg" style="display:none;">
+                            <!-- itens montados via JS -->
+                        </div>
+                    </div>
 
 
+
+@* 
                     <div class="empresa-ativa">
                         <div id="divNomeEmpresaAtiva">
                             <i class="fa fa-building"></i>&nbsp;<span id="nomeEmpresaAtiva"></span>
@@ -175,12 +212,19 @@
                             <input id="autocompleteempresa" class="form-control" autocomplete="on" placeholder="Informe parte do nome da empresa" />
                             <div id="sugestaoEmpresas" class="fixed-div"></div>
                         </div>
-                    </div>
+                    </div> *@
                 </div>
+
+
+
                 <div class="d-flex align-items-center gap-2">
                     <!-- Email -->
-                  
-                    <span class="user-email">@email</span>
+
+                    <div class="d-flex flex-column">
+                        <span class="user-clinica fw-bold text-uppercase mb-1">@nomeClinica</span>
+                        <span class="user-clinica">@nomeCnpj</span>
+                    </div>
+
 
                     <!-- Separador visual com div -->
                     <div style="width: 1px; height: 24px; background-color: #ccc;"></div>

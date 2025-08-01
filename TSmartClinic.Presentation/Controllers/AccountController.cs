@@ -106,7 +106,13 @@ namespace TSmartClinic.Presentation.Controllers
                         // Salvar na sessão
                         HttpContext.Session.SetString("Usuario_Nome", autenticacao.Nome);
                         HttpContext.Session.SetString("Usuario_Email", autenticacao.Email);
-
+                        // Verificando se há clínicas
+                        if (autenticacao.ListClinicas != null && autenticacao.ListClinicas.Any())
+                        {
+                            var clinica = autenticacao.ListClinicas.First(); // pega a primeira clínica
+                            HttpContext.Session.SetString("Clinica_Nome", clinica.NomeClinica ?? "");
+                            HttpContext.Session.SetString("Clinica_Cnpj", clinica.CNPJ ?? "");
+                        }
 
                         return RedirectToAction("Index", "Home");
                        // return RedirectToAction("Login", "Account");

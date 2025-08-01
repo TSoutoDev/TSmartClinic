@@ -20,6 +20,85 @@ html {
 body {
   margin-bottom: 60px;
 }
+/*----------site _HomeLayouth----------*/
+.clickable:hover {
+    cursor: pointer;
+}
+
+.card-header h5 {
+    position: relative;
+    display: inline-block;
+}
+
+    .card-header h5::after {
+        content: '';
+        display: block;
+        width: 250%;
+        height: 1px;
+        background: linear-gradient(to right, #dee2e6, rgba(222,226,230,0));
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+    }
+
+.titulo-com-icone {
+    display: flex;
+    align-items: center;
+    font-size: 24px !important; /* Força o tamanho do texto */
+    font-weight: 600 !important; /* Força o peso */
+}
+
+
+.icone-titulo {
+    font-size: 34px; /* Tamanho do ícone */
+    color: #6c757d; /* Cinza */
+}
+
+
+/* A janela NÃO rola; só a área central quando necessário */
+html, body {
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+}
+
+/* Coluna ocupando toda a viewport */
+#layout-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Área central flexível */
+.main-content {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* crítico p/ permitir o filho rolar */
+}
+
+/* Contêiner onde o SimpleBar será ligado/desligado */
+.page-content {
+    flex: 1 1 auto;
+    min-height: 0; /* evita "passar por baixo" do footer */
+    /* NÃO defina overflow aqui; o SimpleBar cuida disso quando ativo */
+}
+
+    /* Quando SimpleBar estiver ativo, aplique padding no conteúdo interno */
+    .page-content .simplebar-content {
+        padding: 1rem;
+    }
+
+    /* Evita que o wrapper "marrete" a altura disponível */
+    .page-content .simplebar-content-wrapper {
+        max-height: 100% !important;
+        min-height: 0;
+    }
+
+/* Footer normal */
+footer.footer {
+    flex-shrink: 0;
+}
 
 /*---------*/
 .user-header-info {
@@ -47,5 +126,11 @@ body {
     width: 30px;
     height: 30px;
     object-fit: cover;
+}
+
+.user-clinica {
+    font-size: 16px !important; /* Ou 20px */
+    color: #666; /* Ou como preferir */
+    font-weight: 500 !important;
 }
 
