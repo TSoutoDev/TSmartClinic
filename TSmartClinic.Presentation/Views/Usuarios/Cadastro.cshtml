@@ -37,34 +37,35 @@
     <div class="card">
         <div class="card-body">
             <div class="row mt-4">
-                <div class="col-md-6">
-                    <label>Email</label><br />
-                    @Html.TextBoxFor(model => model.Email, new { @class = "form-control Email", @autocomplete = "off", type = "email" })
-                    @*  <span class="text-danger">
-                        @Html.ValidationMessageFor(model => model.Modelo)
-                    </span> *@
-                </div>
-
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label for="Nome">Nome</label>
                     @Html.TextBoxFor(model => model.Nome, new { @class = "form-control", @autocomplete = "off", @placeholder = "Digite o nome do Usuario" })
                     <span class="text-danger">
                         @Html.ValidationMessageFor(model => model.Nome)
                     </span>
                 </div>
-            </div>
-
-            <div class="row mt-3">
+                <div class="col-md-5">
+                    <label>Email</label><br />
+                    @Html.TextBoxFor(model => model.Email, new { @class = "form-control Email", @autocomplete = "off", type = "email" })
+                    @*  <span class="text-danger">
+                        @Html.ValidationMessageFor(model => model.Modelo)
+                    </span> *@
+                </div>
                 <!-- Tipo de Usuário -->
                 <div class="col-md-3">
                     <label for="TipoUsuarioId" class="form-label">Tipo de Usuário</label>
                     <select @* asp-for="TipoUsuarioId" *@ class="form-select">
                         <option value=""></option>
-                        <option value="2">Usuário Cliente</option>
-                        <option value="3">Usuário Suporte Sidetech</option>
-                        <option value="4">Usuário Suporte Alterdata</option>
+                        <option value="C">Usuário Cliente</option>
+                        <option value="M">Usuário Master</option>
+
                     </select>
                 </div>
+
+            </div>
+            
+            <div class="row mt-3">
+               
 
                 <!-- Campo de upload -->
                 <div class="col-md-6 mt-0">
@@ -97,10 +98,19 @@
                         @Html.ValidationMessageFor(model => model.DataExpiracaoSenha)
                     </span>
                 </div>
+
+
+                <div class="col-md-3">
+                    <label for="Celular">Celular</label>
+                    @Html.TextBoxFor(model => model.Celular, new { @class = "form-control", @autocomplete = "off", @maxlength = "10" })
+                    <span class="text-danger">
+                        @Html.ValidationMessageFor(model => model.Celular)
+                    </span>
+                </div>
             </div>
 
             <div class="row mt-4">
-                <!-- Chave Seletora Agendamento (Switch) -->
+            @*     <!-- Chave Seletora Agendamento (Switch) -->
                 <div class="col-md-2 d-flex align-items-center">
                     <div class="form-check form-switch">
                         <input class="form-check-input"
@@ -110,16 +120,9 @@
                             Conta Expira?
                         </label>
                     </div>
-                </div>
+                </div> *@
 
-                
-                <div class="col-md-3">
-                    <label for="Celular">Celular</label>
-                    @Html.TextBoxFor(model => model.Celular, new { @class = "form-control", @autocomplete = "off", @maxlength = "10" })
-                    <span class="text-danger">
-                        @Html.ValidationMessageFor(model => model.Celular)
-                    </span>
-                </div>
+               
 
     
             </div>

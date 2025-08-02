@@ -134,3 +134,8 @@ footer.footer {
     font-weight: 500 !important;
 }
 
+.container {
+    padding-left: 0!important;
+    padding-right: 0!important;
+    
+}

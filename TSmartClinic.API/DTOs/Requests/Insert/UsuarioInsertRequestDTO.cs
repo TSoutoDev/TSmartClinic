@@ -1,4 +1,5 @@
-﻿using TSmartClinic.API.DTOs.Requests.Base;
+﻿using System.Security;
+using TSmartClinic.API.DTOs.Requests.Base;
 
 namespace TSmartClinic.API.DTOs.Requests.Insert
 {
@@ -7,5 +8,6 @@ namespace TSmartClinic.API.DTOs.Requests.Insert
         public string? Email { get; set; }
         public string? LoginInclusao { get; set; }
         public DateTime? DataInclusao { get; set; }
+        public bool PrimeiroAcesso { get; set; } = true;
     }
 }

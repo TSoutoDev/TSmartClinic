@@ -6,6 +6,6 @@ namespace TSmartClinic.API.DTOs.Requests.Update
     {
         public int Id { get; set; }
         public string? LoginAlteracao { get; set; }
-        public DateTime? DataAlteracao { get; set; }     
+        public DateTime? DataAlteracao { get; set; } = DateTime.UtcNow;
     }
 }

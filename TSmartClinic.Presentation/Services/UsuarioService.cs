@@ -62,13 +62,13 @@ namespace TSmartClinic.Presentation.Services
             if (viewModel.Id.HasValue)
             {
                 viewModel.Senha = viewModel.Senha;
-                viewModel.Login = viewModel.Login;
+                //viewModel.Login = viewModel.Login;
 
             }
             else
             {
                 viewModel.Senha = GerarSenha();
-                viewModel.Login = GerarLogin();
+               // viewModel.Login = GerarLogin();
             }
 
             return await Task.FromResult(viewModel);

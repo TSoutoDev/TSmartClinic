@@ -10,10 +10,12 @@ namespace TSmartClinic.API.Services
     {
         private readonly IUsuarioRepository? _usuarioRepository;
         private readonly ICriptografiaProvider _criptografiaProvider;
-        public UsuarioService(IUsuarioRepository usuarioRepository,ICriptografiaProvider criptografiaProvider = null) : base(usuarioRepository)
+       // private readonly IUsuarioClinicaPerfilRepository _usuarioClinicaPerfilRepository;
+        public UsuarioService(IUsuarioRepository usuarioRepository, /*IUsuarioClinicaPerfilRepository usuarioClinicaPerfilRepository, */ICriptografiaProvider criptografiaProvider = null) : base(usuarioRepository)
         {
             _usuarioRepository = usuarioRepository;
             _criptografiaProvider = criptografiaProvider;
+           // _usuarioClinicaPerfilRepository = usuarioClinicaPerfilRepository;
 
         }
 
@@ -34,6 +36,8 @@ namespace TSmartClinic.API.Services
         public override Usuario Inserir(Usuario usuario)
         {
             usuario.Senha = _criptografiaProvider.Criptografar(usuario.Senha);
+
+           // _usuarioClinicaPerfilRepository.Inserir()
 
             return base.Inserir(usuario);
         }
