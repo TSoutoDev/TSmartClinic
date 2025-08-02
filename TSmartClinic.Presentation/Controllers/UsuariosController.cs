@@ -14,7 +14,8 @@ namespace TSmartClinic.Presentation.Controllers
             _usuarioService = usuarioService;
         }
 
-        public override async  Task<IActionResult> Cadastro(UsuarioViewModel model)
+
+        public override async Task<IActionResult> Cadastro(UsuarioViewModel model)
         {
             //Processa a foto utilizando o serviço
             var foto = Request.Form["Foto"].ToString();
@@ -39,6 +40,18 @@ namespace TSmartClinic.Presentation.Controllers
             }
             return await base.Cadastro(id);
         }
+        public override async Task<IActionResult> BuscaAvancada(UsuarioFilterViewModel filtro)
+        {
+            //await ConsultarViewBagRiscos();
+
+            return await base.BuscaAvancada(filtro);
+        }
+
+        public override async Task<IActionResult> Consulta()
+        {
+            // await ConsultarViewBagRiscos();
+            return await base.Consulta();
+        }
         private async Task CriarViewBags()
         {
 
@@ -48,5 +61,5 @@ namespace TSmartClinic.Presentation.Controllers
             //await ConsultaViewBagEstados();
         }
     }
-    
+
 }

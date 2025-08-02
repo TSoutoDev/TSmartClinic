@@ -222,7 +222,7 @@
 
                     <div class="d-flex flex-column">
                         <span class="user-clinica fw-bold text-uppercase mb-1">@nomeClinica</span>
-                        <span class="user-clinica">@nomeCnpj</span>
+                        @* <span class="user-clinica">@nomeCnpj</span> *@
                     </div>
 
 
@@ -660,9 +660,27 @@
                                                 </a>
                                             </li>
  *@
+                                           
+
+                                            <!-- Início do menu Central de notificações -->
+                                            <li>
+                                                <a href=key ="t-blog">
+                                                    <i class="bx bx-bell"></i>
+                                                    <span key="t-dashboards">Central de Notificações</span>
+                                                </a>
+                                            </li>
+
+                                            <!-- Início do menu Suporte -->
+                                            <li>
+                                                <a href=key ="t-blog">
+                                                    <i class="bx bx-support"></i>
+                                                    <span key="t-dashboards">Suporte</span>
+                                                </a>
+                                            </li>
                                             <!-- Início do menu Configurações -->
                                             <li>
-                                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                                
+                                                <a href="/Configuracoes/Configuracoes" class="has-arrow waves-effect">
                                                     <i class="bx bx-cog"></i>
                                                     <span key="t-layouts">Configurações</span>
                                                 </a>
@@ -692,14 +710,7 @@
                                                         </ul>
                                                     </li> *@
 
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Controle de Acesso</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Perfil de Acesso</a></li>
-                                                            <li><a href="/Usuarios/Consulta" key="t-blog">Contas de Usuários</a></li>
-
-                                                        </ul>
-                                                    </li>
+                                                   
                                                     @* 
                                                     <li>
                                                         <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Importação de Dados</a>
@@ -718,23 +729,6 @@
  *@
                                                 </ul>
                                             </li>
-
-                                            <!-- Início do menu Central de notificações -->
-                                            <li>
-                                                <a href=key ="t-blog">
-                                                    <i class="bx bx-bell"></i>
-                                                    <span key="t-dashboards">Central de Notificações</span>
-                                                </a>
-                                            </li>
-
-                                            <!-- Início do menu Suporte -->
-                                            <li>
-                                                <a href=key ="t-blog">
-                                                    <i class="bx bx-support"></i>
-                                                    <span key="t-dashboards">Suporte</span>
-                                                </a>
-                                            </li>
-
                                             <!-- Início do menu Usuario -->
                                             @*  <li>
                                            <div class="d-flex">

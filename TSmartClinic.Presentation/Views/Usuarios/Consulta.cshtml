@@ -1,5 +1,6 @@
 ﻿@using TSmartClinic.Presentation.Models
 @model TSmartClinic.Presentation.Models.ResponseViewModel<UsuarioViewModel>
+@using Newtonsoft.Json
 
 @{
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
@@ -15,11 +16,17 @@
                     <span class="d-none d-sm-block">Busca padrão</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#busca_avancada" role="tab">
+                    <span class="d-block d-sm-none"><i class="fas fa-search"></i></span>
+                    <span class="d-none d-sm-block">Busca avançada</span>
+                </a>
+            </li>
         </ul>
 
         <div class="tab-content pt-3 text-muted">
             <div class="tab-pane active" id="busca_padrao" role="tabpanel">
-                @using (Html.BeginForm("BuscaPadrao", "Usuarios", FormMethod.Post))
+                @using (Html.BeginForm("BuscaPadrao", "usuarios", FormMethod.Post))
                 {
                     <div class="row">
                         <div class="col-md-5">
@@ -65,12 +72,7 @@
                 <thead class="table-header">
                     <tr>
                         <th class="col-md-3" width="200">Nome</th>
-                        <th class="col-md-3" width="200">Categoria</th>
-                        <th class="col-md-3" width="50">Sigla Conselho</th>
-                        <th class="col-md-2" width="50">Número Conselho</th>
-                        <th class="col-md-2" width="50">Externo</th>
-                        <th class="col-md-2" width="50">Ofensor</th>
-                        <th class="col-md-3" width="200">Clínica</th>
+                                 
                     </tr>
                 </thead>
 

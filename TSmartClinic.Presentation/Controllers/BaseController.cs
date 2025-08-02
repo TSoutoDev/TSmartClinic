@@ -27,6 +27,13 @@ namespace TSmartClinic.Presentation.Controllers
             return View();
         }
 
+
+        [HttpPost]
+        public virtual async Task<IActionResult> BuscaPadrao(TFilterViewModel filtro)
+        {
+            return await Busca(filtro, false);
+        }
+
         [HttpPost]
         public virtual async Task<IActionResult> BuscaAvancada(TFilterViewModel filtro)
         {

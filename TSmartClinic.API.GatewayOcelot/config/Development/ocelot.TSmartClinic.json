@@ -3,7 +3,7 @@
     //CATEGORIAS
     {
       "DownstreamPathTemplate": "/api/categorias/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -18,7 +18,7 @@
     },
     {
       "DownstreamPathTemplate": "/api/categorias/listar",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -33,7 +33,7 @@
     },
     {
       "DownstreamPathTemplate": "/api/categorias",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -50,7 +50,7 @@
     //USUÁRIO
     {
       "DownstreamPathTemplate": "/api/usuarios/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -65,7 +65,7 @@
     },
     {
       "DownstreamPathTemplate": "/api/usuarios/listar",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -80,7 +80,7 @@
     },
     {
       "DownstreamPathTemplate": "/api/usuarios",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -95,7 +95,7 @@
     },
     {
       "DownstreamPathTemplate": "/api/usuarios/obter-por-email/{email}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -110,7 +110,7 @@
     },
     {
       "DownstreamPathTemplate": "/api/usuarios/{id}/bloquear",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",

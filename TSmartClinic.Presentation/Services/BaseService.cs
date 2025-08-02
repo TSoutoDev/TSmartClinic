@@ -6,6 +6,7 @@ using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Services.Interfaces;
 using TSmartClinic.Presentation.Settings;
 using TSmartClinic.Presentation.ViewModels.Filters;
+using static System.Net.WebRequestMethods;
 
 namespace TSmartClinic.Presentation.Services
 {
@@ -157,8 +158,11 @@ namespace TSmartClinic.Presentation.Services
 
             using (var client = new HttpClient())
             {
+                //var teste = $"{_baseUrlController}/listar/{filtro}";
+                //var endpoint = "http://localhost:5136/api/usuarios/listar";
+               
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
-                HttpResponseMessage response = await client.PostAsJsonAsync($"{_baseUrlController}/listar", filtro);
+                HttpResponseMessage response = await  client.PostAsJsonAsync($"{_baseUrlController}/listar", filtro);
 
                 retorno.StatusCode = response.StatusCode.GetHashCode();
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)

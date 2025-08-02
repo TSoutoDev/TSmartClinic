@@ -168,7 +168,7 @@
       "DownstreamHttpMethod": null,
       "DownstreamHttpVersion": null,
       "DownstreamPathTemplate": "/api/categorias/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "FileCacheOptions": {
         "TtlSeconds": 0,
         "Region": "",
@@ -243,7 +243,7 @@
       "DownstreamHttpMethod": null,
       "DownstreamHttpVersion": null,
       "DownstreamPathTemplate": "/api/categorias/listar",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "FileCacheOptions": {
         "TtlSeconds": 0,
         "Region": "",
@@ -316,7 +316,7 @@
       "DownstreamHttpMethod": null,
       "DownstreamHttpVersion": null,
       "DownstreamPathTemplate": "/api/categorias",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "FileCacheOptions": {
         "TtlSeconds": 0,
         "Region": "",
@@ -389,7 +389,7 @@
       "DownstreamHttpMethod": null,
       "DownstreamHttpVersion": null,
       "DownstreamPathTemplate": "/api/usuarios/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "FileCacheOptions": {
         "TtlSeconds": 0,
         "Region": "",
@@ -464,7 +464,7 @@
       "DownstreamHttpMethod": null,
       "DownstreamHttpVersion": null,
       "DownstreamPathTemplate": "/api/usuarios/listar",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "FileCacheOptions": {
         "TtlSeconds": 0,
         "Region": "",
@@ -537,7 +537,7 @@
       "DownstreamHttpMethod": null,
       "DownstreamHttpVersion": null,
       "DownstreamPathTemplate": "/api/usuarios",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "FileCacheOptions": {
         "TtlSeconds": 0,
         "Region": "",
@@ -610,7 +610,7 @@
       "DownstreamHttpMethod": null,
       "DownstreamHttpVersion": null,
       "DownstreamPathTemplate": "/api/usuarios/obter-por-email/{email}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "FileCacheOptions": {
         "TtlSeconds": 0,
         "Region": "",
@@ -683,7 +683,7 @@
       "DownstreamHttpMethod": null,
       "DownstreamHttpVersion": null,
       "DownstreamPathTemplate": "/api/usuarios/{id}/bloquear",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "FileCacheOptions": {
         "TtlSeconds": 0,
         "Region": "",
