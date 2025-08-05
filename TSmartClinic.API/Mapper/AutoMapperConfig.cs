@@ -12,28 +12,34 @@ namespace AgendaApp.API.Mapper
     {
         public AutoMapperConfig()
         {
+
+            //Base
+            CreateMap<Paciente, BasePacienteRequestDTO>().ReverseMap();
+            CreateMap<Nicho, BaseNichoRequestDTO>().ReverseMap();
+            CreateMap<Perfil, BasePerfilRequestDTO>().ReverseMap();
+
+            //insert
             CreateMap<Categoria, CategoriaInsertRequestDTO>().ReverseMap();
-            CreateMap<Categoria, CategoriaUpdateRequestDTO>().ReverseMap();
-            CreateMap<Categoria, CategoriaResponseDTO>().ReverseMap();
-            CreateMap<Tarefa, TarefaInsertRequestDTO>().ReverseMap();
-            CreateMap<Tarefa, TarefaUpdateRequestDTO>().ReverseMap();
-            CreateMap<Tarefa, TarefaResponseDTO>()
-                .ForMember(dest => dest.CategoriaId, opt => opt.MapFrom(src => src.CategoriaId))
-                .ReverseMap();
+            CreateMap<Tarefa, TarefaInsertRequestDTO>().ReverseMap();         
             CreateMap<Usuario, UsuarioInsertRequestDTO>().ReverseMap();
-            CreateMap<Usuario, UsuarioUpdateRequestDTO>().ReverseMap();
-            CreateMap<Usuario, UsuarioResponseDTO>();
-
-            CreateMap<Paciente, BasePacienteDTO>().ReverseMap();
             CreateMap<Paciente, PacienteInsertRequestDTO>().ReverseMap();
+
+            //Update
+            CreateMap<Categoria, CategoriaUpdateRequestDTO>().ReverseMap();
+            CreateMap<Tarefa, TarefaUpdateRequestDTO>().ReverseMap();
+            CreateMap<Usuario, UsuarioUpdateRequestDTO>().ReverseMap();
             CreateMap<Paciente, PacienteUpdateRequestDTO>().ReverseMap();
+
+            //Response
+            CreateMap<Convenio, ConvenioResponseDTO>().ReverseMap(); 
+            CreateMap<Categoria, CategoriaResponseDTO>().ReverseMap();
+            CreateMap<Tarefa, TarefaResponseDTO>()
+               .ForMember(dest => dest.CategoriaId, opt => opt.MapFrom(src => src.CategoriaId))
+               .ReverseMap();
+            CreateMap<Usuario, UsuarioResponseDTO>();
             CreateMap<Paciente, PacienteResponseDTO>();
-
-            CreateMap<Convenio, ConvenioResponseDTO>().ReverseMap(); // ✅ Adiciona esta linha
-
-
-            //CreateMap<Servico, ServicoRequestDto>().ReverseMap();
-            //CreateMap<Servico, ServicoResponseDto>().ReverseMap();
+            CreateMap<Nicho, NichoResponseDTO>();
+            CreateMap<Perfil, PerfilResponseDTO>();
         }
     }
 }

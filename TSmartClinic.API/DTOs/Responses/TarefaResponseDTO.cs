@@ -5,6 +5,7 @@ namespace TSmartClinic.API.DTOs.Responses
 {
     public class TarefaResponseDTO : BaseResponseDTO
     {
+        public int Id { get; set; }
         public string? Nome { get; set; }
         public DateTime Data { get; set; }
         public TimeSpan Hora { get; set; }

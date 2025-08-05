@@ -2,7 +2,7 @@
 
 namespace TSmartClinic.API.DTOs.Requests.Update
 {
-    public class PacienteUpdateRequestDTO : BasePacienteDTO
+    public class PacienteUpdateRequestDTO : BasePacienteRequestDTO
     {
         public int? Id { get; set; }
     }

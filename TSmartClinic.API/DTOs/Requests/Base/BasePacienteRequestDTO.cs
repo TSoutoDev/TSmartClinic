@@ -2,7 +2,7 @@
 
 namespace TSmartClinic.API.DTOs.Requests.Base
 {
-    public class BasePacienteDTO : BaseRequestDTO
+    public class BasePacienteRequestDTO : BaseRequestDTO
     {
         public string? NomePaciente { get; set; }
         public DateTime? DataNascimento { get; set; }

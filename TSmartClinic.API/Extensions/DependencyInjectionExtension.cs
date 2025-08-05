@@ -18,12 +18,15 @@ namespace TSmartClinic.API.Extensions
             services.AddTransient<ICategoriaService, CategoriaService>();
             services.AddTransient<IUsuarioService, UsuarioService>();
             services.AddTransient<IPacienteService, PacienteService>();
+            services.AddTransient<IPerfilService, PerfilService>();
+
             //Repositorios
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddTransient<ICategoriaRepository, CategoriaRepository>();
             services.AddTransient<ITarefaRepository, TarefaRepository>();
             services.AddTransient<IUsuarioRepository, UsuarioRepository>();
             services.AddTransient<IPacienteRepository, PacienteRepository>();
+            services.AddTransient<IPerfilRepository, PerfilRepository>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ICriptografiaProvider, CriptografiaProvider>();

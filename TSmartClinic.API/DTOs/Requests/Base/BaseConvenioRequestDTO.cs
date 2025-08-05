@@ -1,6 +1,6 @@
 ﻿namespace TSmartClinic.API.DTOs.Requests.Base
 {
-    public class BaseConvenioDTO : BaseRequestDTO
+    public class BaseConvenioRequestDTO : BaseRequestDTO
     {
         public string? NomeConvenio { get; set; }
         public string? CNPJ { get; set; }

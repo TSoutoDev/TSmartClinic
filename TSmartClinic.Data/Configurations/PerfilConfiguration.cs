@@ -17,7 +17,6 @@ namespace TSmartClinic.Data.Configurations
             builder.Property(c => c.NomePerfil).HasColumnName("NomePerfil").HasMaxLength(100).IsRequired();
             builder.Property(c => c.ValidadeDias).HasColumnName("ValidadeDias");
             builder.Property(c => c.ErrosSenha).HasColumnName("ErrosSenha");
-            builder.Property(c => c.Administrador).HasColumnName("Administrador");
             builder.Property(c => c.ResponsavelTecnico).HasColumnName("ResponsavelTecnico");
             builder.Property(c => c.Cliente).HasColumnName("Cliente");
             builder.Property(c => c.Ativo).HasColumnName("Ativo");
