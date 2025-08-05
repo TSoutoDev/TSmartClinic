@@ -15,7 +15,7 @@ namespace TSmartClinic.Presentation.Extentions
             services.AddSingleton<ICriptografiaProvider, CriptografiaProvider>();
             services.AddTransient<IEmpresaAtivaService, EmpresaAtivaService>();
             services.AddTransient<IUsuarioService, UsuarioService>();
-
+            services.AddTransient<IPerfilService, PerfilService>();
 
             return services;
         }

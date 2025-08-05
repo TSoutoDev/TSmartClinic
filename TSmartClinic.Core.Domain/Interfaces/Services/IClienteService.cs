@@ -2,7 +2,7 @@
 
 namespace TSmartClinic.Core.Domain.Interfaces.Services
 {
-    public interface IClinicaService : IBaseService<Clinica>
+    public interface IClienteService : IBaseService<Cliente>
     {
     }
 }

@@ -1,15 +1,15 @@
 ﻿namespace TSmartClinic.Core.Domain.Entities
 {
-    public class UsuarioClinicaPerfil : Base
+    public class UsuarioClientePerfil : Base
     {
-        public int ClinicaId { get; set; }
+        public int ClienteId { get; set; }
         public int PerfilId { get; set; }
 
         public bool ClinicaPadrao { get; set; }
 
         #region Relacionamentos
         public Usuario? Usuario { get; set; }
-        public Clinica? Clinica { get; set; }
+        public Cliente? Clinica { get; set; }
         public Perfil? Perfil { get; set; }
         #endregion
     }

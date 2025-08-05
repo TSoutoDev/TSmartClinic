@@ -7,6 +7,6 @@ namespace TSmartClinic.Core.Domain.Interfaces.Services
     {
         Usuario ObterPorEmail(string email);
         void Bloquear(int id);
-        List<string> ObterPermissaoUsuario(int usuarioId, List<Clinica> clinicasUsuario);
+        List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clinicasUsuario);
     }
 }

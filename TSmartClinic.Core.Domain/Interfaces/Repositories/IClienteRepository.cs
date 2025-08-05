@@ -2,7 +2,7 @@
 
 namespace TSmartClinic.Core.Domain.Interfaces.Repositories
 {
-    public interface IClinicaRepository : IBaseRepository<Clinica>
+    public interface IClienteRepository : IBaseRepository<Cliente>
     {
     }
 }

@@ -5,21 +5,21 @@ using TSmartClinic.Core.Domain.Service;
 
 namespace TSmartClinic.Api.Auth.Services
 {
-    public class UsuarioClinicaPerfilService : BaseService<UsuarioClinicaPerfil>, IUsuarioClinicaPerfilService
+    public class UsuarioClinicaPerfilService : BaseService<UsuarioClientePerfil>, IUsuarioClientePerfilService
     {
-        private readonly IUsuarioClinicaPerfilRepository _usuarioClinicaPerfilRepository;
+        private readonly IUsuarioClientePerfilRepository _usuarioClinicaPerfilRepository;
 
-        public UsuarioClinicaPerfilService(IUsuarioClinicaPerfilRepository usuarioClinicaPerfilRepository) : base(usuarioClinicaPerfilRepository)
+        public UsuarioClinicaPerfilService(IUsuarioClientePerfilRepository usuarioClinicaPerfilRepository) : base(usuarioClinicaPerfilRepository)
         {
             _usuarioClinicaPerfilRepository = usuarioClinicaPerfilRepository;
         }
 
-        public Clinica ObterClinicaPadrao(int usuarioId)
+        public Cliente ObterClinicaPadrao(int usuarioId)
         {
             return _usuarioClinicaPerfilRepository.ObterClinicaPadraoDoUsuario(usuarioId);
         }
 
-        public List<Clinica> ObterClinicasDoUsuario(int usuarioId)
+        public List<Cliente> ObterClinicasDoUsuario(int usuarioId)
         {
             return _usuarioClinicaPerfilRepository.ObterClinicasDoUsuario(usuarioId);
         }

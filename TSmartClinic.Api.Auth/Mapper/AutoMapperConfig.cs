@@ -11,8 +11,8 @@ namespace TSmartClinic.Api.Auth.Mapper
         public AutoMapperConfig()
         {
             CreateMap<AutenticacaoModel, Usuario>().ReverseMap();
-            CreateMap<UsuarioClinicaPerfil,UsuarioClinicaPerfilRequestDto>().ReverseMap();
-            CreateMap<UsuarioClinicaPerfil, UsuarioClinicaPerfilResponseDto>()
+            CreateMap<UsuarioClientePerfil,UsuarioClinicaPerfilRequestDto>().ReverseMap();
+            CreateMap<UsuarioClientePerfil, UsuarioClinicaPerfilResponseDto>()
                  .ForMember(dest => dest.UsuarioId, opt => opt.MapFrom(src => src.Id)).ReverseMap();
 
 

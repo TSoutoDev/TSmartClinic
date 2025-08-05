@@ -15,7 +15,7 @@ namespace TSmartClinic.Data.Contexts
 
         public DbSet<Categoria> Categoria { get; set; }
         public DbSet<Convenio> Convenio { get; set; }
-        public DbSet<Clinica> Clinica { get; set; }
+        public DbSet<Cliente> Cliente { get; set; }
         public DbSet<Documento> Documento { get; set; }
         public DbSet<Estado> Estado { get; set; }
         public DbSet<Endereco> Endereco { get; set; }
@@ -30,13 +30,13 @@ namespace TSmartClinic.Data.Contexts
         public DbSet<Tarefa> Tarefa { get; set; }
         public DbSet<TipoDocumento> TipoDocumento { get; set; }
         public DbSet<Usuario> Usuario { get; set; }
-        public DbSet<UsuarioClinicaPerfil> UsuarioClinicaPerfil { get; set; }
+        public DbSet<UsuarioClientePerfil> UsuarioClientePerfil { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new CategoriaConfiguration());
-            modelBuilder.ApplyConfiguration(new ClinicaConfiguration());
+            modelBuilder.ApplyConfiguration(new ClienteConfiguration());
             modelBuilder.ApplyConfiguration(new ConvenioConfiguration());
             modelBuilder.ApplyConfiguration(new EstadoConfiguration());
             modelBuilder.ApplyConfiguration(new EnderecoConfiguration());
@@ -49,7 +49,7 @@ namespace TSmartClinic.Data.Contexts
             modelBuilder.ApplyConfiguration(new OperacaoPerfilConfiguration());
             modelBuilder.ApplyConfiguration(new PacienteConfiguration());
             modelBuilder.ApplyConfiguration(new PerfilConfiguration());
-            modelBuilder.ApplyConfiguration(new UsuarioClinicaPerfilConfiguration());
+            modelBuilder.ApplyConfiguration(new UsuarioClientePerfilConfiguration());
             modelBuilder.ApplyConfiguration(new UsuarioConfiguration());
             //  modelBuilder.ApplyConfiguration(new TipoDocumentoConfiguration());
         }

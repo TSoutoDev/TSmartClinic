@@ -5,7 +5,7 @@ using TSmartClinic.Data.Repositories;
 
 namespace TSmartClinic.Api.Auth.Repositories
 {
-    public class UsuarioClinicaPerfilRepository : BaseRepository<UsuarioClinicaPerfil>, IUsuarioClinicaPerfilRepository
+    public class UsuarioClinicaPerfilRepository : BaseRepository<UsuarioClientePerfil>, IUsuarioClientePerfilRepository
     {
 
 
@@ -16,17 +16,17 @@ namespace TSmartClinic.Api.Auth.Repositories
             _tsmartClinicContext = tsmartClinicContext;
         }
 
-        public Clinica ObterClinicaPadraoDoUsuario(int usuarioId)
+        public Cliente ObterClinicaPadraoDoUsuario(int usuarioId)
         {
-            return _tsmartClinicContext.UsuarioClinicaPerfil
+            return _tsmartClinicContext.UsuarioClientePerfil
                 .Where(uc => uc.Id == usuarioId && uc.ClinicaPadrao)
                 .Select(uc => uc.Clinica)
                 .FirstOrDefault();
         }
 
-        public List<Clinica> ObterClinicasDoUsuario(int usuarioId)
+        public List<Cliente> ObterClinicasDoUsuario(int usuarioId)
         {
-            return _tsmartClinicContext.UsuarioClinicaPerfil
+            return _tsmartClinicContext.UsuarioClientePerfil
                  .Where(uc => uc.Id == usuarioId)
                  .Select(uc => uc.Clinica)
                  .ToList();

@@ -4,15 +4,15 @@ using TSmartClinic.Core.Domain.Entities;
 
 namespace TSmartClinic.Data.Configurations
 {
-    public class UsuarioClinicaPerfilConfiguration : IEntityTypeConfiguration<UsuarioClinicaPerfil>
+    public class UsuarioClientePerfilConfiguration : IEntityTypeConfiguration<UsuarioClientePerfil>
     {
-        public void Configure(EntityTypeBuilder<UsuarioClinicaPerfil> builder)
+        public void Configure(EntityTypeBuilder<UsuarioClientePerfil> builder)
         {
             // Nome da tabela (opcional se o nome da entidade for igual)
-            builder.ToTable("UsuarioClinicaPerfil");
+            builder.ToTable("UsuarioClientePerfil");
 
             // Chave composta
-            builder.HasKey(ee => new { ee.Id, ee.ClinicaId, ee.PerfilId });
+            builder.HasKey(ee => new { ee.Id, ee.ClienteId, ee.PerfilId });
 
 
             builder.Property(c => c.Id).HasColumnName("UsuarioId");

@@ -12,7 +12,7 @@ namespace TSmartClinic.Api.Auth.Repositories
         {
             _context = TSmartClinicContext;
         }
-        public List<string> ObterPermissaoUsuario(int usuarioId, List<Clinica> clinicasUsuario)
+        public List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clinicasUsuario)
         {
             if (clinicasUsuario == null || !clinicasUsuario.Any())
                 return new List<string>();
@@ -20,8 +20,8 @@ namespace TSmartClinic.Api.Auth.Repositories
             // 1. Obter todos os PerfilIds do usuário para essas clínicas
             var clinicaIds = clinicasUsuario.Select(c => c.Id).ToList();
 
-            var perfilIds = _context.UsuarioClinicaPerfil
-                .Where(ucp => ucp.Id == usuarioId && clinicaIds.Contains(ucp.ClinicaId))
+            var perfilIds = _context.UsuarioClientePerfil
+                .Where(ucp => ucp.Id == usuarioId && clinicaIds.Contains(ucp.ClienteId))
                 .Select(ucp => ucp.PerfilId)
                 .Distinct()
                 .ToList();

@@ -6,7 +6,7 @@
 
         #region Relacionamentos
         public List<Perfil>? Perfis { get; set; }
-        public ICollection<Clinica>? Clinicas { get; set; }
+        public ICollection<Cliente>? Clinicas { get; set; }
         #endregion
     }
 }

@@ -2,19 +2,20 @@
 
 namespace TSmartClinic.Core.Domain.Entities
 {
-    public class Clinica : Base
+    public class Cliente : Base
     {
-        public string? NomeClinica { get; set; }
+        public string? NomeFantasia { get; set; }
         public string? RazaoSocial { get; set; }
-        public string? CNPJ { get; set; }
+        public string? Cnpj{ get; set; }
         public string? Telefone { get; set; }
-        public string? Email { get; set; }
+        public string? EmailContato { get; set; }
         public bool? Ativo { get; set; }
         public DateTime? DataCadastro { get; set; }
         public int? NichoId { get; set; }
 
         #region Relacionamentos
         public Nicho? Nicho { get; set; }
+        public ICollection<Perfil> Perfis { get; set; } = new List<Perfil>();        // Relacionamento 1:N com Perfil
         #endregion
     }
 }

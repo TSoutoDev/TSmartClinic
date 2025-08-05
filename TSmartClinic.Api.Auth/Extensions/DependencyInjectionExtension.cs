@@ -28,8 +28,8 @@ namespace TSmartClinic.Api.Auth.Extensions
             services.AddTransient<ICriptografiaProvider, CriptografiaProvider>();
             services.AddTransient<ITokenService, TokenService>();
 
-            services.AddTransient<IUsuarioClinicaPerfilService, UsuarioClinicaPerfilService>();
-            services.AddTransient<IUsuarioClinicaPerfilRepository, UsuarioClinicaPerfilRepository>();
+            services.AddTransient<IUsuarioClientePerfilService, UsuarioClinicaPerfilService>();
+            services.AddTransient<IUsuarioClientePerfilRepository, UsuarioClinicaPerfilRepository>();
 
 
             services.Configure<TokenSettings>(configuration.GetSection("TokenSettings"));

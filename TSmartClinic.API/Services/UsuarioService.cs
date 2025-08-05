@@ -55,7 +55,7 @@ namespace TSmartClinic.API.Services
             return base.Atualizar(id, usuario);
         }
 
-        public List<string> ObterPermissaoUsuario(int usuarioId, List<Clinica> clinicasUsuario)
+        public List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clinicasUsuario)
         {
             throw new NotImplementedException();
         }

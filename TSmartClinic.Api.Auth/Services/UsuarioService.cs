@@ -24,7 +24,7 @@ namespace TSmartClinic.Api.Auth.Services
             _usuarioRepository?.Atualizar(usuario);
         }
 
-        public List<string> ObterPermissaoUsuario(int usuarioId, List<Clinica> clinicasUsuario)
+        public List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clinicasUsuario)
         {
             return _usuarioRepository.ObterPermissaoUsuario(usuarioId, clinicasUsuario);
         }

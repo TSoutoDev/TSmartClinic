@@ -9,10 +9,11 @@ namespace TSmartClinic.API.DTOs.Responses
         public int? ValidadeDias { get; set; }
         public int? ErrosSenha { get; set; }
         public bool? ResponsavelTecnico { get; set; }
-        public bool? Cliente { get; set; }
         public bool? Ativo { get; set; }
+        public NichoResponseDTO? Nicho { get; set; }
         public int? NichoId { get; set; }
+        public int? ClienteId { get; set; }
 
-        public List<NichoResponseDTO>? ListaNichos{get; set;}
+
     }
 }

@@ -9,7 +9,7 @@ namespace TSmartClinic.Api.Auth.DTOs
         public string? Email { get; set; }
         public int ClinicaId { get; set; }
         public int ModuloId { get; set; }
-        public List<Clinica>? ListClinicas { get; set; }
+        public List<Cliente>? ListClinicas { get; set; }
 
     }
 }

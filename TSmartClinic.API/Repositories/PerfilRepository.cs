@@ -20,7 +20,8 @@ namespace TSmartClinic.API.Repositories
 
             query = query?.Where(x => (int)x.Id == id);
 
-            query = query?.Include(x => x.Nicho);
+            query = query?.Include(x => x.Nicho)
+          ?               .Include(x => x.Cliente);
 
             var perfil = query?.FirstOrDefault();
 
@@ -37,7 +38,8 @@ namespace TSmartClinic.API.Repositories
             query = MontarFiltro(filtro, properties);
 
             query = query
-                .Include(x => x.Nicho);
+                .Include(x => x.Nicho)
+                .Include(x => x.Cliente);
 
             //Filtrar pelo nome se estiver presente no filtro
             if (!string.IsNullOrWhiteSpace(filtroPerfil.Nome))
