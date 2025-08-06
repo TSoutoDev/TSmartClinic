@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using TSmartClinic.Presentation.Models;
@@ -21,9 +22,10 @@ namespace TSmartClinic.Presentation.Services
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
-                var novaUrl = _baseUrlController.Replace("perfis", "");
-                var result = await client.GetAsync($"{novaUrl}nichos");
-          //      var result = await client.GetAsync($"{_baseUrlController}nichos");
+                //var novaUrl = _baseUrlController.Replace("perfis", "");
+                //var result = await client.GetAsync($"{novaUrl}");
+                    var result = await client.GetAsync("http://localhost:5049/api/nichos/listar");
+
 
                 if (result.IsSuccessStatusCode)
                 {
