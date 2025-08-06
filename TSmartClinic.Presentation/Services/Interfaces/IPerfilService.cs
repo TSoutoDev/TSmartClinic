@@ -5,5 +5,6 @@ namespace TSmartClinic.Presentation.Services.Interfaces
 {
     public interface IPerfilService : IBaseService<BaseFilterViewModel, PerfilViewModel>
     {
+        Task<List<NichoViewModel>> ListarNichos();
     }
 }

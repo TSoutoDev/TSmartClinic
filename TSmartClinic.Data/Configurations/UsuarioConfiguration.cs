@@ -1,6 +1,7 @@
 ﻿using TSmartClinic.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 
 namespace TSmartClinic.Data.Configurations;
 
@@ -30,5 +31,12 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
         builder.Property(u => u.FlagBloqueado).HasColumnName("FlagBloqueado").IsRequired();
         builder.Property(u => u.Ativo).HasColumnName("Ativo").IsRequired();
         builder.Property(u => u.PrimeiroAcesso).HasColumnName("PrimeiroAcesso");
+        builder.Property(u => u.ClienteId).HasColumnName("ClienteId").IsRequired();
+
+        // Relacionamento com Cliente (novo)
+        builder.HasOne(f => f.Cliente)
+            .WithMany(c => c.Usuarios)
+            .HasForeignKey(f => f.ClienteId)
+            .OnDelete(DeleteBehavior.Restrict); // importante para não deletar perfis ao deletar cliente
     }
 }

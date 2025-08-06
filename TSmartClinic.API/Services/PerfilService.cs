@@ -10,5 +10,11 @@ namespace TSmartClinic.API.Services
         public PerfilService(IPerfilRepository perfilRepository) : base(perfilRepository)
         {
         }
+
+        public override Perfil Inserir(Perfil entity)
+        {
+
+            return base.Inserir(entity);
+        }
     }
 }

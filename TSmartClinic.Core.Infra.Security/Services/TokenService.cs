@@ -34,12 +34,12 @@ namespace TSmartClinic.Core.Infra.Security.Services
             {
                     new Claim(ClaimTypes.Name, autenticacao.Nome),
                     new Claim(ClaimTypes.Email, autenticacao.Email),
+
+                    new Claim("IdUsuario", autenticacao.Id.ToString()),
+                    new Claim("ClienteId", autenticacao.ClienteId.ToString()),
+                    new Claim("TipoUsuario", autenticacao.TipoUsuario?.ToString() ?? TipoUsuarioConst.Cliente),
+
                     new Claim("permissao", string.Join(",", permissoes)),
-
-                    //new Claim("IdUsuario", autenticacao.Id.ToString()),
-                    //new Claim("ClienteId", autenticacao.ClienteId.ToString()),
-                    //new Claim("TipoUsuario", autenticacao. ? TipoUsuarioConst.Master : TipoUsuarioConst.Cliente)
-
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenSettings.SecretKey));

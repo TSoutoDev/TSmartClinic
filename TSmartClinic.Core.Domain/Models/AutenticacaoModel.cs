@@ -2,6 +2,7 @@
 {
     public class AutenticacaoModel
     {
+        public int Id { get; set; }
         public string? Login { get; set; }
         public string? Senha { get; set; }
         public string? Nome { get; set; }
@@ -19,5 +20,6 @@
         public byte[]? Foto { get; set; }
         public bool FlagBloqueado { get; set; }
         public bool Ativo { get; set; }
+        public int ClienteId { get; set; }
     }
 }

@@ -8,22 +8,44 @@ namespace TSmartClinic.Presentation.Controllers
 {
     public class PerfisController : BaseController<IPerfilService,BaseFilterViewModel, PerfilViewModel>
     {
-        public PerfisController(IPerfilService service) : base(service)
+        private readonly IPerfilService _perfilService;
+        public PerfisController(IPerfilService perfilService) : base(perfilService)
         {
+            _perfilService = perfilService;
         }
 
 
-        //private async Task CriarViewBagNichos()
-        //{
-        //    var resultado = await _estadoService.Listar(new());
-        //    var ufs = resultado.Itens.OrderBy(x => x.Uf);
+        public override async Task<IActionResult> Cadastro(PerfilViewModel model)
+        {
+            await CriarViewBags();
+            return await base.Cadastro(model);
+        }
 
-        //    ViewBag.UFs = ufs
-        //        .Select(x => new SelectListItem
-        //        {
-        //            Text = x.Uf,
-        //            Value = x.Id.ToString()
-        //        });
-        //}
+        public override async Task<IActionResult> Cadastro(int? id)
+        {
+            await CriarViewBags();
+            return await base.Cadastro(id);
+        }
+
+        private async Task CriarViewBags()
+        {
+            await CriarViewBagNicho();
+         //   await CriarViewBagRiscos();
+         //   await CriarViewBagFatoresRiscos();
+        }
+
+        private async Task CriarViewBagNicho()
+        {
+
+            var resultado = await _perfilService.ListarNichos();
+
+            ViewBag.Nichos = resultado
+                .Select(x => new SelectListItem
+                {
+                    Text = x.NomeNicho,
+                    Value = x.Id.ToString()
+                });
+        }
+
     }
 }

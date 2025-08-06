@@ -27,11 +27,11 @@ namespace TSmartClinic.Data.Configurations
             .WithMany(o => o.Perfis)
             .HasForeignKey(f => f.NichoId);
 
-            // Relacionamento com Cliente (novo)
-            builder.HasOne(f => f.Cliente)
-                .WithMany(c => c.Perfis)
-                .HasForeignKey(f => f.ClienteId)
-                .OnDelete(DeleteBehavior.Restrict); // importante para não deletar perfis ao deletar cliente
+        // Relacionamento com Cliente (novo)
+        builder.HasOne(f => f.Cliente)
+            .WithMany(c => c.Perfis)
+            .HasForeignKey(f => f.ClienteId)
+            .OnDelete(DeleteBehavior.Restrict); // importante para não deletar perfis ao deletar cliente
         }
     }
 }

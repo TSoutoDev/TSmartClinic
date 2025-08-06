@@ -1,0 +1,41 @@
+para as demasi tabelas
+
+🧱 Situação
+Você já tem uma tabela chamada Cliente, com Id como chave primária:
+
+sql
+Copiar
+Editar
+CREATE TABLE Cliente (
+    Id INT PRIMARY KEY,
+    NomeFantasia NVARCHAR(100),
+    -- outros campos...
+);
+Agora você quer que a tabela Usuario tenha um campo ClienteId que seja obrigatoriamente um ID válido da tabela Cliente.
+
+✅ 1. Adicione a coluna (caso ainda não tenha feito)
+sql
+Copiar
+Editar
+ALTER TABLE Usuario
+ADD ClienteId INT NULL; -- ou NOT NULL se já tiver dados válidos
+✅ 2. Atualize os dados existentes (se necessário)
+sql
+Copiar
+Editar
+UPDATE Usuario
+SET ClienteId = 1 -- ou o ID real correspondente ao cliente
+WHERE ClienteId IS NULL;
+✅ 3. Torne a coluna obrigatória (se desejar)
+sql
+Copiar
+Editar
+ALTER TABLE Usuario
+ALTER COLUMN ClienteId INT NOT NULL;
+✅ 4. Adicione a chave estrangeira (FK)
+sql
+Copiar
+Editar
+ALTER TABLE Usuario
+ADD CONSTRAINT FK_Usuario_Cliente
+FOREIGN KEY (ClienteId) REFERENCES Cliente(Id);

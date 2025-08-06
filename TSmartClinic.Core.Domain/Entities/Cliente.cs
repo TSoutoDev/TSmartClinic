@@ -16,6 +16,8 @@ namespace TSmartClinic.Core.Domain.Entities
         #region Relacionamentos
         public Nicho? Nicho { get; set; }
         public ICollection<Perfil> Perfis { get; set; } = new List<Perfil>();        // Relacionamento 1:N com Perfil
+        public ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();  
+      //  public ICollection<Clinica> Clinicas { get; set; } = new List<Clinica>();  
         #endregion
     }
 }

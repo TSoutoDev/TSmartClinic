@@ -19,7 +19,10 @@ namespace TSmartClinic.Core.Domain.Entities
         public byte[]? Foto { get; set; }
         public bool FlagBloqueado { get; set; }
         public bool Ativo { get; set; }
-        public bool PrimeiroAcesso { get; set; } 
+        public bool PrimeiroAcesso { get; set; }
+        public int ClienteId {  get; set; }
+        public Cliente? Cliente { get; set; } = null!; // Navegação para Cliente
+
 
         public void Bloquear()
         {
