@@ -17,20 +17,28 @@ namespace TSmartClinic.API.Extensions
             services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
             services.AddTransient<ICategoriaService, CategoriaService>();
             services.AddTransient<IUsuarioService, UsuarioService>();
+            services.AddTransient<INichoService, NichoService>();
             services.AddTransient<IPacienteService, PacienteService>();
             services.AddTransient<IPerfilService, PerfilService>();
+            
 
             //Repositorios
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddTransient<ICategoriaRepository, CategoriaRepository>();
             services.AddTransient<ITarefaRepository, TarefaRepository>();
             services.AddTransient<IUsuarioRepository, UsuarioRepository>();
+            services.AddTransient<INichoRepository, NichoRepository>();
             services.AddTransient<IPacienteRepository, PacienteRepository>();
             services.AddTransient<IPerfilRepository, PerfilRepository>();
+            
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ICriptografiaProvider, CriptografiaProvider>();
-           
+
+
+            // Novo: Acesso ao HttpContext para ler claims do token
+            services.AddHttpContextAccessor();
+
             // services.AddTransient<ITokenService, TokenService>();
 
             return services;

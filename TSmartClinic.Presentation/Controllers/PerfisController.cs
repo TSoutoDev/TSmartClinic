@@ -9,9 +9,11 @@ namespace TSmartClinic.Presentation.Controllers
     public class PerfisController : BaseController<IPerfilService,BaseFilterViewModel, PerfilViewModel>
     {
         private readonly IPerfilService _perfilService;
-        public PerfisController(IPerfilService perfilService) : base(perfilService)
+        private readonly INichoService _nichoService;
+        public PerfisController(INichoService nichoService, IPerfilService perfilService) : base(perfilService)
         {
             _perfilService = perfilService;
+            _nichoService = nichoService;
         }
 
 
@@ -37,7 +39,7 @@ namespace TSmartClinic.Presentation.Controllers
         private async Task CriarViewBagNicho()
         {
 
-            var resultado = await _perfilService.ListarNichos();
+            var resultado = await _nichoService.ListarNichos();
 
             ViewBag.Nichos = resultado
                 .Select(x => new SelectListItem

@@ -14,35 +14,5 @@ namespace TSmartClinic.Presentation.Services
         public PerfilService(IAccessTokenService accessTokenService, IOptions<UrlApiSettings>? urlApiSettings) : base(accessTokenService, urlApiSettings, "perfis")
         {
         }
-
-
-        //listar Nichos
-        public  async Task<List<NichoViewModel>> ListarNichos()
-        {
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
-                //var novaUrl = _baseUrlController.Replace("perfis", "");
-                //var result = await client.GetAsync($"{novaUrl}");
-                    var result = await client.GetAsync("http://localhost:5049/api/nichos/listar");
-
-
-                if (result.IsSuccessStatusCode)
-                {
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    };
-
-                    var content = await result.Content.ReadAsStringAsync();
-                    var lista = JsonSerializer.Deserialize<List<NichoViewModel>>(content, options);
-                    return lista;
-                }
-                else
-                {
-                    return new List<NichoViewModel>();
-                }
-            }
-        }
     }
 }

@@ -188,6 +188,22 @@
       "UpstreamHttpMethod": [ "GET", "PATCH", "DELETE" ]
     },
     {
+      "DownstreamPathTemplate": "/api/nichos/obter",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/nichos/obter",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+
+    {
       "DownstreamPathTemplate": "/api/nichos/listar",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

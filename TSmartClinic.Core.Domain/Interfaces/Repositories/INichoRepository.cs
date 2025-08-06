@@ -4,5 +4,6 @@ namespace TSmartClinic.Core.Domain.Interfaces.Repositories
 {
     public interface INichoRepository : IBaseRepository<Nicho>
     {
+        Task<List<Nicho>> ListarNichos();
     }
 }

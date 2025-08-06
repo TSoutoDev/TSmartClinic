@@ -84,7 +84,7 @@
                         {
                             <tr class="clickable" onclick="javascript:location.href='Cadastro/@item.Id'">
                                 <td>@item.NomePerfil?.ToUpper()</td>
-                                <td>@item.ResponsavelTecnico?</td>
+                                <td>@item.ResponsavelTecnicoFormatado?.ToUpper()</td>
                                 <td>@item.Nicho?.NomeNicho?.ToUpper()</td>
                             </tr>
                         }

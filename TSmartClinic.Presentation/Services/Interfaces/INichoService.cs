@@ -3,7 +3,8 @@ using TSmartClinic.Presentation.ViewModels.Filters;
 
 namespace TSmartClinic.Presentation.Services.Interfaces
 {
-    public interface IPerfilService : IBaseService<BaseFilterViewModel, PerfilViewModel>
+    public interface INichoService : IBaseService<BaseFilterViewModel, NichoViewModel>
     {
+        Task<List<NichoViewModel>> ListarNichos();
     }
 }
