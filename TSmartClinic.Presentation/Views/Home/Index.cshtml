@@ -1,13 +1,26 @@
-﻿@model TSmartClinic.Presentation.Models.DashboardViewModel
+﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Antiforgery
+@using Newtonsoft.Json
+@using TSmartClinic.Presentation.Services.Interfaces
+@model TSmartClinic.Presentation.Models.DashboardViewModel
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject IAntiforgery Antiforgery
+@inject IUsuarioLogadoService usuarioLogadoService
+@Html.AntiForgeryToken()
 
 @{
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
     ViewBag.Titulo = "Dashboard";
     ViewBag.Icone = "bx bx-layer"; // Classe do ícone Boxicons
-  
-}
 
+}
+@{
+   
+    var teste = usuarioLogadoService.TipoUsuario;
+    var teste2 = usuarioLogadoService.ClienteId;
+    var teste3 = usuarioLogadoService.UsuarioMaster;
+    var teste4 = usuarioLogadoService.UsuarioLogadoId;
+}
 
 
 <!-- FontAwesome -->
@@ -66,6 +79,15 @@
             </div>
         </div>
     </div>
+</div>
+
+<div>
+
+
+    <span class="fw-bold text-uppercase mb-1">teste: @teste</span>
+    <span class="fw-bold text-uppercase mb-1">teste2: @teste2</span>
+    <span class="fw-bold text-uppercase mb-1">teste3: @teste3</span>
+    <span class="fw-bold text-uppercase mb-1">teste4: @teste4</span>
 </div>
 
 <!-- Chart.js -->

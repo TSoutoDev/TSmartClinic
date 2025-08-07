@@ -6,6 +6,8 @@
         public string? Email { get; set; }
         public string? Senha { get; set; }
         public string? AccessToken { get; set; }
-        public List<ClinicaViewModel>? ListClinicas { get; set; }
+        public string? IdUsuario { get; set; }
+        public string? TipoUsuario { get; set; }
+        public List<ClienteViewModel>? ListClientes { get; set; }
     }
 }

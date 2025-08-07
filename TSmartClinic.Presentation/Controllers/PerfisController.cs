@@ -10,12 +10,14 @@ namespace TSmartClinic.Presentation.Controllers
     {
         private readonly IPerfilService _perfilService;
         private readonly INichoService _nichoService;
-        public PerfisController(INichoService nichoService, IPerfilService perfilService) : base(perfilService)
+        private readonly IUsuarioLogadoService _usuarioLogadoService;
+
+        public PerfisController(INichoService nichoService, IPerfilService perfilService, IUsuarioLogadoService usuarioLogadoService) : base(perfilService)
         {
             _perfilService = perfilService;
             _nichoService = nichoService;
+            _usuarioLogadoService = usuarioLogadoService;
         }
-
 
         public override async Task<IActionResult> Cadastro(PerfilViewModel model)
         {
@@ -32,8 +34,9 @@ namespace TSmartClinic.Presentation.Controllers
         private async Task CriarViewBags()
         {
             await CriarViewBagNicho();
-         //   await CriarViewBagRiscos();
-         //   await CriarViewBagFatoresRiscos();
+            ViewBag.UsuarioMaster = _usuarioLogadoService.UsuarioMaster;
+            //   await CriarViewBagRiscos();
+            //   await CriarViewBagFatoresRiscos();
         }
 
         private async Task CriarViewBagNicho()

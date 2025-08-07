@@ -90,7 +90,9 @@ namespace TSmartClinic.Presentation.Controllers
                         var claims = new List<Claim>
                         {
                             new Claim(ClaimTypes.Name, autenticacao.Nome),
-                            new Claim(ClaimTypes.Email, autenticacao.Email)
+                            new Claim(ClaimTypes.Email, autenticacao.Email),
+                            new Claim("Usuario_Id", autenticacao.IdUsuario),
+                            new Claim("Usuario_Tipo", autenticacao.TipoUsuario), 
                         };
 
                         claims.Add(new Claim("permissao", string.Join(',', permissoes)));
@@ -106,12 +108,15 @@ namespace TSmartClinic.Presentation.Controllers
                         // Salvar na sessão
                         HttpContext.Session.SetString("Usuario_Nome", autenticacao.Nome);
                         HttpContext.Session.SetString("Usuario_Email", autenticacao.Email);
+                        HttpContext.Session.SetString("Usuario_Id", autenticacao.IdUsuario);
+                        HttpContext.Session.SetString("Usuario_Tipo", autenticacao.TipoUsuario);
                         // Verificando se há clínicas
-                        if (autenticacao.ListClinicas != null && autenticacao.ListClinicas.Any())
+                        if (autenticacao.ListClientes != null && autenticacao.ListClientes.Any())
                         {
-                            var clinica = autenticacao.ListClinicas.First(); // pega a primeira clínica
-                            HttpContext.Session.SetString("Clinica_Nome", clinica.NomeClinica ?? "");
-                            HttpContext.Session.SetString("Clinica_Cnpj", clinica.CNPJ ?? "");
+                            var cliente = autenticacao.ListClientes.First();
+                            claims.Add(new Claim("Cliente_Nome", cliente.NomeCliente ?? ""));
+                            claims.Add(new Claim("Cliente_Cnpj", cliente.CNPJ ?? ""));
+                            claims.Add(new Claim("Cliente_Id", cliente.Id.ToString())); 
                         }
 
                         return RedirectToAction("Index", "Home");

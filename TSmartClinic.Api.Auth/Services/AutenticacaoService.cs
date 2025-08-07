@@ -49,6 +49,7 @@ namespace TSmartClinic.Api.Auth.Services
                     return null;
 
                 var usuarioAutenticacao = _mapper.Map<AutenticacaoModel>(usuario);
+
                 // Garantindo os campos essenciais
                 usuarioAutenticacao.Id = usuario.Id;
                 usuarioAutenticacao.ClienteId = usuario.ClienteId;
@@ -70,7 +71,9 @@ namespace TSmartClinic.Api.Auth.Services
                     AccessToken = accessToken,
                     Nome = usuario.Nome,
                     Email = usuario.Email,
-                    ListClinicas = clinicasUsuario,// loginRequestDto.ClinicaId,
+                    IdUsuario = usuario.Id.ToString(),
+                    TipoUsuario = usuarioAutenticacao.TipoUsuario.ToString(),
+                    ListClientes = clinicasUsuario,// loginRequestDto.ClinicaId,
                 };
 
                 return response;

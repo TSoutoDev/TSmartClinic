@@ -1,8 +1,9 @@
 ﻿namespace TSmartClinic.Presentation.Models
 {
-    public class ClinicaViewModel
+    public class ClienteViewModel : BaseViewModel
     {
-        public string? NomeClinica { get; set; }
+
+        public string? NomeCliente { get; set; }
         public string? RazaoSocial { get; set; }
         public string? CNPJ { get; set; }
         public string? Telefone { get; set; }

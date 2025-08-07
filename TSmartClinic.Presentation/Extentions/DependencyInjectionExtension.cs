@@ -10,6 +10,9 @@ namespace TSmartClinic.Presentation.Extentions
     {
         public static IServiceCollection AddDependencyInjection(this IServiceCollection services)
         {
+            // Registro do IHttpContextAccessor
+            services.AddHttpContextAccessor();
+
             services.AddTransient<IAccessTokenService, AccessTokenService>();
             services.AddTransient<IAutenticacaoService, AutenticacaoService>();
             services.AddSingleton<ICriptografiaProvider, CriptografiaProvider>();
@@ -17,6 +20,7 @@ namespace TSmartClinic.Presentation.Extentions
             services.AddTransient<IUsuarioService, UsuarioService>();
             services.AddTransient<IPerfilService, PerfilService>();
             services.AddTransient<INichoService, NichoService>();
+            services.AddTransient<IUsuarioLogadoService, UsuarioLogadoService>();
 
             return services;
         }

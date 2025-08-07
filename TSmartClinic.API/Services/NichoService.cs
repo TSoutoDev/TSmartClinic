@@ -7,22 +7,21 @@ namespace TSmartClinic.API.Services
 {
     public class NichoService : BaseService<Nicho>, INichoService
     {
+        private readonly IUsuarioLogadoService _usuarioLogadoService;
         private readonly INichoRepository _nichoRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public NichoService(IHttpContextAccessor httpContextAccessor, INichoRepository nichoRepository) : base(nichoRepository)
+        public NichoService(IUsuarioLogadoService usuarioLogadoService, INichoRepository nichoRepository) : base(nichoRepository)
         {
             _nichoRepository = nichoRepository;
-            _httpContextAccessor = httpContextAccessor;
+            _usuarioLogadoService = usuarioLogadoService;
         }
 
         public async Task<List<Nicho>> ListarNichos()
         {
-            var tipoUsuario = _httpContextAccessor.HttpContext?.User.FindFirst("TipoUsuario")?.Value;
-
-            if (tipoUsuario?.ToLower() != "master")
+            if (!_usuarioLogadoService.UsuarioMaster)
                 throw new UnauthorizedAccessException("Apenas usuários do tipo master podem acessar os nichos.");
 
+          
             return await _nichoRepository.ListarNichos();
         }
     }
