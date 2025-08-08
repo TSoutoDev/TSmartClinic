@@ -7,15 +7,19 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TSmartClinic.Api.Auth.DTOs;
+using TSmartClinic.Core.Domain.Entities;
+using TSmartClinic.Core.Domain.Interfaces.Repositories;
 
 namespace TSmartClinic.Core.Infra.Security.Services
 {
     public class TokenService : ITokenService
     {
         private readonly TokenSettings? _tokenSettings;
-        public TokenService(IOptions<TokenSettings>? tokenSettings)
+        private readonly IUsuarioRepository? _usuarioRepository;
+        public TokenService(IUsuarioRepository usuarioRepository, IOptions<TokenSettings>? tokenSettings)
         {
             _tokenSettings = tokenSettings?.Value;
+            _usuarioRepository = usuarioRepository;
         }
         public string GerarRefreshToken()
         {
@@ -30,11 +34,23 @@ namespace TSmartClinic.Core.Infra.Security.Services
             if (_tokenSettings == null || string.IsNullOrWhiteSpace(_tokenSettings.SecretKey))
                 throw new InvalidOperationException("Configuração de TokenSettings inválida.");
 
+            // 1. Buscar o usuário com cliente carregado
+            var usuario = _usuarioRepository.ObterPorId(autenticacao.Id,x => x.Cliente);
+
+            var nichoId = usuario.Cliente != null ? usuario.Cliente.NichoId : 0;
+
             var claims = new[]
             {
                     new Claim(ClaimTypes.Name, autenticacao.Nome),
                     new Claim(ClaimTypes.Email, autenticacao.Email),
                     new Claim("permissao", string.Join(",", permissoes)),
+                    
+                    // Claims que o UsuarioLogadoService precisa
+                    new Claim("Usuario_Id", autenticacao.Id.ToString() ?? ""),
+                    new Claim("Cliente_Id", autenticacao.ClienteId.ToString() ?? ""),
+                    new Claim("Cliente_NichoId", nichoId.ToString() ?? ""),
+                    new Claim("TipoUsuario", autenticacao.TipoUsuario.ToString() ?? "") // "M" para master, por exemplo
+                  
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenSettings.SecretKey));

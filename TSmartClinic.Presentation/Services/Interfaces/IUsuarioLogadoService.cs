@@ -7,5 +7,6 @@
         string TipoUsuario { get; }
         int? ClienteId { get; }
         string? NomeCliente { get; }
+        int? NichoClienteId { get; }
     }
 }

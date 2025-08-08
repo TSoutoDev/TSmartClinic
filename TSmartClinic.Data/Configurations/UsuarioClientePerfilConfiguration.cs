@@ -17,7 +17,7 @@ namespace TSmartClinic.Data.Configurations
 
             builder.Property(c => c.Id).HasColumnName("UsuarioId");
             // Configura coluna ClinicaPadrao (opcional se seguir convenção)
-            builder.Property(ee => ee.ClinicaPadrao)
+            builder.Property(ee => ee.ClientePadrao)
                    .HasColumnName("ClinicaPadrao")
                    .HasColumnType("bit")
                    .IsRequired()

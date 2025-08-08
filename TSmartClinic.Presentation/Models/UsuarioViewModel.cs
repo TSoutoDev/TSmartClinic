@@ -18,5 +18,6 @@
         public bool FlagBloqueado { get; set; } 
         public bool Ativo { get; set; } = true;
         public bool PrimeiroAcesso { get; set; }
+        public List<ClienteViewModel>? ListClientes { get; set; }
     }
 }

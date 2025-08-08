@@ -13,16 +13,13 @@ namespace TSmartClinic.API.Services
         }
 
         public string TipoUsuario => _contextAccessor.HttpContext?.User.FindFirst("TipoUsuario")?.Value?.ToUpper();
-
         public bool UsuarioMaster => TipoUsuario == "M";
 
-        //public int? IdUsuario =>
-        //    int.TryParse(_contextAccessor.HttpContext?.User.FindFirst("IdUsuario")?.Value, out var id) ? id : (int?)null;
         public int? UsuarioLogadoId
         {
             get
             {
-                var claim = _contextAccessor.HttpContext?.User?.FindFirst("IdUsuario");
+                var claim = _contextAccessor.HttpContext?.User?.FindFirst("Usuario_Id");
                 if (claim != null && int.TryParse(claim.Value, out int id))
                 {
                     return id;
@@ -34,7 +31,19 @@ namespace TSmartClinic.API.Services
         {
             get
             {
-                var claim = _contextAccessor.HttpContext?.User?.FindFirst("ClienteId");
+                var claim = _contextAccessor.HttpContext?.User?.FindFirst("Cliente_Id");
+                if (claim != null && int.TryParse(claim.Value, out int id))
+                {
+                    return id;
+                }
+                return null;
+            }
+        }
+        public int? NichoClienteId
+        {
+            get
+            {
+                var claim = _contextAccessor.HttpContext?.User?.FindFirst("Cliente_NichoId");
                 if (claim != null && int.TryParse(claim.Value, out int id))
                 {
                     return id;

@@ -5,7 +5,7 @@
         public int ClienteId { get; set; }
         public int PerfilId { get; set; }
 
-        public bool ClinicaPadrao { get; set; }
+        public bool ClientePadrao { get; set; }
 
         #region Relacionamentos
         public Usuario? Usuario { get; set; }

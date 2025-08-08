@@ -19,7 +19,7 @@ namespace TSmartClinic.Api.Auth.Repositories
         public Cliente ObterClinicaPadraoDoUsuario(int usuarioId)
         {
             return _tsmartClinicContext.UsuarioClientePerfil
-                .Where(uc => uc.Id == usuarioId && uc.ClinicaPadrao)
+                .Where(uc => uc.Id == usuarioId && uc.ClientePadrao)
                 .Select(uc => uc.Clinica)
                 .FirstOrDefault();
         }

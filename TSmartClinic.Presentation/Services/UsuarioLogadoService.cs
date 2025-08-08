@@ -45,5 +45,18 @@ namespace TSmartClinic.Presentation.Services
         }
 
         public string? NomeCliente => _contextAccessor.HttpContext?.User?.FindFirst("Cliente_Nome")?.Value?.ToUpper();
+
+        public int? NichoClienteId
+        {
+            get
+            {
+                var claim = _contextAccessor.HttpContext?.User?.FindFirst("Cliente_NichoId");
+                if (claim != null && int.TryParse(claim.Value, out int id))
+                {
+                    return id;
+                }
+                return null;
+            }
+        }
     }
 }

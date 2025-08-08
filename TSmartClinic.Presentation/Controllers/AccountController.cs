@@ -96,7 +96,8 @@ namespace TSmartClinic.Presentation.Controllers
                             new Claim("Usuario_Tipo", autenticacao.TipoUsuario),
                             new Claim("Cliente_Nome", cliente.NomeCliente ?? ""),
                             new Claim("Cliente_Cnpj", cliente.CNPJ ?? ""),
-                            new Claim("Cliente_Id", cliente.Id.ToString() ?? "")
+                            new Claim("Cliente_Id", cliente.Id.ToString() ?? ""),
+                            new Claim("Cliente_NichoId", cliente.NichoId.ToString() ?? "")
                         };
 
                         claims.Add(new Claim("permissao", string.Join(',', permissoes)));
@@ -124,6 +125,7 @@ namespace TSmartClinic.Presentation.Controllers
                         HttpContext.Session.SetString("Usuario_Tipo", autenticacao.TipoUsuario);
                         HttpContext.Session.SetString("Cliente_Nome", cliente.NomeCliente);
                         HttpContext.Session.SetString("Cliente_Id", cliente.Id.ToString());
+                        HttpContext.Session.SetString("Cliente_NichoId", cliente.NichoId.ToString());
 
 
 

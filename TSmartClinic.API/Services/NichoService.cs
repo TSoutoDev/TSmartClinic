@@ -19,10 +19,24 @@ namespace TSmartClinic.API.Services
         public async Task<List<Nicho>> ListarNichos()
         {
             if (!_usuarioLogadoService.UsuarioMaster)
-                throw new UnauthorizedAccessException("Apenas usuários do tipo master podem acessar os nichos.");
+            {
+                if (!_usuarioLogadoService.NichoClienteId.HasValue)
+                    return new List<Nicho>();
 
-          
-            return await _nichoRepository.ListarNichos();
+                // Busca da sessão o id do nicho 
+                var idNicho = _usuarioLogadoService.NichoClienteId.Value;
+
+                // Busca apenas o nicho do usuário
+                var nicho = _nichoRepository.ObterPorId(idNicho);
+
+                // Retorna lista com apenas esse nicho
+                return nicho != null
+                    ? new List<Nicho> { nicho }
+                    : new List<Nicho>();
+            }
+
+            // Se for Master, retorna todos
+            return await _nichoRepository.ListarNichos(); 
         }
     }
 }
