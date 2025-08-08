@@ -4,7 +4,8 @@ using TSmartClinic.Presentation.ViewModels.Filters;
 
 namespace TSmartClinic.Presentation.Services.Interfaces
 {
-    public interface IPerfilService : IBaseService<BaseFilterViewModel, PerfilViewModel>
+    public interface IClienteService : IBaseService<BaseFilterViewModel, ClienteViewModel>
     {
+        Task<List<ClienteViewModel>> ListarClientes();
     }
 }

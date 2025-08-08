@@ -31,10 +31,5 @@ namespace TSmartClinic.API.Services
 
             return base.Inserir(entity);
         }
-
-        public Task<List<Nicho>> ListarNichos()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -1,12 +1,12 @@
-﻿namespace TSmartClinic.Presentation.Models
+﻿namespace TSmartClinic.API.DTOs.Requests.Base
 {
-    public class ClienteViewModel : BaseViewModel
+    public class BaseClienteRequestDTO : BaseRequestDTO
     {
         public string? NomeCliente { get; set; }
         public string? RazaoSocial { get; set; }
-        public string? CNPJ { get; set; }
+        public string? Cnpj { get; set; }
         public string? Telefone { get; set; }
-        public string? Email { get; set; }
+        public string? EmailContato { get; set; }
         public bool? Ativo { get; set; }
         public DateTime? DataCadastro { get; set; }
         public int? NichoId { get; set; }

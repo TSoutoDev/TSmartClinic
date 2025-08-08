@@ -17,7 +17,7 @@ namespace AgendaApp.API.Mapper
             CreateMap<Paciente, BasePacienteRequestDTO>().ReverseMap();
             CreateMap<Nicho, BaseNichoRequestDTO>().ReverseMap();
             CreateMap<Perfil, BasePerfilRequestDTO>().ReverseMap();
-          
+            CreateMap<Cliente, BaseClienteRequestDTO>().ReverseMap();
 
             //insert
             CreateMap<Categoria, CategoriaInsertRequestDTO>().ReverseMap();
@@ -41,6 +41,7 @@ namespace AgendaApp.API.Mapper
             CreateMap<Paciente, PacienteResponseDTO>();
             CreateMap<Nicho, NichoResponseDTO>();
             CreateMap<Perfil, PerfilResponseDTO>();
+            CreateMap<Cliente, ClienteResponseDTO>();
         }
     }
 }

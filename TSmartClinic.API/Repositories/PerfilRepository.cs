@@ -21,12 +21,12 @@ namespace TSmartClinic.API.Repositories
             query = query?.Where(x => (int)x.Id == id);
 
             query = query?.Include(x => x.Nicho)
-          ?               .Include(x => x.Cliente);
+          ?.Include(x => x.Cliente);
 
             var perfil = query?.FirstOrDefault();
 
             return perfil;
-       
+
         }
 
         public override List<Perfil> Listar(BaseFiltro filtro, params Expression<Func<Perfil, object>>[] properties)
@@ -53,7 +53,8 @@ namespace TSmartClinic.API.Repositories
             }
 
             return query.ToList();
-    
+
         }
     }
 }
+

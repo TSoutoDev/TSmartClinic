@@ -10,6 +10,7 @@
         public int? NichoId { get; set; }
         public int? ClienteId { get; set; }
         public NichoViewModel? Nicho {  get; set; }
+        public List<ClienteViewModel>? ListClientes { get; set; }
 
 
         public string ResponsavelTecnicoFormatado

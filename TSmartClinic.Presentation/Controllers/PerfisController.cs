@@ -6,17 +6,20 @@ using TSmartClinic.Presentation.ViewModels.Filters;
 
 namespace TSmartClinic.Presentation.Controllers
 {
-    public class PerfisController : BaseController<IPerfilService,BaseFilterViewModel, PerfilViewModel>
+    public class PerfisController : BaseController<IPerfilService, BaseFilterViewModel, PerfilViewModel>
     {
         private readonly IPerfilService _perfilService;
+        private readonly IClienteService _clienteService;
         private readonly INichoService _nichoService;
         private readonly IUsuarioLogadoService _usuarioLogadoService;
 
-        public PerfisController(INichoService nichoService, IPerfilService perfilService, IUsuarioLogadoService usuarioLogadoService) : base(perfilService)
+
+        public PerfisController(IClienteService clienteService, INichoService nichoService, IPerfilService perfilService, IUsuarioLogadoService usuarioLogadoService) : base(perfilService)
         {
             _perfilService = perfilService;
             _nichoService = nichoService;
             _usuarioLogadoService = usuarioLogadoService;
+            _clienteService = clienteService;
         }
 
         public override async Task<IActionResult> Cadastro(PerfilViewModel model)
@@ -34,6 +37,7 @@ namespace TSmartClinic.Presentation.Controllers
         private async Task CriarViewBags()
         {
             await CriarViewBagNicho();
+            await CriarViewClientes();
             ViewBag.UsuarioMaster = _usuarioLogadoService.UsuarioMaster;
             //   await CriarViewBagRiscos();
             //   await CriarViewBagFatoresRiscos();
@@ -41,7 +45,6 @@ namespace TSmartClinic.Presentation.Controllers
 
         private async Task CriarViewBagNicho()
         {
-
             var resultado = await _nichoService.ListarNichos();
 
             ViewBag.Nichos = resultado
@@ -52,5 +55,17 @@ namespace TSmartClinic.Presentation.Controllers
                 });
         }
 
+
+        private async Task CriarViewClientes()
+        {
+            var resultado = await _clienteService.ListarClientes();
+
+            ViewBag.Clientes = resultado
+                .Select(x => new SelectListItem
+                {
+                    Text = x.NomeCliente,
+                    Value = x.Id.ToString()
+                });
+        }
     }
 }

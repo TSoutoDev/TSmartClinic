@@ -4,5 +4,6 @@ namespace TSmartClinic.Core.Domain.Interfaces.Services
 {
     public interface IClienteService : IBaseService<Cliente>
     {
+        Task<List<Cliente>> ListarClientes();
     }
 }

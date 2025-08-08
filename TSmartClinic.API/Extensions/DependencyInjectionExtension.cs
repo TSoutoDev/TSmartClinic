@@ -16,6 +16,7 @@ namespace TSmartClinic.API.Extensions
             //Servicos
             services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
             services.AddTransient<ICategoriaService, CategoriaService>();
+            services.AddTransient<IClienteService, ClienteService>();
             services.AddTransient<IUsuarioService, UsuarioService>();
             services.AddTransient<INichoService, NichoService>();
             services.AddTransient<IPacienteService, PacienteService>();
@@ -26,6 +27,7 @@ namespace TSmartClinic.API.Extensions
             //Repositorios
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddTransient<ICategoriaRepository, CategoriaRepository>();
+            services.AddTransient<IClienteRepository, ClienteRepository>();
             services.AddTransient<ITarefaRepository, TarefaRepository>();
             services.AddTransient<IUsuarioRepository, UsuarioRepository>();
             services.AddTransient<INichoRepository, NichoRepository>();

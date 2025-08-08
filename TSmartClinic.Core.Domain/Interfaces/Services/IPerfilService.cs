@@ -4,6 +4,5 @@ namespace TSmartClinic.Core.Domain.Interfaces.Services
 {
     public interface IPerfilService : IBaseService<Perfil>
     {
-        Task<List<Nicho>> ListarNichos();
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Services.Interfaces;
 using TSmartClinic.Presentation.Settings;
