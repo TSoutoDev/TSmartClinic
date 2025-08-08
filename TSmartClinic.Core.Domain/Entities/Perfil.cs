@@ -10,7 +10,7 @@ namespace TSmartClinic.Core.Domain.Entities
         public bool? ResponsavelTecnico { get; set; }
         public bool? Ativo { get; set; }
         public int? NichoId { get; set; }
-        public int ClienteId { get; set; } 
+        public int? ClienteId { get; set; } 
 
         #region Relacionamentos
         public Nicho? Nicho { get; set; }

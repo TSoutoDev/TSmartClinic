@@ -8,6 +8,7 @@
         public bool ResponsavelTecnico { get; set; }
         public bool Ativo { get; set; } = true;
         public int? NichoId { get; set; }
+        public int? ClienteId { get; set; }
         public NichoViewModel? Nicho {  get; set; }
 
 

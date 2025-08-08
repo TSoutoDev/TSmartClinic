@@ -18,12 +18,16 @@ namespace TSmartClinic.API.Services
 
         public override Perfil Inserir(Perfil entity)
         {
+            // Verifica se o nicho está disponível
             if (!_usuarioLogadoService.UsuarioMaster)
-                throw new UnauthorizedAccessException("Apenas usuários do tipo master podem acessar os nichos.");
+            {
+                if (!_usuarioLogadoService.NichoClienteId.HasValue)
+                     throw new UnauthorizedAccessException("Não foi possivel acessar a area de atuação do cliente.");
 
-
-          //  var clienteId = _usuarioLogadoService.ClienteId
-
+                // Preenche o ID do nicho e cliente no perfil que vai ser inserido
+                entity.NichoId = _usuarioLogadoService.NichoClienteId.Value;//trocar p pegar da model (tela)
+                entity.ClienteId = _usuarioLogadoService.ClienteId.Value;
+            }
 
             return base.Inserir(entity);
         }
