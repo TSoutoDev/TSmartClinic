@@ -6,5 +6,6 @@
         bool UsuarioMaster { get; }
         string TipoUsuario { get; }
         int? ClienteId { get; }
+        string? NomeCliente { get; }
     }
 }

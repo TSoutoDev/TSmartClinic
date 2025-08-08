@@ -43,5 +43,7 @@ namespace TSmartClinic.Presentation.Services
                 return null;
             }
         }
+
+        public string? NomeCliente => _contextAccessor.HttpContext?.User?.FindFirst("Cliente_Nome")?.Value?.ToUpper();
     }
 }

@@ -4,7 +4,7 @@ namespace TSmartClinic.Core.Domain.Entities
 {
     public class Cliente : Base
     {
-        public string? NomeFantasia { get; set; }
+        public string? NomeCliente { get; set; }
         public string? RazaoSocial { get; set; }
         public string? Cnpj{ get; set; }
         public string? Telefone { get; set; }
