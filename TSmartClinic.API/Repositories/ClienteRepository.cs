@@ -11,10 +11,17 @@ namespace TSmartClinic.API.Repositories
         public ClienteRepository(TSmartClinicContext dbContext) : base(dbContext)
         {
         }
-        public async Task<List<Cliente>> ListarClientes()
+
+        public async Task<List<Cliente>> ListarClientes(int? clienteId = null)
         {
-            return await _dbSet
-                .OrderByDescending(c => c.NomeCliente).ToListAsync();
+            IQueryable<Cliente> query = _dbSet;
+
+            if (clienteId.HasValue)
+            {
+                query = query.Where(c => c.Id == clienteId.Value).OrderBy(c => c.NomeCliente);
+            }
+
+            return await query.ToListAsync();
         }
 
     }

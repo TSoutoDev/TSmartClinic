@@ -18,7 +18,6 @@ namespace TSmartClinic.API.Services
 
         public override Perfil Inserir(Perfil entity)
         {
-            // Verifica se o nicho está disponível
             if (!_usuarioLogadoService.UsuarioMaster)
             {
                 if (!_usuarioLogadoService.NichoClienteId.HasValue)

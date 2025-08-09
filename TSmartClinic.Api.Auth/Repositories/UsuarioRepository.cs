@@ -1,4 +1,5 @@
-﻿using TSmartClinic.Core.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Data.Contexts;
 using TSmartClinic.Data.Repositories;
@@ -74,9 +75,11 @@ namespace TSmartClinic.Api.Auth.Repositories
 
         public Usuario ObterPorEmail(string email)
         {
-            var query = _dbSet as IQueryable<Usuario>;
+            var query = _dbSet
+               .Include(u => u.Cliente)  // Inclui o Cliente relacionado
+               .AsQueryable();
 
-            return query?.FirstOrDefault(x => x.Email == email);
+            return query.FirstOrDefault(x => x.Email == email);
         }
     }
 }

@@ -15,7 +15,7 @@
 <p>Usuário Master? @UsuarioLogado.UsuarioMaster</p>
 <p>Id do Usuário: @UsuarioLogado.UsuarioLogadoId</p>
 <p>Tipo Usuário: @UsuarioLogado.TipoUsuario</p>
-<p>Tipo Usuário: @UsuarioLogado.NomeCliente</p>
+<p>Nome Cliente: @UsuarioLogado.NomeCliente</p>
 
 @using (Html.BeginForm())
 {
@@ -64,17 +64,21 @@
                             </span>
                         </div>
 
-                        <div class="col-lg-3">
-                            <label for="NichoId">Nicho</label>
-                            <i class="fa-solid fa-crown" title="Usuário Master" style="color: gold; margin-left: 5px;"></i>
-                            <select id="NichoId" name="NichoId" class="form-select" asp-for="NichoId" asp-items="@ViewBag.Nichos">
-                                <option value="">Selecione a Área de Atuação</option>
-                            </select>
+                        @if (UsuarioLogado != null && UsuarioLogado.UsuarioMaster)
+                        {
+                            <div class="col-lg-3">
+                                <label for="NichoId">Nicho</label>
+                                <i class="fa-solid fa-crown" title="Usuário Master" style="color: gold; margin-left: 5px;"></i>
+                                <select id="NichoId" name="NichoId" class="form-select" asp-for="NichoId" asp-items="@ViewBag.Nichos">
+                                    <option value="">Selecione a Área de Atuação</option>
+                                </select>
 
-                            <span class="text-danger">
-                                @Html.ValidationMessageFor(model => model.NichoId)
-                            </span>
-                        </div>
+                                <span class="text-danger">
+                                    @Html.ValidationMessageFor(model => model.NichoId)
+                                </span>
+                            </div>
+                        }
+
                     </div>
 
                   
@@ -91,28 +95,24 @@
                         </div>
 
                         <!-- Chave Seletora Agendamento (Switch) -->
-                        <div class="col-md-2 d-flex align-items-center">
+                        <div class="col-md-2 d-flex align-items-center mt-4">
                             <div class="form-check form-switch">
-                                <input class="form-check-input"
-                                       id="ResponsavelTecnicoSwitch"
-                                       type="checkbox" />
-                                <label class="form-check-label ms-2" for="ResponsavelTecnico">
+                                <input asp-for="ResponsavelTecnico" class="form-check-input" type="checkbox" id="ResponsavelTecnicoSwitch" />
+                                <label class="form-check-label ms-2" asp-for="ResponsavelTecnico">
                                     Responsável Técnico ?
                                 </label>
                             </div>
                         </div>
 
-                        <!-- Chave Seletora Agendamento (Switch) -->
-                        <div class="col-md-2 d-flex align-items-center">
+                       @*  <!-- Chave Seletora Agendamento (Switch) -->
+                        <div class="col-md-2 d-flex align-items-center mt-4">
                             <div class="form-check form-switch">
-                                <input class="form-check-input"
-                                       id="ClienteSwitch"
-                                       type="checkbox" />
-                                <label class="form-check-label ms-2" for="Cliente">
+                                <input class="form-check-input" type="checkbox" id="ClienteSwitch" />
+                                <label class="form-check-label ms-2" for="ClienteSwitch">
                                     Perfil Cliente
                                 </label>
                             </div>
-                        </div>
+                        </div> *@
                     </div>
 
 

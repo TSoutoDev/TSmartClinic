@@ -24,6 +24,7 @@ namespace AgendaApp.API.Mapper
             CreateMap<Tarefa, TarefaInsertRequestDTO>().ReverseMap();         
             CreateMap<Usuario, UsuarioInsertRequestDTO>().ReverseMap();
             CreateMap<Paciente, PacienteInsertRequestDTO>().ReverseMap();
+            CreateMap<Perfil, PerfilUpdateRequestDTO>().ReverseMap();
 
             //Update
             CreateMap<Categoria, CategoriaUpdateRequestDTO>().ReverseMap();
