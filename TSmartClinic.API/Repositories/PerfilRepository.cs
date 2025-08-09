@@ -55,6 +55,15 @@ namespace TSmartClinic.API.Repositories
             return query.ToList();
 
         }
+
+        public override Perfil Atualizar(Perfil entity)
+        {
+            var query = _dbSet as IQueryable<Perfil>;
+            query
+                .Include(x => x.Cliente);
+
+            return base.Atualizar(entity);
+        }
     }
 }
 

@@ -30,5 +30,17 @@ namespace TSmartClinic.API.Services
 
             return base.Inserir(entity);
         }
+
+        public override Perfil Atualizar(int id, Perfil entity)
+        {
+            if (!_usuarioLogadoService.UsuarioMaster)
+            {
+               // Preenche o ID do nicho e cliente no perfil que vai ser inserido
+                entity.NichoId = _usuarioLogadoService.NichoClienteId.Value;//trocar p pegar da model (tela)
+                entity.ClienteId = _usuarioLogadoService.ClienteId.Value;
+            }
+           
+            return base.Atualizar(id, entity);
+        }
     }
 }
