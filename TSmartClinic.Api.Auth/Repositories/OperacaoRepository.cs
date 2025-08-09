@@ -12,6 +12,11 @@ namespace TSmartClinic.Api.Auth.Repositories
         { 
         }
 
+        public Task<List<Operacao>> ListarOperacoes()
+        {
+            throw new NotImplementedException();
+        }
+
         public List<string> ObterPermissaoUsuario(int perfilId)
         {
             var usuario = _dbSet as IQueryable<Usuario>;

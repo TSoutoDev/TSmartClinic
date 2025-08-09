@@ -7,8 +7,15 @@ namespace TSmartClinic.API.Services
 {
     public class OperacaoService : BaseService<Operacao>, IOperacaoService
     {
-        public OperacaoService(IOperacaoRepository baseRepository) : base(baseRepository)
+        private readonly IOperacaoRepository _operacaoRepository;
+        public OperacaoService(IOperacaoRepository operacaoRepository) : base(operacaoRepository)
         {
+            _operacaoRepository = operacaoRepository;
+        }
+
+        public async Task<List<Operacao>> ListarOperacoes()
+        {
+            return await _operacaoRepository.ListarOperacoes();
         }
     }
 }
