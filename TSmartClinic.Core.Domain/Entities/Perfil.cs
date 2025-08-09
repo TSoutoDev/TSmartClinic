@@ -15,7 +15,7 @@ namespace TSmartClinic.Core.Domain.Entities
         #region Relacionamentos
         public Nicho? Nicho { get; set; }
         public OperacaoPerfil? OperacaoPerfis { get; set; }
-        public Cliente? Cliente { get; set; } = null!; // Navegação para Cliente
+        public Cliente? Cliente { get; set; }  
         #endregion
 
 
@@ -27,9 +27,8 @@ namespace TSmartClinic.Core.Domain.Entities
             this.ValidadeDias = perfil?.ValidadeDias;
             this.ErrosSenha = perfil?.ErrosSenha;
             this.ResponsavelTecnico = perfil?.ResponsavelTecnico;
-            this.Cliente = perfil.Cliente;
-            this.Ativo = perfil.Ativo;
-            this.NichoId = perfil.NichoId;
+            this.Ativo = perfil?.Ativo;
+            this.NichoId = perfil?.NichoId;
 
             this.RemoverEspacosEmBranco();
         }
