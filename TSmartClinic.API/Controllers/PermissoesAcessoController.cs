@@ -15,11 +15,13 @@ namespace TSmartClinic.API.Controllers
     {
         private readonly IModuloService _moduloService;
         private readonly IOperacaoService _operacaoService;
+        private readonly IFuncionalidadeService _funcionalidadeService;
         private readonly IMapper _mapper;
-        public PermissoesAcessoController(IMapper mapper, IModuloService moduloService, IOperacaoService operacaoService)
+        public PermissoesAcessoController(IMapper mapper, IFuncionalidadeService funcionalidadeService, IModuloService moduloService, IOperacaoService operacaoService)
         {
             _moduloService = moduloService;
             _operacaoService = operacaoService;
+            _funcionalidadeService = funcionalidadeService;
             _mapper = mapper;
         }
 
@@ -53,6 +55,22 @@ namespace TSmartClinic.API.Controllers
             var obj = _mapper.Map<List<OperacaoResponseDTO>>(lista);
 
             return StatusCode(200, _mapper.Map<List<OperacaoResponseDTO>>(obj));
+        }
+
+        //[AuthorizePermission("Usuarios_Acessar")]
+        [HttpGet("funcionalidades")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<List<FuncionalidadeResponseDTO>>> ObterFuncionalidades()
+        {
+            var lista = await _funcionalidadeService.ListarFuncionalidades();
+
+            if (lista == null || !lista.Any()) throw new NotFoundException();
+
+            var obj = _mapper.Map<List<FuncionalidadeResponseDTO>>(lista);
+
+            return StatusCode(200, _mapper.Map<List<FuncionalidadeResponseDTO>>(obj));
         }
     }
 }

@@ -18,6 +18,7 @@ namespace TSmartClinic.API.Extensions
             services.AddTransient<ICategoriaService, CategoriaService>();
             services.AddTransient<IClienteService, ClienteService>();
             services.AddTransient<IUsuarioService, UsuarioService>();
+            services.AddTransient<IFuncionalidadeService, FuncionalidadeService>();
             services.AddTransient<IModuloService, ModuloService>();
             services.AddTransient<INichoService, NichoService>();
             services.AddTransient<IOperacaoService, OperacaoService>();
@@ -31,6 +32,7 @@ namespace TSmartClinic.API.Extensions
             services.AddTransient<ICategoriaRepository, CategoriaRepository>();
             services.AddTransient<IClienteRepository, ClienteRepository>();
             services.AddTransient<ITarefaRepository, TarefaRepository>();
+            services.AddTransient<IFuncionalidadeRepository, FuncionalidadeRepository>();
             services.AddTransient<IUsuarioRepository, UsuarioRepository>();
             services.AddTransient<IModuloRepository, ModuloRepository>();
             services.AddTransient<INichoRepository, NichoRepository>();

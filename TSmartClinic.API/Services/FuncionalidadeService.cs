@@ -7,8 +7,16 @@ namespace TSmartClinic.API.Services
 {
     public class FuncionalidadeService : BaseService<Funcionalidade>, IFuncionalidadeService
     {
-        public FuncionalidadeService(IFuncionalidadeRepository baseRepository) : base(baseRepository)
+
+        private readonly IFuncionalidadeRepository _funcionalidadeRepository;
+        public FuncionalidadeService(IFuncionalidadeRepository funcionalidadeRepository) : base(funcionalidadeRepository)
         {
+            _funcionalidadeRepository = funcionalidadeRepository;
+        }
+
+        public async Task<List<Funcionalidade>> ListarFuncionalidades()
+        {
+            return await _funcionalidadeRepository.ListarFuncionalidades();
         }
     }
 }
