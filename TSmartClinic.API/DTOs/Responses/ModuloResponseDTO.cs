@@ -6,5 +6,8 @@
         public string? NomeModulo { get; set; }
         public string? Descricao { get; set; }
         public bool? Ativo { get; set; }
+
+        public List<FuncionalidadeResponseDTO>? Funcionalidades { get; set; }
+     
     }
 }

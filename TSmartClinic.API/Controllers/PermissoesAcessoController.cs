@@ -25,14 +25,15 @@ namespace TSmartClinic.API.Controllers
             _mapper = mapper;
         }
 
+
         //[AuthorizePermission("Usuarios_Acessar")]
-        [HttpGet("modulos")]
+        [HttpGet("modulo-permissoes")]
         [ProducesResponseType(200)]
         [ProducesResponseType(204)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<List<ModuloResponseDTO>>> ObterModulos()
+        public async Task<ActionResult<List<ModuloResponseDTO>>> ObterModuloPermissoes()
         {
-            var lista = await _moduloService.ListarModulos();
+            var lista = await _moduloService.ListarPermissoesAsync();
 
             if (lista == null || !lista.Any()) throw new NotFoundException();
 
@@ -42,35 +43,52 @@ namespace TSmartClinic.API.Controllers
         }
 
         //[AuthorizePermission("Usuarios_Acessar")]
-        [HttpGet("operacoes")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(500)]
-        public async Task<ActionResult<List<OperacaoResponseDTO>>> ObterOperacoes()
-        {
-            var lista = await _operacaoService.ListarOperacoes();
+        //[HttpGet("modulos")]
+        //[ProducesResponseType(200)]
+        //[ProducesResponseType(204)]
+        //[ProducesResponseType(500)]
+        //public async Task<ActionResult<List<ModuloResponseDTO>>> ObterModulos()
+        //{
+        //    var lista = await _moduloService.ListarModulos();
 
-            if (lista == null || !lista.Any()) throw new NotFoundException();
+        //    if (lista == null || !lista.Any()) throw new NotFoundException();
 
-            var obj = _mapper.Map<List<OperacaoResponseDTO>>(lista);
+        //    var obj = _mapper.Map<List<ModuloResponseDTO>>(lista);
 
-            return StatusCode(200, _mapper.Map<List<OperacaoResponseDTO>>(obj));
-        }
+        //    return StatusCode(200, _mapper.Map<List<ModuloResponseDTO>>(obj));
+        //}
+ 
 
-        //[AuthorizePermission("Usuarios_Acessar")]
-        [HttpGet("funcionalidades")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(500)]
-        public async Task<ActionResult<List<FuncionalidadeResponseDTO>>> ObterFuncionalidades()
-        {
-            var lista = await _funcionalidadeService.ListarFuncionalidades();
+        ////[AuthorizePermission("Usuarios_Acessar")]
+        //[HttpGet("operacoes")]
+        //[ProducesResponseType(200)]
+        //[ProducesResponseType(204)]
+        //[ProducesResponseType(500)]
+        //public async Task<ActionResult<List<OperacaoResponseDTO>>> ObterOperacoes()
+        //{
+        //    var lista = await _operacaoService.ListarOperacoes();
 
-            if (lista == null || !lista.Any()) throw new NotFoundException();
+        //    if (lista == null || !lista.Any()) throw new NotFoundException();
 
-            var obj = _mapper.Map<List<FuncionalidadeResponseDTO>>(lista);
+        //    var obj = _mapper.Map<List<OperacaoResponseDTO>>(lista);
 
-            return StatusCode(200, _mapper.Map<List<FuncionalidadeResponseDTO>>(obj));
-        }
+        //    return StatusCode(200, _mapper.Map<List<OperacaoResponseDTO>>(obj));
+        //}
+
+        ////[AuthorizePermission("Usuarios_Acessar")]
+        //[HttpGet("funcionalidades")]
+        //[ProducesResponseType(200)]
+        //[ProducesResponseType(204)]
+        //[ProducesResponseType(500)]
+        //public async Task<ActionResult<List<FuncionalidadeResponseDTO>>> ObterFuncionalidades()
+        //{
+        //    var lista = await _funcionalidadeService.ListarFuncionalidades();
+
+        //    if (lista == null || !lista.Any()) throw new NotFoundException();
+
+        //    var obj = _mapper.Map<List<FuncionalidadeResponseDTO>>(lista);
+
+        //    return StatusCode(200, _mapper.Map<List<FuncionalidadeResponseDTO>>(obj));
+        //}
     }
 }

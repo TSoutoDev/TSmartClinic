@@ -12,6 +12,19 @@ namespace TSmartClinic.API.Repositories
         {
         }
 
+        public async Task<List<Modulo>> ListarPermissoesAsync()
+        {
+            IQueryable<Modulo> query = _dbSet
+
+             .Include(m => m.Funcionalidades)
+                 .ThenInclude(f => f.Operacoes)
+             .OrderBy(m => m.NomeModulo);
+
+             var ttt =  await query.ToListAsync();
+
+            return ttt;
+        }
+
         public async Task<List<Modulo>> ListarModulos()
         {
             return await _dbSet

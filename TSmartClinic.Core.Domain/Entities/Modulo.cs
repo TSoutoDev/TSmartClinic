@@ -7,7 +7,7 @@
         public bool? Ativo { get; set; }
 
         #region Relacionamentos
-        public List<Funcionalidade>? Funcionalidades { get; set; }
+        public ICollection<Funcionalidade> ? Funcionalidades { get; set; }
         #endregion
     }
 }

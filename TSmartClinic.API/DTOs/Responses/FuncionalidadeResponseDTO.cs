@@ -6,5 +6,6 @@
         public string? NomeFuncionalidade { get; set; }
         public string? Descricao { get; set; }
         public int? ModuloId { get; set; }
+        public List<OperacaoResponseDTO>? Operacoes { get; set; }
     }
 }
