@@ -11,19 +11,17 @@ namespace TSmartClinic.API.Repositories
         public ModuloRepository(TSmartClinicContext dbContext) : base(dbContext)
         {
         }
-
-        public async Task<List<Modulo>> ListarPermissoesAsync()
+        public Task<List<Modulo>> ListarPermissoesAsync(CancellationToken ct = default)
         {
-            IQueryable<Modulo> query = _dbSet
-
-             .Include(m => m.Funcionalidades)
-                 .ThenInclude(f => f.Operacoes)
-             .OrderBy(m => m.NomeModulo);
-
-             var ttt =  await query.ToListAsync();
-
-            return ttt;
+            return _dbSet
+                .AsNoTracking()
+                .AsSplitQuery() // opcional, ajuda a evitar cartesian explosion
+                .Include(m => m.Funcionalidades)
+                    .ThenInclude(f => f.Operacoes)
+                .OrderBy(m => m.NomeModulo)
+                .ToListAsync(ct);
         }
+
 
         public async Task<List<Modulo>> ListarModulos()
         {
@@ -31,5 +29,6 @@ namespace TSmartClinic.API.Repositories
                 .OrderBy(x => x.NomeModulo)
                 .ToListAsync();
         }
+
     }
 }

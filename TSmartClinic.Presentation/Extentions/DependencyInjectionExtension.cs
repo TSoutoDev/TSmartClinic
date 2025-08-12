@@ -22,6 +22,7 @@ namespace TSmartClinic.Presentation.Extentions
             services.AddTransient<INichoService, NichoService>();
             services.AddTransient<IUsuarioLogadoService, UsuarioLogadoService>();
             services.AddTransient<IClienteService, ClienteService>();
+            services.AddTransient<IPerfilPermissaoService, PerfilPermissaoService>();
 
             return services;
         }

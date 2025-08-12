@@ -1,24 +1,23 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿@using System.Linq
+@using Microsoft.AspNetCore.Http
+@using TSmartClinic.Presentation.Models.PermissoesAcesso
 @using TSmartClinic.Presentation.Services.Interfaces
-@inject IUsuarioLogadoService UsuarioLogado
 @model TSmartClinic.Presentation.Models.PerfilViewModel
+@inject IUsuarioLogadoService UsuarioLogado
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
     ViewBag.Titulo = "Cadastro de Perfis";
-}
-
-@{
     var user = HttpContextAccessor.HttpContext?.User;
 }
-@* <p>Usuário Master? @UsuarioLogado.UsuarioMaster</p>
-<p>Id do Usuário: @UsuarioLogado.UsuarioLogadoId</p>
-<p>Tipo Usuário: @UsuarioLogado.TipoUsuario</p>
-<p>Nome Cliente: @UsuarioLogado.NomeCliente</p> *@
+   
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Cadastro", "Perfis", FormMethod.Post, new { autocomplete = "off" }))
 {
+    @Html.AntiForgeryToken()
+
+    @* Id (edição) *@
     @if (Model != null && Model.Id.HasValue)
     {
         <input asp-for="Id" type="hidden" />
@@ -26,6 +25,10 @@
 
     <div class="card">
         <div class="card-body">
+
+            @* Mensagens de validação gerais *@
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
             <ul class="nav nav-tabs" role="tablist" id="tabBusca">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#dados_gerais" role="tab">
@@ -35,7 +38,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="tab" href="#config_permissoes" role="tab">
-                        <span class="d-block d-sm-none"><i class="fas fa-search"></i></span>
+                        <span class="d-block d-sm-none"><i class="fas fa-lock"></i></span>
                         <span class="d-none d-sm-block">Configurar Permissões</span>
                     </a>
                 </li>
@@ -44,31 +47,23 @@
             <div class="tab-content">
                 <!-- Aba Dados Gerais -->
                 <div class="tab-pane fade show active" id="dados_gerais" role="tabpanel">
-                    <!-- TODO: Seu conteúdo de Dados Gerais aqui -->
-
                     <div class="row mt-3">
                         <div class="col-md-4">
-                            <label for="Nome">Nome</label>
-                            @Html.TextBoxFor(model => model.NomePerfil, new { @class = "form-control", @autocomplete = "off", @placeholder = "Digite o nome do Usuario" })
-                            <span class="text-danger">
-                                @Html.ValidationMessageFor(model => model.NomePerfil)
-                            </span>
+                            <label for="NomePerfil">Nome</label>
+                            @Html.TextBoxFor(m => m.NomePerfil, new { @class = "form-control", autocomplete = "off", placeholder = "Digite o nome do perfil" })
+                            <span class="text-danger">@Html.ValidationMessageFor(m => m.NomePerfil)</span>
                         </div>
 
                         <div class="col-md-2">
-                            <label>Validade</label><br />
-                            @Html.TextBoxFor(model => model.ValidadeDias, new { @class = "form-control", @autocomplete = "off" })
-                            <span class="text-danger">
-                                @*     @Html.ValidationMessageFor(model => model.Fabricante) *@
-                            </span>
+                            <label>Validade (dias)</label>
+                            @Html.TextBoxFor(m => m.ValidadeDias, new { @class = "form-control", autocomplete = "off", type = "number", min = "0" })
+                            <span class="text-danger"></span>
                         </div>
 
                         <div class="col-md-2">
-                            <label>Erros de senha</label><br />
-                            @Html.TextBoxFor(model => model.ErrosSenha, new { @class = "form-control", @autocomplete = "off" })
-                            <span class="text-danger">
-                                @*     @Html.ValidationMessageFor(model => model.Fabricante) *@
-                            </span>
+                            <label>Erros de senha</label>
+                            @Html.TextBoxFor(m => m.ErrosSenha, new { @class = "form-control", autocomplete = "off", type = "number", min = "0" })
+                            <span class="text-danger"></span>
                         </div>
 
                         @if (UsuarioLogado != null && UsuarioLogado.UsuarioMaster)
@@ -79,15 +74,10 @@
                                 <select id="NichoId" name="NichoId" class="form-select" asp-for="NichoId" asp-items="@ViewBag.Nichos">
                                     <option value="">Selecione a Área de Atuação</option>
                                 </select>
-
-                                <span class="text-danger">
-                                    @Html.ValidationMessageFor(model => model.NichoId)
-                                </span>
+                                <span class="text-danger">@Html.ValidationMessageFor(m => m.NichoId)</span>
                             </div>
                         }
-
                     </div>
-
 
                     <div class="row mt-3">
                         <div class="col-lg-3">
@@ -95,39 +85,93 @@
                             <select id="ClienteId" name="ClienteId" class="form-select" asp-for="ClienteId" asp-items="@ViewBag.Clientes">
                                 <option value="">Selecione o Cliente</option>
                             </select>
-
-                            <span class="text-danger">
-                                @Html.ValidationMessageFor(model => model.ClienteId)
-                            </span>
+                            <span class="text-danger">@Html.ValidationMessageFor(m => m.ClienteId)</span>
                         </div>
 
-                        <!-- Chave Seletora Agendamento (Switch) -->
-                        <div class="col-md-2 d-flex align-items-center mt-4">
+                        <div class="col-md-3 d-flex align-items-center mt-4">
                             <div class="form-check form-switch">
                                 <input asp-for="ResponsavelTecnico" class="form-check-input" type="checkbox" id="ResponsavelTecnicoSwitch" />
-                                <label class="form-check-label ms-2" asp-for="ResponsavelTecnico">
-                                    Responsável Técnico ?
-                                </label>
+                                <label class="form-check-label ms-2" asp-for="ResponsavelTecnico">Responsável Técnico?</label>
                             </div>
                         </div>
-
-                        @*  <!-- Chave Seletora Agendamento (Switch) -->
-                        <div class="col-md-2 d-flex align-items-center mt-4">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="ClienteSwitch" />
-                                <label class="form-check-label ms-2" for="ClienteSwitch">
-                                    Perfil Cliente
-                                </label>
-                            </div>
-                        </div> *@
                     </div>
-
                 </div>
 
                 <!-- Aba Configurar Permissões -->
                 <div class="tab-pane fade" id="config_permissoes" role="tabpanel">
-                    <!-- TODO: Seu conteúdo de Configurar Permissões aqui -->
-                    <h1>Pemissões</h1>
+                    <h5 class="mt-3">Permissões</h5>
+
+                    <div class="mt-3">
+                        @if (Model?.Modulos != null && Model.Modulos.Any())
+                        {
+                            foreach (var modulo in Model.Modulos)
+                            {
+                                var funcionalidades = modulo.Funcionalidades ?? new List<PermissoesViewModel.FuncionalidadeViewModel>();
+                                var moduloIds = funcionalidades
+                                .SelectMany(f => f.Operacoes ?? new List<PermissoesViewModel.OperacaoViewModel>())
+                                .Select(o => o.Id)
+                                .ToList();
+
+                                <div class="card mb-3">
+                                    <div class="card-header d-flex align-items-center justify-content-between">
+                                        <div class="form-check form-switch m-0">
+                                            <input type="checkbox"
+                                                   class="form-check-input switch-modulo"
+                                                   id="mod_@modulo.Id"
+                                                   data-ids="@string.Join(",", moduloIds)">
+                                            <label class="form-check-label ms-2" for="mod_@modulo.Id">
+                                                <strong>@modulo.NomeModulo</strong>
+                                            </label>
+                                            <span class="badge bg-secondary ms-2 d-none parcial-mod_@modulo.Id">Parcial</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-body">
+                                        @foreach (var func in funcionalidades)
+                                        {
+                                            var funcOps = func.Operacoes ?? new List<PermissoesViewModel.OperacaoViewModel>();
+                                            var funcIds = funcOps.Select(o => o.Id).ToList();
+
+                                            <div class="mb-2">
+                                                <div class="form-check form-switch">
+                                                    <input type="checkbox"
+                                                           class="form-check-input switch-func"
+                                                           id="func_@func.Id"
+                                                           data-ids="@string.Join(",", funcIds)">
+                                                    <label class="form-check-label ms-2 fw-semibold" for="func_@func.Id">
+                                                        @func.NomeFuncionalidade
+                                                    </label>
+                                                    <span class="badge bg-secondary ms-2 d-none parcial-func_@func.Id">Parcial</span>
+                                                </div>
+
+                                                <div class="ms-4 mt-2">
+                                                    @foreach (var op in funcOps)
+                                                    {
+                                                        var isChecked = (Model.SelectedOperacaoIds ?? new List<int>()).Contains(op.Id);
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input switch-op"
+                                                                   type="checkbox"
+                                                                   id="op_@op.Id"
+                                                                   name="SelectedOperacaoIds"
+                                                                   value="@op.Id"
+                                                            @(isChecked ? "checked" : "") />
+                                                            <label class="form-check-label ms-2" for="op_@op.Id">
+                                                                @op.NomeOperacao
+                                                            </label>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning">Nenhuma permissão disponível para seleção.</div>
+                        }
+                    </div>
                 </div>
             </div>
 
@@ -138,27 +182,114 @@
                         <option value="true">Ativo</option>
                         <option value="false">Inativo</option>
                     </select>
+                    @* Se o select estiver desabilitado (novo), espelhe o valor pra ir no POST *@
+                    @if (!Model.Id.HasValue)
+                    {
+                        <input type="hidden" asp-for="Ativo" />
+                    }
                 </div>
             </div>
 
-            <div class="mt-3">
-                <input type="submit"
-                       value="Gravar"
-                       onclick="loading()"
-                       class="btn btn-success" />
+            <div class="mt-3 d-flex gap-2">
+                <button type="submit" class="btn btn-success" onclick="loading()">Gravar</button>
 
                 @if (Model.Id.HasValue)
                 {
-                    <input asp-action="Excluir"
-                           type="submit"
-                           value="Excluir"
-                           onclick="loading()"
-                           class="btn btn-danger" />
+                    <button type="submit"
+                            class="btn btn-danger"
+                            formaction="@Url.Action("Excluir","Perfis", new { id = Model.Id })"
+                            formmethod="post"
+                            onclick="loading()">
+                        Excluir
+                    </button>
                 }
 
                 <a href="/Perfis/Consulta" class="btn btn-secondary">Voltar</a>
             </div>
+
+            @section Scripts {
+            <script>
+                (function () {
+                    function setIndeterminate(el, val) { if (el) el.indeterminate = !!val; }
+                    function showParcialBadge(selector, show) {
+                        document.querySelectorAll(selector).forEach(b => {
+                            b.classList.toggle('d-none', !show);
+                        });
+                    }
+
+                    // Marca/desmarca todas as operações por lista de ids
+                    function setOps(ids, checked) {
+                        ids.forEach(id => {
+                            const op = document.querySelector('input[name="SelectedOperacaoIds"][id="op_' + id + '"]');
+                            if (op) op.checked = checked;
+                        });
+                    }
+
+                    // Recalcula estados (pais e badges)
+                    function atualizarPais() {
+                        // funcionalidades
+                        document.querySelectorAll('.switch-func').forEach(f => {
+                            const ids = (f.dataset.ids || '').split(',').filter(Boolean);
+                            let marcadas = 0, total = ids.length;
+                            ids.forEach(id => {
+                                const op = document.querySelector('#op_' + id);
+                                if (op && op.checked) marcadas++;
+                            });
+
+                            if (marcadas === 0) {
+                                f.checked = false; setIndeterminate(f, false); showParcialBadge('.parcial-' + f.id, false);
+                            } else if (marcadas === total) {
+                                f.checked = true; setIndeterminate(f, false); showParcialBadge('.parcial-' + f.id, false);
+                            } else {
+                                f.checked = false; setIndeterminate(f, true); showParcialBadge('.parcial-' + f.id, true);
+                            }
+                        });
+
+                        // módulos
+                        document.querySelectorAll('.switch-modulo').forEach(m => {
+                            const ids = (m.dataset.ids || '').split(',').filter(Boolean);
+                            let marcadas = 0, total = ids.length;
+                            ids.forEach(id => {
+                                const op = document.querySelector('#op_' + id);
+                                if (op && op.checked) marcadas++;
+                            });
+
+                            if (marcadas === 0) {
+                                m.checked = false; setIndeterminate(m, false); showParcialBadge('.parcial-' + m.id, false);
+                            } else if (marcadas === total) {
+                                m.checked = true; setIndeterminate(m, false); showParcialBadge('.parcial-' + m.id, false);
+                            } else {
+                                m.checked = false; setIndeterminate(m, true); showParcialBadge('.parcial-' + m.id, true);
+                            }
+                        });
+                    }
+
+                    // Eventos
+                    document.querySelectorAll('.switch-modulo').forEach(chk => {
+                        chk.addEventListener('change', (e) => {
+                            const ids = (e.target.dataset.ids || '').split(',').filter(Boolean);
+                            setOps(ids, e.target.checked);
+                            atualizarPais();
+                        });
+                    });
+
+                    document.querySelectorAll('.switch-func').forEach(chk => {
+                        chk.addEventListener('change', (e) => {
+                            const ids = (e.target.dataset.ids || '').split(',').filter(Boolean);
+                            setOps(ids, e.target.checked);
+                            atualizarPais();
+                        });
+                    });
+
+                    document.querySelectorAll('.switch-op').forEach(chk => {
+                        chk.addEventListener('change', atualizarPais);
+                    });
+
+                    // inicial
+                    atualizarPais();
+                })();
+            </script>
+            }
         </div>
     </div>
 }
-

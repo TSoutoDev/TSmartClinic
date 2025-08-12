@@ -5,6 +5,12 @@ namespace TSmartClinic.Core.Domain.Interfaces.Services
     public interface IModuloService : IBaseService<Modulo>
     {
         Task<List<Modulo>> ListarModulos();
-        public Task<List<Modulo>> ListarPermissoesAsync();
+        /// <summary>
+        /// O CancellationToken ct = default é basicamente uma forma de permitir que quem chama o seu método
+        /// cancele a execução assíncrona — e = default só significa que, se ninguém passar nada, ele usa o valor padrão (CancellationToken.None, ou seja, nunca cancela).
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task<List<Modulo>> ListarPermissoesAsync(CancellationToken cancellationToken = default);
     }
 }

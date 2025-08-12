@@ -1,4 +1,6 @@
-﻿namespace TSmartClinic.Presentation.Models
+﻿using static TSmartClinic.Presentation.Models.PermissoesAcesso.PermissoesViewModel;
+
+namespace TSmartClinic.Presentation.Models
 {
     public class PerfilViewModel : BaseViewModel
     {
@@ -24,6 +26,15 @@
                 };
             }
         }
+      
+        //public List<ModuloViewModel> Modulos { get; set; } = new();               // exibição da árvore
+        //public List<int> SelectedOperacaoIds { get; set; } = new();         // recebe os switches no POST
+
+        // A ÁRVORE para renderização
+        public List<ModuloViewModel> Modulos { get; set; } = new();
+
+        // As operações marcadas (é isso que a View envia/recebe)
+        public List<int> SelectedOperacaoIds { get; set; } = new();
 
     }
 }

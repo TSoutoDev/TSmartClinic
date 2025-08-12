@@ -13,10 +13,11 @@ namespace TSmartClinic.API.Services
             _moduloRepository = moduloRepository;
         }
 
-        public async Task<List<Modulo>> ListarPermissoesAsync()
+        public async Task<List<Modulo>> ListarPermissoesAsync(CancellationToken cancellationToken = default)
         {
-            return await _moduloRepository.ListarPermissoesAsync();
+            return await _moduloRepository.ListarPermissoesAsync(cancellationToken);
         }
+
 
         public async Task<List<Modulo>> ListarModulos()
         {

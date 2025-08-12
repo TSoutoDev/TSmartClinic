@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Services.Interfaces;
 using TSmartClinic.Presentation.ViewModels.Filters;
+using System.Linq; // precisa pra FirstOrDefault
 
 namespace TSmartClinic.Presentation.Controllers
 {
@@ -12,33 +13,70 @@ namespace TSmartClinic.Presentation.Controllers
         private readonly IClienteService _clienteService;
         private readonly INichoService _nichoService;
         private readonly IUsuarioLogadoService _usuarioLogadoService;
+        private readonly IPerfilPermissaoService _perfilPermissaoService;
 
 
-        public PerfisController(IClienteService clienteService, INichoService nichoService, IPerfilService perfilService, IUsuarioLogadoService usuarioLogadoService) : base(perfilService)
+        public PerfisController(IClienteService clienteService, INichoService nichoService, IPerfilService perfilService, IUsuarioLogadoService usuarioLogadoService, IPerfilPermissaoService perfilPermissaoService) : base(perfilService)
         {
             _perfilService = perfilService;
             _nichoService = nichoService;
             _usuarioLogadoService = usuarioLogadoService;
             _clienteService = clienteService;
+            _perfilPermissaoService = perfilPermissaoService;
+
         }
 
         public override async Task<IActionResult> Cadastro(PerfilViewModel model)
         {
             await CriarViewBags();
+
+            // Carrega árvore
+            model.Modulos = await _perfilPermissaoService.ListarArvorePermissoesAsync();
+
+            // Se já houver Id (edição), traga seleções
+            if (model.Id.HasValue)
+            {
+                model.SelectedOperacaoIds = await _perfilPermissaoService.ObterOperacoesDoPerfilAsync(model.Id.Value);
+            }
             return await base.Cadastro(model);
         }
 
         public override async Task<IActionResult> Cadastro(int? id)
         {
             await CriarViewBags();
-            return await base.Cadastro(id);
+
+            var arvore = await _perfilPermissaoService.ListarArvorePermissoesAsync();
+
+            if (!id.HasValue)
+            {
+                return View(new PerfilViewModel { Modulos = arvore });
+            }
+
+            // 👉 ResponseViewModel<List<PerfilViewModel>>
+            var resp = await _perfilService.ObterPorId(id.Value);
+
+            // ❗ TROQUE "Objeto" pelo nome REAL do payload
+            var model = (resp?.Itens ?? new List<PerfilViewModel>()).FirstOrDefault();
+
+            if (model == null)
+            {
+                ModelState.AddModelError("", resp?.Mensagem ?? "Perfil não encontrado.");
+                return View(new PerfilViewModel { Modulos = arvore });
+            }
+
+            model.Modulos = arvore;
+            model.SelectedOperacaoIds = await _perfilPermissaoService.ObterOperacoesDoPerfilAsync(id.Value);
+
+            return View(model);
         }
+
 
         private async Task CriarViewBags()
         {
             await CriarViewBagNicho();
             await CriarViewClientes();
             ViewBag.UsuarioMaster = _usuarioLogadoService.UsuarioMaster;
+
             //   await CriarViewBagRiscos();
             //   await CriarViewBagFatoresRiscos();
         }
@@ -67,5 +105,6 @@ namespace TSmartClinic.Presentation.Controllers
                     Value = x.Id.ToString()
                 });
         }
+
     }
 }
