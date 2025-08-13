@@ -1,8 +1,8 @@
 ﻿namespace TSmartClinic.Core.Domain.Entities
 {
-    public class OperacaoPerfil 
+    public class OperacaoPerfil : Base
     {
-        public int PerfilId { get; set; }
+     //   public int PerfilId { get; set; }
         public int OperacaoId { get; set; }
 
         #region Relacionamentos

@@ -30,5 +30,40 @@ namespace TSmartClinic.API.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Modulo>> ListarIdsPorPerfilAsync(int idPerfil, CancellationToken ct = default)
+        {
+            var result = await _dbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Where(m => m.Funcionalidades
+                    .Any(f => f.Operacoes
+                        .Any(o => o.OperacaoPerfis
+                            .Any(op => op.Id == idPerfil))))
+                .Select(m => new Modulo
+                {
+                    Id = m.Id,
+                    NomeModulo = m.NomeModulo,
+                    Descricao = m.Descricao,
+                    Ativo = m.Ativo,
+                    Funcionalidades = m.Funcionalidades
+                        .Select(f => new Funcionalidade
+                        {
+                            Id = f.Id,
+                            NomeFuncionalidade = f.NomeFuncionalidade,
+                            Descricao = f.Descricao,
+                            ModuloId = f.ModuloId,
+                            Operacoes = f.Operacoes
+                                .Where(o => o.OperacaoPerfis.Any(op => op.Id == idPerfil))
+                                .ToList()
+                        })
+                        .Where(f => f.Operacoes.Any()) // só traz funcionalidades com operações do perfil
+                        .ToList()
+                })
+                .OrderBy(m => m.NomeModulo)
+                .ToListAsync(ct);
+
+            return result;
+        }
+
     }
 }

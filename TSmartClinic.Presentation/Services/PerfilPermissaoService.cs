@@ -17,11 +17,12 @@ using static TSmartClinic.Presentation.Models.PermissoesAcesso.PermissoesViewMod
 public class PerfilPermissaoService : BaseService<BaseFilterViewModel, PermissoesViewModel>, IPerfilPermissaoService
 {
     private readonly string? _baseUrlController;
-
+    private readonly ILogger<PerfilPermissaoService> _logger;
     // construtor preservado
-    public PerfilPermissaoService(IAccessTokenService accessTokenService, IOptions<UrlApiSettings>? urlApiSettings) : base(accessTokenService, urlApiSettings, "permissoesAcesso")
+    public PerfilPermissaoService(ILogger<PerfilPermissaoService> logger, IAccessTokenService accessTokenService, IOptions<UrlApiSettings>? urlApiSettings) : base(accessTokenService, urlApiSettings, "permissoesAcesso")
     {
         _baseUrlController = $"{urlApiSettings!.Value.ApiGateway}/permissoesAcesso";
+        _logger = logger;
     }
     //listar Nichos
     //public async Task<List<PermissoesViewModel>> ListarArvoreModuloPermissoesAsync2()
@@ -102,15 +103,31 @@ public class PerfilPermissaoService : BaseService<BaseFilterViewModel, Permissoe
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
 
-        // Ex.: GET /permissoesAcesso/perfis/{perfilId}/operacoes  -> [1,5,8,...]
-        var teste2 = ($"http://localhost:5136/api/perfis/permissoes-acesso");
-        var resp = await client.GetAsync($"{_baseUrlController}/perfis/{perfilId}/operacoes");
+        var url = $"http://localhost:5136/api/permissoesacesso/permissoes-acesso/{perfilId}";
+        var resp = await client.GetAsync(url);
         if (resp.StatusCode == HttpStatusCode.NoContent) return new();
 
         resp.EnsureSuccessStatusCode();
         var json = await resp.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<List<int>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();
+
+        _logger.LogInformation($"JSON recebido: {json}");
+
+        var modulos = JsonSerializer.Deserialize<List<ModuloViewModel>>(json, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        }) ?? new List<ModuloViewModel>();
+
+        // Extrair todos os IDs de operações em todos os módulos e funcionalidades
+        var operacaoIds = modulos
+            .SelectMany(m => m.Funcionalidades ?? new List<FuncionalidadeViewModel>())
+            .SelectMany(f => f.Operacoes ?? new List<OperacaoViewModel>())
+            .Select(o => o.Id)
+            .Distinct()
+            .ToList();
+
+        return operacaoIds;
     }
+
 
     public async Task SalvarOperacoesDoPerfilAsync(int perfilId, IEnumerable<int> operacaoIds)
     {

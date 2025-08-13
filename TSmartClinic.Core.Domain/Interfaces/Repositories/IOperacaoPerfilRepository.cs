@@ -1,7 +1,8 @@
-﻿namespace TSmartClinic.Core.Domain.Interfaces.Repositories
+﻿using TSmartClinic.Core.Domain.Entities;
+
+namespace TSmartClinic.Core.Domain.Interfaces.Repositories
 {
-    public interface IOperacaoPerfilRepository 
+    public interface IOperacaoPerfilRepository  : IBaseRepository<OperacaoPerfil>
     {
     }
-    
 }

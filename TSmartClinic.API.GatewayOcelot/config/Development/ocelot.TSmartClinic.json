@@ -232,7 +232,7 @@
       "UpstreamPathTemplate": "/perfis",
       "UpstreamHttpMethod": [ "POST" ]
     },
-    //PERMISSOES
+    //PERMISSOES-ACESSO
     {
 
       "DownstreamPathTemplate": "/api/permissoes-acesso/{id}",

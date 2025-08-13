@@ -52,10 +52,10 @@ namespace TSmartClinic.Presentation.Controllers
                 return View(new PerfilViewModel { Modulos = arvore });
             }
 
-            // 👉 ResponseViewModel<List<PerfilViewModel>>
+            //ResponseViewModel<List<PerfilViewModel>>
             var resp = await _perfilService.ObterPorId(id.Value);
 
-            // ❗ TROQUE "Objeto" pelo nome REAL do payload
+            // "Objeto" ITENS do payload
             var model = (resp?.Itens ?? new List<PerfilViewModel>()).FirstOrDefault();
 
             if (model == null)
@@ -76,9 +76,6 @@ namespace TSmartClinic.Presentation.Controllers
             await CriarViewBagNicho();
             await CriarViewClientes();
             ViewBag.UsuarioMaster = _usuarioLogadoService.UsuarioMaster;
-
-            //   await CriarViewBagRiscos();
-            //   await CriarViewBagFatoresRiscos();
         }
 
         private async Task CriarViewBagNicho()

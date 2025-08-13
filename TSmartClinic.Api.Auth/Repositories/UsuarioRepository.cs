@@ -34,7 +34,7 @@ namespace TSmartClinic.Api.Auth.Repositories
             var permissoes = (from opPerfil in _context.OperacaoPerfil
                               join operacao in _context.Operacao on opPerfil.OperacaoId equals operacao.Id
                               join funcionalidade in _context.Funcionalidade on operacao.FuncionalidadeId equals funcionalidade.Id
-                              where perfilIds.Contains(opPerfil.PerfilId)
+                              where perfilIds.Contains(opPerfil.Id)
                               select operacao.Descricao)
                              .Distinct()
                              .ToList();

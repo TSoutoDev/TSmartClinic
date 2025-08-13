@@ -14,7 +14,7 @@ namespace TSmartClinic.Core.Domain.Entities
 
         #region Relacionamentos
         public Nicho? Nicho { get; set; }
-        public OperacaoPerfil? OperacaoPerfis { get; set; }
+        public List<OperacaoPerfil> OperacaoPerfis { get; set; } = new(); // agora é lista
         public Cliente? Cliente { get; set; }  
         #endregion
 

@@ -12,5 +12,6 @@ namespace TSmartClinic.Core.Domain.Interfaces.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public Task<List<Modulo>> ListarPermissoesAsync(CancellationToken cancellationToken = default);
+        public Task<List<Modulo>> ListarIdsPorPerfilAsync(int perfilId, CancellationToken ct = default);
     }
 }

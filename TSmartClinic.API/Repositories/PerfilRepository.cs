@@ -20,8 +20,11 @@ namespace TSmartClinic.API.Repositories
 
             query = query?.Where(x => (int)x.Id == id);
 
-            query = query?.Include(x => x.Nicho)
-          ?.Include(x => x.Cliente);
+            query = query?
+                .Include(x => x.Nicho)?
+                .Include(x => x.Cliente)
+                .Include(x => x.OperacaoPerfis);
+                
 
             var perfil = query?.FirstOrDefault();
 
@@ -40,6 +43,7 @@ namespace TSmartClinic.API.Repositories
             query = query
                 .Include(x => x.Nicho)
                 .Include(x => x.Cliente);
+               // .Include(x => x.OperacaoPerfis); 
 
             //Filtrar pelo nome se estiver presente no filtro
             if (!string.IsNullOrWhiteSpace(filtroPerfil.Nome))
@@ -60,9 +64,21 @@ namespace TSmartClinic.API.Repositories
         {
             var query = _dbSet as IQueryable<Perfil>;
             query
-                .Include(x => x.Cliente);
+                .Include(x => x.Cliente)
+                .Include(x => x.OperacaoPerfis); 
+
 
             return base.Atualizar(entity);
+        }
+
+        public override Perfil Inserir(Perfil entity)
+        {
+            var query = _dbSet as IQueryable<Perfil>;
+            query
+                .Include(x => x.Cliente)
+                .Include(x => x.OperacaoPerfis);
+
+            return base.Inserir(entity);
         }
     }
 }

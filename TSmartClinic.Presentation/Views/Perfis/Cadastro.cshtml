@@ -11,7 +11,7 @@
     ViewBag.Titulo = "Cadastro de Perfis";
     var user = HttpContextAccessor.HttpContext?.User;
 }
-   
+
 
 @using (Html.BeginForm("Cadastro", "Perfis", FormMethod.Post, new { autocomplete = "off" }))
 {
@@ -131,8 +131,42 @@
                                         {
                                             var funcOps = func.Operacoes ?? new List<PermissoesViewModel.OperacaoViewModel>();
                                             var funcIds = funcOps.Select(o => o.Id).ToList();
+                                            <div class="row align-items-center mb-2">
+                                                <!-- Coluna da funcionalidade -->
+                                                <div class="col-md-3">
+                                                    <div class="form-check form-switch">
+                                                        <input type="checkbox"
+                                                               class="form-check-input switch-func"
+                                                               id="func_@func.Id"
+                                                               data-ids="@string.Join(",", funcIds)">
+                                                        <label class="form-check-label fw-semibold" for="func_@func.Id">
+                                                            @func.NomeFuncionalidade
+                                                        </label>
+                                                        <span class="badge bg-secondary ms-2 d-none parcial-func_@func.Id">Parcial</span>
+                                                    </div>
+                                                </div>
 
-                                            <div class="mb-2">
+                                                <!-- Coluna das operações -->
+                                                <div class="col-md-9 d-flex flex-wrap gap-4">
+                                                    @foreach (var op in funcOps)
+                                                    {
+                                                        var isChecked = (Model.SelectedOperacaoIds ?? new List<int>()).Contains(op.Id);
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input switch-op"
+                                                                   type="checkbox"
+                                                                   id="op_@op.Id"
+                                                                   name="SelectedOperacaoIds"
+                                                                   value="@op.Id"
+                                                            @(isChecked ? "checked" : "") />
+                                                            <label class="form-check-label" for="op_@op.Id">
+                                                                @op.NomeOperacao
+                                                            </label>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+
+                                            @* <div class="mb-2">
                                                 <div class="form-check form-switch">
                                                     <input type="checkbox"
                                                            class="form-check-input switch-func"
@@ -161,7 +195,7 @@
                                                         </div>
                                                     }
                                                 </div>
-                                            </div>
+                                            </div> *@
                                         }
                                     </div>
                                 </div>

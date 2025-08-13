@@ -5,6 +5,7 @@ using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Data.Entities;
 using AutoMapper;
 using TSmartClinic.API.DTOs.Requests.Base;
+using TSmartClinic.API.DTOs.Responses.PermissoesAcessoResponse;
 
 namespace AgendaApp.API.Mapper
 {
@@ -19,7 +20,9 @@ namespace AgendaApp.API.Mapper
             CreateMap<Nicho, BaseNichoRequestDTO>().ReverseMap();
             CreateMap<Paciente, BasePacienteRequestDTO>().ReverseMap();
             CreateMap<Perfil, BasePerfilRequestDTO>().ReverseMap();
-         //   CreateMap<OperacaoPerfil, BaseOperacaoPerfilRequestDTO>().ReverseMap();
+            CreateMap<OperacaoPerfil, BaseOperacaoPerfilRequestDTO>()
+             .ForMember(dest => dest.PerfilId, opt => opt.MapFrom(src => src.Id))
+             .ReverseMap();
 
             //insert
             CreateMap<Categoria, CategoriaInsertRequestDTO>().ReverseMap();
@@ -48,9 +51,10 @@ namespace AgendaApp.API.Mapper
             CreateMap<Usuario, UsuarioResponseDTO>();
             CreateMap<Paciente, PacienteResponseDTO>();
             CreateMap<Perfil, PerfilResponseDTO>();
-            //CreateMap<OperacaoPerfil, OperacaoPerfilResponseDTO>()
-            //  .ForMember(dest => dest.PerfilId, opt => opt.MapFrom(src => src.Id))
-             // .ReverseMap();
+            CreateMap<Perfil, PermissoesAcessoResponseDTO>();
+            CreateMap<OperacaoPerfil, OperacaoPerfilResponseDTO>()
+              .ForMember(dest => dest.PerfilId, opt => opt.MapFrom(src => src.Id))
+              .ReverseMap();
         }
     }
 }

@@ -40,19 +40,19 @@ namespace TSmartClinic.API.Controllers
             return Ok(dto);
         }
 
-        //[HttpGet("perfis/{perfilId}/operacoes")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status204NoContent)]
-        //public async Task<ActionResult<List<int>>> ObterOperacoesDoPerfil(int perfilId, CancellationToken ct)
-        //{
-        //    // Supondo que exista um método no service que retorne os IDs das operações do perfil
-        //    var ids = await _operacaoService.ListarIdsPorPerfilAsync(perfilId, ct);
+        [HttpGet("permissoes-acesso/{perfilId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult<List<int>>> ObterOperacoesDoPerfil(int perfilId, CancellationToken ct)
+        {
+            // Supondo que exista um método no service que retorne os IDs das operações do perfil
+            var ids = await _moduloService.ListarIdsPorPerfilAsync(perfilId, ct);
 
-        //    if (ids == null || ids.Count == 0)
-        //        return NoContent();
+            if (ids == null || ids.Count == 0)
+                return NoContent();
 
-        //    return Ok(ids);
-        //}
+            return Ok(ids);
+        }
 
         //[HttpPut("perfis/{perfilId}/operacoes")]
         //[ProducesResponseType(StatusCodes.Status204NoContent)]
