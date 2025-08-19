@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
@@ -26,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TSmartClinic.Core.Domain\TSmartClinic.Core.Domain.csproj" />
     <ProjectReference Include="..\TSmartClinic.Core.Infra.CrossCutting\TSmartClinic.Core.Infra.CrossCutting.csproj" />
+    <ProjectReference Include="..\TSmartClinic.Shared\TSmartClinic.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -14,12 +14,15 @@ namespace TSmartClinic.API.Repositories
 
         public async Task<List<Cliente>> ListarClientes(int? clienteId = null)
         {
-            IQueryable<Cliente> query = _dbSet;
+            IQueryable<Cliente> query = _dbSet
+                .Where(c => c.Id != 0); // filtra clientes inválidos
 
             if (clienteId.HasValue)
             {
-                query = query.Where(c => c.Id == clienteId.Value).OrderBy(c => c.NomeCliente);
+                query = query.Where(c => c.Id == clienteId.Value);
             }
+
+            query = query.OrderBy(c => c.NomeCliente); // sempre ordenar
 
             return await query.ToListAsync();
         }

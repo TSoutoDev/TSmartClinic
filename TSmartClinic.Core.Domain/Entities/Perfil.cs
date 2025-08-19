@@ -14,23 +14,32 @@ namespace TSmartClinic.Core.Domain.Entities
 
         #region Relacionamentos
         public Nicho? Nicho { get; set; }
-        public List<OperacaoPerfil> OperacaoPerfis { get; set; } = new(); // agora é lista
-        public Cliente? Cliente { get; set; }  
+        public List<OperacaoPerfil> OperacaoPerfis { get; set; } = new(); 
+        public Cliente? Cliente { get; set; }
         #endregion
 
-
-        public override void Atualizar(Object obj)
+        public override void Atualizar(object obj)
         {
             Perfil perfil = obj as Perfil;
 
-            this.NomePerfil = perfil?.NomePerfil;
-            this.ValidadeDias = perfil?.ValidadeDias;
-            this.ErrosSenha = perfil?.ErrosSenha;
-            this.ResponsavelTecnico = perfil?.ResponsavelTecnico;
-            this.Ativo = perfil?.Ativo;
-            this.NichoId = perfil?.NichoId;
+            // escalares
+            NomePerfil = perfil.NomePerfil;
+            ValidadeDias = perfil.ValidadeDias;
+            ErrosSenha = perfil.ErrosSenha;
+            ResponsavelTecnico = perfil.ResponsavelTecnico;
+            Ativo = perfil.Ativo;
+            NichoId = perfil.NichoId;
+
+            this.OperacaoPerfis = perfil.OperacaoPerfis
+           .Select(e => new OperacaoPerfil
+           {
+               PerfilId = e.PerfilId,
+               OperacaoId = e.OperacaoId,
+           })
+           .ToList();
 
             this.RemoverEspacosEmBranco();
         }
+
     }
 }

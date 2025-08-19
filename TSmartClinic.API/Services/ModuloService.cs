@@ -29,5 +29,10 @@ namespace TSmartClinic.API.Services
         {
             return await _moduloRepository.ListarIdsPorPerfilAsync(perfilId, cancellationToken);
         }
+
+        public async Task AtualizarOperacoesDoPerfilAsync(int perfilId, IEnumerable<int> operacaoIds, CancellationToken ct = default)
+        {
+            await _moduloRepository.AtualizarOperacoesDoPerfilAsync(perfilId, operacaoIds, ct);
+        }
     }
 }

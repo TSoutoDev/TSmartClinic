@@ -223,6 +223,16 @@
                     }
                 </div>
             </div>
+            <!-- DEBUG: mostra os valores antes do envio -->
+    <textarea id="debugSelected" style="display:none" readonly></textarea>
+            <script>
+                document.querySelector('form').addEventListener('submit', function(e){
+                    var vals = Array.from(document.querySelectorAll('input[name="SelectedOperacaoIds"]:checked'))
+                                    .map(i => i.value);
+                    document.getElementById('debugSelected').value = vals.join(',');
+                    console.log('SelectedOperacaoIds to send:', vals);
+                });
+            </script>
 
             <div class="mt-3 d-flex gap-2">
                 <button type="submit" class="btn btn-success" onclick="loading()">Gravar</button>
@@ -252,12 +262,19 @@
                     }
 
                     // Marca/desmarca todas as operações por lista de ids
+                    // function setOps(ids, checked) {
+                    //     ids.forEach(id => {
+                    //         const op = document.querySelector('input[name="SelectedOperacaoIds"][id="op_' + id + '"]');
+                    //         if (op) op.checked = checked;
+                    //     });
+                    // }
                     function setOps(ids, checked) {
                         ids.forEach(id => {
-                            const op = document.querySelector('input[name="SelectedOperacaoIds"][id="op_' + id + '"]');
-                            if (op) op.checked = checked;
+                            // id aqui é string ou number. Use getElementById porque é mais rápido e direto.
+                            const el = document.getElementById('op_' + id);
+                            if (el) el.checked = checked;
                         });
-                    }
+                }
 
                     // Recalcula estados (pais e badges)
                     function atualizarPais() {

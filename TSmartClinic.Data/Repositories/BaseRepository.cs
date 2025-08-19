@@ -3,7 +3,6 @@ using TSmartClinic.Core.Domain.Exceptions;
 using TSmartClinic.Core.Domain.Helpers.FilterHelper;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Data.Contexts;
-using TSmartClinic.Data.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -54,13 +53,67 @@ namespace TSmartClinic.Data.Repositories
             }
             catch (Exception e)
             {
-
                 if (e.InnerException is SqlException)
                     if (((SqlException)e.InnerException).Number == 547)
-                        throw new GravacaoChaveInexistenteException();
+                        throw new ExclusaoRegistroAssociadoException();
+
                 throw e;
             }
         }
+
+        public virtual void ExcluirPorChaves(params object[] keyValues)
+        {
+            try
+            {
+                if (keyValues == null || keyValues.Length == 0)
+                    throw new ArgumentException("É necessário informar ao menos um valor de chave.", nameof(keyValues));
+
+                // Tenta encontrar a entidade no contexto/BD (funciona com chave composta na ordem das PKs)
+                var entity = _dbSet.Find(keyValues);
+
+                if (entity == null)
+                {
+                    // Se não achou, cria um stub da entidade e popula as propriedades da chave primária
+                    // para poder anexar e marcar como Deleted (gera DELETE sem carregar toda a entidade).
+                    entity = Activator.CreateInstance<TEntity>();
+
+                    var keyProperties = _dbContext.Model
+                        .FindEntityType(typeof(TEntity))
+                        .FindPrimaryKey()
+                        .Properties
+                        .ToList();
+
+                    if (keyProperties.Count != keyValues.Length)
+                        throw new InvalidOperationException("Número de valores de chave diferente do número de propriedades PK da entidade.");
+
+                    for (int i = 0; i < keyProperties.Count; i++)
+                    {
+                        var propName = keyProperties[i].Name;
+                        var propInfo = typeof(TEntity).GetProperty(propName);
+                        if (propInfo == null)
+                            throw new InvalidOperationException($"Propriedade PK '{propName}' não encontrada em {typeof(TEntity).Name}.");
+
+                        var targetValue = Convert.ChangeType(keyValues[i], Nullable.GetUnderlyingType(propInfo.PropertyType) ?? propInfo.PropertyType);
+                        propInfo.SetValue(entity, targetValue);
+                    }
+
+                    // Anexa ao context e marca para remoção
+                    _dbSet.Attach(entity);
+                }
+
+                _dbSet.Remove(entity);
+                _dbContext.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                // Mantém seu tratamento original para FK constraints
+                if (e.InnerException is SqlException sqlEx && sqlEx.Number == 547)
+                    throw new ExclusaoRegistroAssociadoException();
+
+                throw;
+            }
+        }
+
 
         public virtual TEntity Inserir(TEntity entity)
         {

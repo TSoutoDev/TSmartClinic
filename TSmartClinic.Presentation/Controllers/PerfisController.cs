@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Services.Interfaces;
 using TSmartClinic.Presentation.ViewModels.Filters;
-using System.Linq; // precisa pra FirstOrDefault
+using System.Linq;
+using TSmartClinic.Shared.DTOs.Requests.Base; // precisa pra FirstOrDefault
+using AutoMapper;
 
 namespace TSmartClinic.Presentation.Controllers
 {
@@ -14,30 +16,50 @@ namespace TSmartClinic.Presentation.Controllers
         private readonly INichoService _nichoService;
         private readonly IUsuarioLogadoService _usuarioLogadoService;
         private readonly IPerfilPermissaoService _perfilPermissaoService;
+        private readonly IMapper _mapper;
 
-
-        public PerfisController(IClienteService clienteService, INichoService nichoService, IPerfilService perfilService, IUsuarioLogadoService usuarioLogadoService, IPerfilPermissaoService perfilPermissaoService) : base(perfilService)
+        public PerfisController(IClienteService clienteService,
+                                INichoService nichoService,
+                                IPerfilService perfilService,
+                                IUsuarioLogadoService usuarioLogadoService,
+                                IPerfilPermissaoService perfilPermissaoService,
+                                IMapper mapper) : base(perfilService)
         {
             _perfilService = perfilService;
             _nichoService = nichoService;
             _usuarioLogadoService = usuarioLogadoService;
             _clienteService = clienteService;
             _perfilPermissaoService = perfilPermissaoService;
-
+            _mapper = mapper;
         }
 
         public override async Task<IActionResult> Cadastro(PerfilViewModel model)
         {
             await CriarViewBags();
 
+            // Monte OperacaoPerfis a partir dos IDs marcados (sempre antes de usar o model)
+            var ids = (model.SelectedOperacaoIds ?? Enumerable.Empty<int>()).Distinct();
+            model.OperacaoPerfis = ids
+                .Select(id => new OperacaoPerfilViewModel
+                {
+                    OperacaoId = id,
+                    // Se for edição você tem Id; se for criação pode deixar 0/null
+                    PerfilId = model.Id ?? 0
+                })
+                .ToList();
+
             // Carrega árvore
             model.Modulos = await _perfilPermissaoService.ListarArvorePermissoesAsync();
 
-            // Se já houver Id (edição), traga seleções
+            // 🔹 Salva as operações do perfil (apenas se já tem Id)
             if (model.Id.HasValue)
             {
-                model.SelectedOperacaoIds = await _perfilPermissaoService.ObterOperacoesDoPerfilAsync(model.Id.Value);
+                var operacoes = model.SelectedOperacaoIds ?? Enumerable.Empty<int>();
+                _perfilService.Atualizar(model.Id.Value, model);
+               // await _perfilPermissaoService.SalvarOperacoesDoPerfilAsync(model.Id.Value, operacoes);
+
             }
+
             return await base.Cadastro(model);
         }
 

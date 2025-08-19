@@ -13,7 +13,7 @@ namespace TSmartClinic.Presentation.Models
         public int? ClienteId { get; set; }
         public NichoViewModel? Nicho {  get; set; }
         public List<ClienteViewModel>? ListClientes { get; set; }
-
+        public List<OperacaoPerfilViewModel>? OperacaoPerfis { get; set; }
 
         public string ResponsavelTecnicoFormatado
         {
@@ -26,9 +26,6 @@ namespace TSmartClinic.Presentation.Models
                 };
             }
         }
-      
-        //public List<ModuloViewModel> Modulos { get; set; } = new();               // exibição da árvore
-        //public List<int> SelectedOperacaoIds { get; set; } = new();         // recebe os switches no POST
 
         // A ÁRVORE para renderização
         public List<ModuloViewModel> Modulos { get; set; } = new();

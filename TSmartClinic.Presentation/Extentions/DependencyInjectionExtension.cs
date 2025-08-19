@@ -12,7 +12,7 @@ namespace TSmartClinic.Presentation.Extentions
         {
             // Registro do IHttpContextAccessor
             services.AddHttpContextAccessor();
-
+      
             services.AddTransient<IAccessTokenService, AccessTokenService>();
             services.AddTransient<IAutenticacaoService, AutenticacaoService>();
             services.AddSingleton<ICriptografiaProvider, CriptografiaProvider>();

@@ -12,5 +12,12 @@ namespace TSmartClinic.Core.Domain.Interfaces.Repositories
         void Excluir(TEntity entity);
         TEntity ObterPorId(int id, params Expression<Func<TEntity, object>>[] properties);
         List<TEntity> Listar(BaseFiltro filtro, params Expression<Func<TEntity, object>>[] properties);
+
+        /// <summary>
+        /// Exclui uma entidade pela(s) chave(s) primária(s).
+        /// Para chave composta, passe os valores na ordem definida no modelo EF.
+        /// </summary>
+        void ExcluirPorChaves(params object[] keyValues);
+
     }
 }

@@ -251,6 +251,23 @@
     },
 
     {
+
+      "DownstreamPathTemplate": "/api/permissoes-acesso/{id}/operacoes",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/permissoes-acesso/{id}/operacoes",
+      "UpstreamHttpMethod": [ "GET", "PATCH", "DELETE", "PUT" ]
+    },
+
+    {
       "DownstreamPathTemplate": "/api/permissoes-acesso/listar",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

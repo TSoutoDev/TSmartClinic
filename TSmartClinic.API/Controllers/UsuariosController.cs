@@ -1,15 +1,15 @@
-﻿using TSmartClinic.API.DTOs.Requests.Insert;
-using TSmartClinic.API.DTOs.Requests.Update;
-using TSmartClinic.API.DTOs.Responses;
+﻿//using TSmartClinic.API.DTOs.Requests.Insert;
+//using TSmartClinic.API.DTOs.Requests.Update;
+//using TSmartClinic.API.DTOs.Responses;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Exceptions;
 using TSmartClinic.Core.Domain.Helpers.FilterHelper;
 using TSmartClinic.Core.Domain.Interfaces.Services;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using TSmartClinic.API.DTOs.Responses;
-using Microsoft.AspNetCore.Authorization;
-using TSmartClinic.API.Handles;
+using TSmartClinic.Shared.DTOs.Requests.Insert;
+using TSmartClinic.Shared.DTOs.Requests.Update;
+using TSmartClinic.Shared.DTOs.Responses;
 
 namespace TSmartClinic.API.Controllers
 {

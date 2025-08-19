@@ -1,8 +1,11 @@
-﻿using TSmartClinic.API.Repositories;
+﻿using Azure.Core;
+using Microsoft.EntityFrameworkCore;
+using TSmartClinic.API.Repositories;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Core.Domain.Service;
+using TSmartClinic.Data.Contexts;
 
 namespace TSmartClinic.API.Services
 {
@@ -10,10 +13,16 @@ namespace TSmartClinic.API.Services
     {
         private readonly IUsuarioLogadoService _usuarioLogadoService;
         private readonly INichoRepository _nichoRepository;
-        public PerfilService(IUsuarioLogadoService usuarioLogadoService, INichoRepository nichoRepository, IPerfilRepository perfilRepository) : base(perfilRepository)
+        private readonly IOperacaoPerfilRepository _operacaoPerfilRepository;
+        private readonly IPerfilRepository _perfilRepository;
+        private readonly TSmartClinicContext _dbContext;
+        public PerfilService(TSmartClinicContext dbContext, IOperacaoPerfilRepository operacaoPerfilRepository, IUsuarioLogadoService usuarioLogadoService, INichoRepository nichoRepository, IPerfilRepository perfilRepository) : base(perfilRepository)
         {
             _nichoRepository = nichoRepository;
             _usuarioLogadoService = usuarioLogadoService;
+            _operacaoPerfilRepository = operacaoPerfilRepository;
+            _perfilRepository = perfilRepository;
+            _dbContext = dbContext;
         }
 
         public override Perfil Inserir(Perfil entity)
@@ -21,11 +30,11 @@ namespace TSmartClinic.API.Services
             if (!_usuarioLogadoService.UsuarioMaster)
             {
                 if (!_usuarioLogadoService.NichoClienteId.HasValue)
-                     throw new UnauthorizedAccessException("Não foi possivel acessar a area de atuação do cliente.");
+                    throw new UnauthorizedAccessException("Não foi possivel acessar a area de atuação do cliente.");
 
                 // Preenche o ID do nicho e cliente no perfil que vai ser inserido
-                entity.NichoId = _usuarioLogadoService.NichoClienteId.Value;//trocar p pegar da model (tela)
-                entity.ClienteId = _usuarioLogadoService.ClienteId.Value;
+                entity.NichoId = _usuarioLogadoService?.NichoClienteId.Value;//trocar p pegar da model (tela)
+                entity.ClienteId = _usuarioLogadoService?.ClienteId.Value;
             }
 
             return base.Inserir(entity);
@@ -35,12 +44,15 @@ namespace TSmartClinic.API.Services
         {
             if (!_usuarioLogadoService.UsuarioMaster)
             {
-               // Preenche o ID do nicho e cliente no perfil que vai ser inserido
-                entity.NichoId = _usuarioLogadoService.NichoClienteId.Value;//trocar p pegar da model (tela)
-                entity.ClienteId = _usuarioLogadoService.ClienteId.Value;
+                entity.NichoId = _usuarioLogadoService.NichoClienteId;
+                entity.ClienteId = _usuarioLogadoService.ClienteId;
             }
-           
-            return base.Atualizar(id, entity);
+            // Chama o repositório, que já trata OperacaoPerfis corretamente
+            var perfilAtualizado = _perfilRepository.Atualizar(entity);
+
+            return perfilAtualizado;
         }
+
+
     }
 }

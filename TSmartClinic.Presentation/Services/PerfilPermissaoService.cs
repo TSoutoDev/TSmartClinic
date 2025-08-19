@@ -1,11 +1,7 @@
-﻿using System.Net;
+﻿using Microsoft.Extensions.Options;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using Microsoft.Extensions.Options;
-using NuGet.Packaging.Signing;
-using TSmartClinic.Core.Domain.Entities;
-using TSmartClinic.Core.Domain.Service;
-using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Models.PermissoesAcesso;
 using TSmartClinic.Presentation.Services;
 using TSmartClinic.Presentation.Services.Interfaces;
@@ -18,39 +14,13 @@ public class PerfilPermissaoService : BaseService<BaseFilterViewModel, Permissoe
 {
     private readonly string? _baseUrlController;
     private readonly ILogger<PerfilPermissaoService> _logger;
-    // construtor preservado
+
     public PerfilPermissaoService(ILogger<PerfilPermissaoService> logger, IAccessTokenService accessTokenService, IOptions<UrlApiSettings>? urlApiSettings) : base(accessTokenService, urlApiSettings, "permissoesAcesso")
     {
         _baseUrlController = $"{urlApiSettings!.Value.ApiGateway}/permissoesAcesso";
         _logger = logger;
     }
-    //listar Nichos
-    //public async Task<List<PermissoesViewModel>> ListarArvoreModuloPermissoesAsync2()
-    //{
-    //    using (var client = new HttpClient())
-    //    {
-    //        //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
-
-    //        //var result = await client.GetAsync($"{_baseUrlController}/permissoes-acesso");
-
-    //        //if (result.IsSuccessStatusCode)
-    //        //{
-    //        //    var options = new JsonSerializerOptions
-    //        //    {
-    //        //        PropertyNameCaseInsensitive = true
-    //        //    };
-
-    //        //    var content = await result.Content.ReadAsStringAsync();
-    //        //    var lista = JsonSerializer.Deserialize<List<PermissoesViewModel>>(content, options);
-    //        //    return lista;
-    //        //}
-    //        //else
-    //        //{
-    //        //    return new List<PermissoesViewModel>();
-    //        //}
-    //    }
-    //}
-
+    
     public async Task<List<PermissoesViewModel>> ListarArvoreModuloPermissoesAsync()
     {
         using (var client = new HttpClient())
@@ -138,7 +108,8 @@ public class PerfilPermissaoService : BaseService<BaseFilterViewModel, Permissoe
         var content = new StringContent(payload, System.Text.Encoding.UTF8, "application/json");
 
         // Ex.: PUT /permissoesAcesso/perfis/{perfilId}/operacoes  body: [1,2,3]
-        var resp = await client.PutAsync($"{_baseUrlController}/perfis/{perfilId}/operacoes", content);
+        // var resp = await client.PutAsync($"{_baseUrlController}/perfis/{perfilId}/operacoes", content);
+         var resp = await client.PutAsync($"http://localhost:5136/api/permissoesacesso/permissoes-acesso/{perfilId}/operacoes", content);
         resp.EnsureSuccessStatusCode();
     }
 

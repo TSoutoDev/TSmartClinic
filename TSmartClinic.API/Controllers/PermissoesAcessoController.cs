@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using TSmartClinic.API.DTOs.Responses;
-using TSmartClinic.API.Services;
-using TSmartClinic.Core.Domain.Exceptions;
+//using TSmartClinic.API.DTOs.Responses;
 using TSmartClinic.Core.Domain.Interfaces.Services;
+using TSmartClinic.Shared.DTOs.Responses.PermissoesAcessoRersponse;
 
 namespace TSmartClinic.API.Controllers
 {
@@ -29,14 +28,14 @@ namespace TSmartClinic.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<ModuloResponseDTO>>> ObterModuloPermissoes(CancellationToken ct)
+        public async Task<ActionResult<List<PermissoesAcessoResponseDTO.ModuloResponseDTO>>> ObterModuloPermissoes(CancellationToken ct)
         {
             var lista = await _moduloService.ListarPermissoesAsync(ct);
 
             if (lista is null || lista.Count == 0)
                 return NoContent();
 
-            var dto = _mapper.Map<List<ModuloResponseDTO>>(lista);
+            var dto = _mapper.Map<List<PermissoesAcessoResponseDTO.ModuloResponseDTO>>(lista);
             return Ok(dto);
         }
 
@@ -54,14 +53,14 @@ namespace TSmartClinic.API.Controllers
             return Ok(ids);
         }
 
-        //[HttpPut("perfis/{perfilId}/operacoes")]
-        //[ProducesResponseType(StatusCodes.Status204NoContent)]
-        //public async Task<IActionResult> SalvarOperacoesDoPerfil(int perfilId, [FromBody] List<int> operacaoIds, CancellationToken ct)
-        //{
-        //    // Supondo que exista um método para persistir as operações do perfil
-        //    await _operacaoService.SalvarIdsDoPerfilAsync(perfilId, operacaoIds ?? new List<int>(), ct);
-        //    return NoContent();
-        //}
+        [HttpPut("permissoes-acesso/{perfilId}/operacoes")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> SalvarOperacoesDoPerfil(int perfilId, [FromBody] List<int> operacaoIds, CancellationToken ct)
+        {
+            // Supondo que exista um método para persistir as operações do perfil
+            await _moduloService.AtualizarOperacoesDoPerfilAsync(perfilId, operacaoIds ?? new List<int>(), ct);
+            return NoContent();
+        }
 
 
 

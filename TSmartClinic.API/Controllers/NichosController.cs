@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using TSmartClinic.API.DTOs.Requests.Base;
-using TSmartClinic.API.DTOs.Responses;
+//using TSmartClinic.API.DTOs.Requests.Base;
+//using TSmartClinic.API.DTOs.Responses;
+using TSmartClinic.Shared.DTOs.Requests.Base;
+using TSmartClinic.Shared.DTOs.Responses;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Exceptions;
 using TSmartClinic.Core.Domain.Helpers.FilterHelper;

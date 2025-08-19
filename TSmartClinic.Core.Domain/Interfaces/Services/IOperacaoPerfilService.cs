@@ -4,5 +4,6 @@ namespace TSmartClinic.Core.Domain.Interfaces.Services
 {
     public interface IOperacaoPerfilService : IBaseService<OperacaoPerfil>
     {
+        public List<OperacaoPerfil> ListaOperacoPerfilPorPerfil(int id);
     }
 }

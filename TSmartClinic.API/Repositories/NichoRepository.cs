@@ -14,10 +14,10 @@ namespace TSmartClinic.API.Repositories
 
         public async Task<List<Nicho>> ListarNichos()
         {
-           
             var response = await _dbSet
-                .OrderBy(x => x.NomeNicho)
-                .ToListAsync();
+               .Where(n => n.Id != 0)         // filtra os nichos inválidos
+               .OrderBy(x => x.NomeNicho)     // ordena pelo nome
+               .ToListAsync();
 
             return response;
         }

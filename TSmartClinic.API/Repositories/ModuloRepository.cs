@@ -4,12 +4,15 @@ using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Data.Contexts;
 using TSmartClinic.Data.Repositories;
 
+
 namespace TSmartClinic.API.Repositories
 {
     public class ModuloRepository : BaseRepository<Modulo>, IModuloRepository
     {
+        private readonly TSmartClinicContext _dbContext;
         public ModuloRepository(TSmartClinicContext dbContext) : base(dbContext)
         {
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext)); ;
         }
         public Task<List<Modulo>> ListarPermissoesAsync(CancellationToken ct = default)
         {
@@ -38,7 +41,7 @@ namespace TSmartClinic.API.Repositories
                 .Where(m => m.Funcionalidades
                     .Any(f => f.Operacoes
                         .Any(o => o.OperacaoPerfis
-                            .Any(op => op.Id == idPerfil))))
+                            .Any(op => op.PerfilId == idPerfil))))
                 .Select(m => new Modulo
                 {
                     Id = m.Id,
@@ -53,7 +56,7 @@ namespace TSmartClinic.API.Repositories
                             Descricao = f.Descricao,
                             ModuloId = f.ModuloId,
                             Operacoes = f.Operacoes
-                                .Where(o => o.OperacaoPerfis.Any(op => op.Id == idPerfil))
+                                .Where(o => o.OperacaoPerfis.Any(op => op.PerfilId == idPerfil))
                                 .ToList()
                         })
                         .Where(f => f.Operacoes.Any()) // só traz funcionalidades com operações do perfil
@@ -64,6 +67,39 @@ namespace TSmartClinic.API.Repositories
 
             return result;
         }
+
+
+        public async Task AtualizarOperacoesDoPerfilAsync(
+            int perfilId, IEnumerable<int> operacaoIds, CancellationToken ct = default)
+        {
+            var ids = (operacaoIds ?? Enumerable.Empty<int>()).Distinct().ToList();
+
+            var setJoin = _dbContext.Set<OperacaoPerfil>();              // ✅ sem await
+
+            var atuais = await setJoin                                 // ✅ consulta com ToListAsync
+                .Where(op => op.PerfilId == perfilId)
+                .ToListAsync(ct);
+
+            var atuaisIds = atuais.Select(op => op.OperacaoId).ToHashSet();
+
+            var remover = atuais.Where(op => !ids.Contains(op.OperacaoId)).ToList();
+            var adicionarIds = ids.Where(id => !atuaisIds.Contains(id)).ToList();
+
+            var adicionar = adicionarIds.Select(id => new OperacaoPerfil
+            {
+                PerfilId = perfilId,
+                OperacaoId = id
+            }).ToList();
+
+            if (remover.Count > 0)
+                setJoin.RemoveRange(remover);                          // ✅ sem await
+
+            if (adicionar.Count > 0)
+                await setJoin.AddRangeAsync(adicionar, ct);            // ✅ método assíncrono
+
+            await _dbContext.SaveChangesAsync(ct);                       // ✅ assíncrono
+        }
+
 
     }
 }

@@ -34,7 +34,6 @@ namespace TSmartClinic.API.Services
                     ? new List<Nicho> { nicho }
                     : new List<Nicho>();
             }
-
             // Se for Master, retorna todos
             return await _nichoRepository.ListarNichos(); 
         }
