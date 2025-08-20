@@ -8,6 +8,7 @@ namespace TSmartClinic.Shared.DTOs.Requests.Insert
         public string? LoginInclusao { get; set; }
         public DateTime? DataInclusao { get; set; }
         public bool PrimeiroAcesso { get; set; } = true;
+        public List<UsuarioClientePerfilInsertRequestDto>? UsuarioClientePerfil {  get; set; }
     }
 }
 

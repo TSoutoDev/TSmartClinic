@@ -2,7 +2,7 @@
 
 namespace TSmartClinic.Core.Domain.Interfaces.Repositories
 {
-    public interface IUsuarioClientePerfilRepository : IBaseRepository<UsuarioClientePerfil>
+    public interface IUsuarioClientePerfilRepository
     {
         Cliente ObterClinicaPadraoDoUsuario(int usuarioId);
         List<Cliente> ObterClinicasDoUsuario(int usuarioId);

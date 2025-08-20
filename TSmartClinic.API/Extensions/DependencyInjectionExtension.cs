@@ -26,7 +26,7 @@ namespace TSmartClinic.API.Extensions
             services.AddTransient<IPacienteService, PacienteService>();
             services.AddTransient<IPerfilService, PerfilService>();
             services.AddTransient<IUsuarioLogadoService, UsuarioLogadoService>();
-            
+            services.AddTransient<IUsuarioClientePerfilRepository, UsuarioClientePerfilRepository>();
 
             //Repositorios
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));

@@ -5,11 +5,11 @@ using TSmartClinic.Core.Domain.Service;
 
 namespace TSmartClinic.Api.Auth.Services
 {
-    public class UsuarioClinicaPerfilService : BaseService<UsuarioClientePerfil>, IUsuarioClientePerfilService
+    public class UsuarioClinicaPerfilService : IUsuarioClientePerfilService
     {
         private readonly IUsuarioClientePerfilRepository _usuarioClinicaPerfilRepository;
 
-        public UsuarioClinicaPerfilService(IUsuarioClientePerfilRepository usuarioClinicaPerfilRepository) : base(usuarioClinicaPerfilRepository)
+        public UsuarioClinicaPerfilService(IUsuarioClientePerfilRepository usuarioClinicaPerfilRepository) 
         {
             _usuarioClinicaPerfilRepository = usuarioClinicaPerfilRepository;
         }

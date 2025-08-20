@@ -1,4 +1,7 @@
-﻿namespace TSmartClinic.Shared.DTOs.Responses
+﻿using TSmartClinic.Shared.DTOs.Requests.Insert;
+using TSmartClinic.Shared.DTOs.Requests.Update;
+
+namespace TSmartClinic.Shared.DTOs.Responses
 {
     public class UsuarioResponseDTO : BaseResponseDTO
     {
@@ -19,6 +22,7 @@
         public bool FlagBloqueado { get; set; }
         public bool Ativo { get; set; }
         public int ClienteId { get; set; }
-    //    public Cliente? Cliente { get; set; } = null!; // Navegação para Cliente
+        public List<UsuarioClientePerfilUpdateRequestDto>? UsuarioClientePerfil { get; set; }
+        //public Cliente? Cliente { get; set; } = null!; // Navegação para Cliente
     }
 }

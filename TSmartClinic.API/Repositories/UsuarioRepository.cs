@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Helpers.FilterHelper;
@@ -10,8 +11,13 @@ namespace TSmartClinic.API.Repositories
 {
     public class UsuarioRepository : BaseRepository<Usuario>, IUsuarioRepository
     {
-        public UsuarioRepository(TSmartClinicContext TSmartClinicContext) : base(TSmartClinicContext)
+
+        private readonly IMapper _mapper;
+        private readonly TSmartClinicContext _dbContext;
+        public UsuarioRepository(IMapper mapper, TSmartClinicContext TSmartClinicContext) : base(TSmartClinicContext)
         {
+            _mapper = mapper;
+            _dbContext = TSmartClinicContext;
         }
 
         public List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clientesUsuario)
@@ -33,7 +39,9 @@ namespace TSmartClinic.API.Repositories
 
             query = query?.Where(x => (int)x.Id == id);
 
-            query = query?.Include(x => x.Cliente);
+            query = query?
+                .Include(x => x.Cliente)
+                .Include(x => x.UsuarioClientePerfil);
 
             var usuario = query?.FirstOrDefault();
 
@@ -65,6 +73,38 @@ namespace TSmartClinic.API.Repositories
 
             return query.ToList();
 
+        }
+
+        public override Usuario Atualizar(Usuario entity)
+        {
+            var usuarioExistente = _dbSet
+               .Include(u => u.UsuarioClientePerfil)
+               .FirstOrDefault(u => u.Id == entity.Id);
+
+            if (usuarioExistente == null)
+                throw new Exception("Usuário não encontrado");
+
+            // AutoMapper já existente na API
+            _mapper.Map(entity, usuarioExistente);
+
+            // Atualiza vínculos de UsuarioClientePerfil manualmente
+            usuarioExistente.UsuarioClientePerfil ??= new List<UsuarioClientePerfil>();
+            usuarioExistente.UsuarioClientePerfil.Clear();
+
+            foreach (var ucp in entity.UsuarioClientePerfil ?? new List<UsuarioClientePerfil>())
+            {
+                usuarioExistente.UsuarioClientePerfil.Add(new UsuarioClientePerfil
+                {
+                    UsuarioId = ucp.UsuarioId,
+                    ClienteId = ucp.ClienteId,
+                    PerfilId = ucp.PerfilId,
+                    ClientePadrao = ucp.ClientePadrao
+                });
+            }
+
+            _dbContext.SaveChanges();
+
+            return usuarioExistente;
         }
     }
 }

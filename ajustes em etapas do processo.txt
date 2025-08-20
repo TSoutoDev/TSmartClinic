@@ -1,0 +1,126 @@
+        /* azul claro similar ao do print */
+        .text-info-light {
+            color: #16aaff !important;
+        }
+
+
+
+
+
+//---------
+
+
+ <tbody>
+                                                                    @if (Model.ProcessoSeletivo.HistoricoEtapas != null)
+                                                                    {
+                                                                        @foreach (var historico in Model.ProcessoSeletivo.HistoricoEtapas)
+                                                                        {
+                                                                            @*  <tr>
+                                                                                <td>@historico.Nome</td>
+                                                                                <td align="center">
+                                                                                    @if (historico.Status == 0)
+                                                                                    {
+                                                                                        <div>-</div>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        @historico.Data.ToString("dd/MM/yyyy")
+                                                                                    }
+
+                                                                                </td>
+                                                                                <td>
+                                                                                    @if (historico.EnvioArquivos == 1 && historico.EnvioArquivosPor == 1)
+                                                                                    {
+                                                                                        <a href="~/painelvagas/enviararquivoscandidato?l=@Model.LinkPagina&id=@PeopleNetRH.Presentation.Mvc.Helpers.EncryptionHelper.Encrypt(Model.IdCandidato.ToString())&p=@PeopleNetRH.Presentation.Mvc.Helpers.EncryptionHelper.Encrypt(Model.ProcessoSeletivo.IdProcessoSeletivo.ToString())&etapa=@PeopleNetRH.Presentation.Mvc.Helpers.EncryptionHelper.Encrypt(historico.IdEtapa.ToString())" onclick="loading()" class="badge badge-primary"><i class="fa fa-file-alt"></i>&nbsp;Enviar arquivos</a>
+                                                                                    }
+                                                                                </td>
+                                                                                <td>
+                                                                                    @if (historico.Status == 0)
+                                                                                    {
+                                                                                        <span class="badge badge-warning"><i class="fa fa-exclamation-circle"></i>&nbsp;Aguardando Candidato</span>
+                                                                                    }
+
+                                                                                    else if (historico.Status == 1)
+                                                                                    {
+
+                                                                                        <span class="badge badge-success"><i class="fa fa-check-circle"></i>&nbsp;Aprovado</span>
+                                                                                    }
+                                                                                    @if (historico.EnvioArquivos == 1 && historico.EnvioArquivosPor == 1)
+                                                                                    {
+                                                                                        <a href="~/painelvagas/enviararquivoscandidato?l=@Model.LinkPagina&id=@PeopleNetRH.Presentation.Mvc.Helpers.EncryptionHelper.Encrypt(Model.IdCandidato.ToString())&p=@PeopleNetRH.Presentation.Mvc.Helpers.EncryptionHelper.Encrypt(Model.ProcessoSeletivo.IdProcessoSeletivo.ToString())&etapa=@PeopleNetRH.Presentation.Mvc.Helpers.EncryptionHelper.Encrypt(historico.IdEtapa.ToString())" onclick="loading()" class="badge badge-primary"><i class="fa fa-file-alt"></i>&nbsp;Enviar arquivos</a>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <span class="badge badge-danger"><i class="fa fa-check"></i>&nbsp;Reprovado</span>
+                                                                                    }
+                                                                                </td>
+
+                                                                            </tr> *@
+                                                                            <tr>
+                                                                                <td>@historico.Nome</td>
+
+                                                                                @{
+                                                                                    var aguardando = historico.Status == 0;
+                                                                                    var podeEnviar = historico.EnvioArquivos == 1 && historico.EnvioArquivosPor == 1;
+
+                                                                                    string statusText, statusClass, statusIcon;
+                                                                                    switch (historico.Status)
+                                                                                    {
+                                                                                        case 0:
+                                                                                            statusText = "Aguardando candidato";
+                                                                                            statusClass = "text-info-light";          // sem badge, azul mais claro
+                                                                                            statusIcon = "fa fa-exclamation-triangle";
+                                                                                            break;
+                                                                                        case 1:
+                                                                                            statusText = "Aprovado";
+                                                                                            statusClass = "badge badge-success";       // mantém badge
+                                                                                            statusIcon = "fa fa-check-circle";
+                                                                                            break;
+                                                                                        default:
+                                                                                            statusText = "Reprovado";
+                                                                                            statusClass = "badge badge-danger";        // mantém badge
+                                                                                            statusIcon = "fa fa-times-circle";
+                                                                                            break;
+                                                                                    }
+
+                                                                                    var urlEnviar = Url.Action(
+                                                                                    "EnviarArquivosCandidato", "PainelVagas",
+                                                                                    new
+                                                                                    {
+                                                                                        l = Model.LinkPagina,
+                                                                                        id = PeopleNetRH.Presentation.Mvc.Helpers.EncryptionHelper.Encrypt(Model.IdCandidato.ToString()),
+                                                                                        p = PeopleNetRH.Presentation.Mvc.Helpers.EncryptionHelper.Encrypt(Model.ProcessoSeletivo.IdProcessoSeletivo.ToString()),
+                                                                                        etapa = PeopleNetRH.Presentation.Mvc.Helpers.EncryptionHelper.Encrypt(historico.IdEtapa.ToString())
+                                                                                    });
+                                                                                }
+
+                                                                                <!-- Data -->
+                                                                                <td class="text-center">
+                                                                                    @(aguardando ? "-" : historico.Data.ToString("dd/MM/yyyy"))
+                                                                                </td>
+
+                                                                                <!-- Ação -->
+                                                                                <td class="text-center">
+                                                                                    @if (podeEnviar)
+                                                                                    {
+                                                                                        <a href="@urlEnviar" onclick="loading()" class="badge badge-primary">
+                                                                                            <i class="fa fa-file-alt"></i>&nbsp;Enviar arquivos
+                                                                                        </a>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        @:-
+                                                                                    }
+                                                                                </td>
+
+                                                                                <!-- Status -->
+                                                                                <td class="text-info">
+                                                                                    <span class="@statusClass">
+                                                                                        <i class="@statusIcon" aria-hidden="true"></i>&nbsp;@statusText
+                                                                                    </span>
+                                                                                </td>
+                                                                            </tr>
+                                                                        }
+                                                                    }
+
+                                                                </tbody>

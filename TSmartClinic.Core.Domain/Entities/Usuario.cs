@@ -21,7 +21,9 @@ namespace TSmartClinic.Core.Domain.Entities
         public bool Ativo { get; set; }
         public bool PrimeiroAcesso { get; set; }
         public int ClienteId {  get; set; } 
-        public Cliente? Cliente { get; set; } = null!; // Navegação para Cliente
+        public virtual  Cliente? Cliente { get; set; } = null!; // Navegação para Cliente
+        public virtual  List<UsuarioClientePerfil>? UsuarioClientePerfil { get; set; } = new();      // Relação com UsuarioClientePerfil
+
 
 
         public void Bloquear()
@@ -47,6 +49,17 @@ namespace TSmartClinic.Core.Domain.Entities
             this.FlagBloqueado = usuario.FlagBloqueado;
             this.Ativo = usuario.Ativo;
             this.PrimeiroAcesso = usuario.PrimeiroAcesso;
+
+
+            this.UsuarioClientePerfil = usuario.UsuarioClientePerfil
+                 .Select(e => new UsuarioClientePerfil
+                 {
+                     UsuarioId = e.UsuarioId,
+                     PerfilId = e.PerfilId,
+                     ClienteId = e.ClienteId,
+                     ClientePadrao = e.ClientePadrao
+                 })
+                 .ToList();
 
             this.RemoverEspacosEmBranco();
         }

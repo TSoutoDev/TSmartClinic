@@ -38,5 +38,10 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .WithMany(c => c.Usuarios)
             .HasForeignKey(f => f.ClienteId)
             .OnDelete(DeleteBehavior.Restrict); // importante para não deletar perfis ao deletar cliente
+
+        builder.HasMany(u => u.UsuarioClientePerfil)
+            .WithOne(ucp => ucp.Usuario)
+            .HasForeignKey(ucp => ucp.UsuarioId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

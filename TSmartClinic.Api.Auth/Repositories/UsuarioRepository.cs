@@ -22,7 +22,7 @@ namespace TSmartClinic.Api.Auth.Repositories
             var clinicaIds = clinicasUsuario.Select(c => c.Id).ToList();
 
             var perfilIds = _context.UsuarioClientePerfil
-                .Where(ucp => ucp.Id == usuarioId && clinicaIds.Contains(ucp.ClienteId))
+                .Where(ucp => ucp.UsuarioId == usuarioId && clinicaIds.Contains(ucp.ClienteId))
                 .Select(ucp => ucp.PerfilId)
                 .Distinct()
                 .ToList();

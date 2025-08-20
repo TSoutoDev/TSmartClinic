@@ -16,6 +16,8 @@ namespace TSmartClinic.Core.Domain.Entities
         public Nicho? Nicho { get; set; }
         public List<OperacaoPerfil> OperacaoPerfis { get; set; } = new(); 
         public Cliente? Cliente { get; set; }
+
+        public List<UsuarioClientePerfil> UsuarioClientePerfil { get; set; } = new();
         #endregion
 
         public override void Atualizar(object obj)
