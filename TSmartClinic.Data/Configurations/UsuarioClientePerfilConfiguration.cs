@@ -17,17 +17,18 @@ namespace TSmartClinic.Data.Configurations
             builder.HasOne(x => x.Usuario)
                 .WithMany(u => u.UsuarioClientePerfil)
                 .HasForeignKey(x => x.UsuarioId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Cliente)
                 .WithMany(c => c.UsuarioClientePerfil)
                 .HasForeignKey(x => x.ClienteId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Perfil)
                 .WithMany(p => p.UsuarioClientePerfil)
                 .HasForeignKey(x => x.PerfilId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
+
 
             // Default para ClientePadrao
             builder.Property(x => x.ClientePadrao).HasDefaultValue(false);

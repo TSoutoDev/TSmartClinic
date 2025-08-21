@@ -1,4 +1,5 @@
-﻿using TSmartClinic.Core.Domain.Entities;
+﻿using TSmartClinic.API.Repositories;
+using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Core.Domain.Interfaces.Services;
@@ -10,13 +11,11 @@ namespace TSmartClinic.API.Services
     {
         private readonly IUsuarioRepository? _usuarioRepository;
         private readonly ICriptografiaProvider _criptografiaProvider;
-       // private readonly IUsuarioClinicaPerfilRepository _usuarioClinicaPerfilRepository;
-        public UsuarioService(IUsuarioRepository usuarioRepository, /*IUsuarioClinicaPerfilRepository usuarioClinicaPerfilRepository, */ICriptografiaProvider criptografiaProvider = null) : base(usuarioRepository)
+
+        public UsuarioService(IUsuarioRepository usuarioRepository, ICriptografiaProvider criptografiaProvider = null) : base(usuarioRepository)
         {
             _usuarioRepository = usuarioRepository;
             _criptografiaProvider = criptografiaProvider;
-           // _usuarioClinicaPerfilRepository = usuarioClinicaPerfilRepository;
-
         }
 
         public void Bloquear(int id)
@@ -51,13 +50,15 @@ namespace TSmartClinic.API.Services
             {
                 usuario.Senha = _criptografiaProvider.Criptografar(usuario.Senha);
             }
-
+            // Atualizar o usuario
+            var usuarioAtualizado = _usuarioRepository?.Atualizar(usuario);
+            
             return base.Atualizar(id, usuario);
         }
 
         public List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clinicasUsuario)
         {
             throw new NotImplementedException();
-        }
+        } 
     }
 }

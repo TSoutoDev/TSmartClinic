@@ -14,14 +14,29 @@ namespace TSmartClinic.Api.Auth.Services
             _usuarioClinicaPerfilRepository = usuarioClinicaPerfilRepository;
         }
 
+        public void ExluirPorUsuarioId(int usuarioId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Cliente ObterClinicaPadrao(int usuarioId)
         {
             return _usuarioClinicaPerfilRepository.ObterClinicaPadraoDoUsuario(usuarioId);
         }
 
+        public Cliente ObterClinicaPadraoDoUsuario(int usuarioId)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Cliente> ObterClinicasDoUsuario(int usuarioId)
         {
             return _usuarioClinicaPerfilRepository.ObterClinicasDoUsuario(usuarioId);
+        }
+
+        public List<UsuarioClientePerfil> ObterListaPorUsuarioId(int usuarioId)
+        {
+            throw new NotImplementedException();
         }
 
         public bool UsuarioPossuiAcessoClinica(int usuarioId, int clinicaId)

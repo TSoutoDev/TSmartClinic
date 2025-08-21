@@ -14,10 +14,13 @@ namespace TSmartClinic.API.Repositories
 
         private readonly IMapper _mapper;
         private readonly TSmartClinicContext _dbContext;
-        public UsuarioRepository(IMapper mapper, TSmartClinicContext TSmartClinicContext) : base(TSmartClinicContext)
+        private readonly IUsuarioClientePerfilRepository _operacaoPerfilRepository;
+
+        public UsuarioRepository(IUsuarioClientePerfilRepository usuarioClientePerfilRepository , IMapper mapper, TSmartClinicContext TSmartClinicContext) : base(TSmartClinicContext)
         {
             _mapper = mapper;
             _dbContext = TSmartClinicContext;
+            _operacaoPerfilRepository = usuarioClientePerfilRepository;
         }
 
         public List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clientesUsuario)
@@ -77,34 +80,102 @@ namespace TSmartClinic.API.Repositories
 
         public override Usuario Atualizar(Usuario entity)
         {
-            var usuarioExistente = _dbSet
-               .Include(u => u.UsuarioClientePerfil)
-               .FirstOrDefault(u => u.Id == entity.Id);
+            var usuarioDb = _dbSet
+                .Include(u => u.UsuarioClientePerfil) // importante: carregar a coleção
+                .FirstOrDefault(p => p.Id == entity.Id);
 
-            if (usuarioExistente == null)
-                throw new Exception("Usuário não encontrado");
+            if (usuarioDb == null) throw new Exception("Usuário não encontrado");
 
-            // AutoMapper já existente na API
-            _mapper.Map(entity, usuarioExistente);
+            var strategy = _dbContext.Database.CreateExecutionStrategy();
 
-            // Atualiza vínculos de UsuarioClientePerfil manualmente
-            usuarioExistente.UsuarioClientePerfil ??= new List<UsuarioClientePerfil>();
-            usuarioExistente.UsuarioClientePerfil.Clear();
-
-            foreach (var ucp in entity.UsuarioClientePerfil ?? new List<UsuarioClientePerfil>())
+            strategy.Execute(() =>
             {
-                usuarioExistente.UsuarioClientePerfil.Add(new UsuarioClientePerfil
+                using var transaction = _dbContext.Database.BeginTransaction();
+                try
                 {
-                    UsuarioId = ucp.UsuarioId,
-                    ClienteId = ucp.ClienteId,
-                    PerfilId = ucp.PerfilId,
-                    ClientePadrao = ucp.ClientePadrao
-                });
+                    // 1) Atualiza campos simples
+                    _mapper.Map(entity, usuarioDb);
+
+                    // 2) Delta de UsuarioClientePerfil
+                    var atuais = usuarioDb.UsuarioClientePerfil.ToList();
+
+                    var novos = entity.UsuarioClientePerfil?
+                        .Select(x => new UsuarioClientePerfil
+                        {
+                            UsuarioId = usuarioDb.Id,
+                            ClienteId = x.ClienteId,
+                            PerfilId = x.PerfilId,
+                            ClientePadrao = x.ClientePadrao
+                        }).ToList() ?? new List<UsuarioClientePerfil>();
+
+                    // 2a) Remover vínculos que não existem mais
+                    var paraRemover = atuais
+                        .Where(atual => !novos.Any(n =>
+                            n.ClienteId == atual.ClienteId &&
+                            n.PerfilId == atual.PerfilId))
+                        .ToList();
+
+                    if (paraRemover.Any())
+                        _dbContext.RemoveRange(paraRemover);
+
+                    // 2b) Adicionar vínculos que não existiam
+                    var paraAdicionar = novos
+                        .Where(novo => !atuais.Any(a =>
+                            a.ClienteId == novo.ClienteId &&
+                            a.PerfilId == novo.PerfilId))
+                        .ToList();
+
+                    if (paraAdicionar.Any())
+                        _dbContext.AddRange(paraAdicionar);
+
+                    // 2c) Atualizar vínculos que continuam (ex.: ClientePadrao pode mudar)
+                    foreach (var atual in atuais)
+                    {
+                        var correspondente = novos.FirstOrDefault(n =>
+                            n.ClienteId == atual.ClienteId &&
+                            n.PerfilId == atual.PerfilId);
+
+                        if (correspondente != null)
+                        {
+                            atual.ClientePadrao = correspondente.ClientePadrao;
+                            // se houver outros campos além de ClientePadrao, atualize aqui
+                        }
+                    }
+
+                    // 3) Persiste tudo
+                    _dbContext.SaveChanges();
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            });
+
+            // Recarrega navegação
+            _dbContext.Entry(usuarioDb).Collection(p => p.UsuarioClientePerfil).Load();
+
+            return usuarioDb;
+        }
+
+        public override void Excluir(Usuario entity)
+        {
+            // Carregar vínculos
+            _dbContext.Entry(entity)
+                .Collection(u => u.UsuarioClientePerfil)
+                .Load();
+
+            // Remover vínculos primeiro
+            if (entity.UsuarioClientePerfil.Any())
+            {
+                _dbContext.UsuarioClientePerfil.RemoveRange(entity.UsuarioClientePerfil);
             }
 
+            // Agora remover o usuário
+            _dbContext.Remove(entity);
             _dbContext.SaveChanges();
 
-            return usuarioExistente;
         }
     }
 }
