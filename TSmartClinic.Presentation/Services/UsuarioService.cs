@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Services.Interfaces;
 using TSmartClinic.Presentation.Settings;
@@ -126,6 +127,5 @@ namespace TSmartClinic.Presentation.Services
                 return Convert.ToBase64String(bytes);
             }
         }
-
     }
 }

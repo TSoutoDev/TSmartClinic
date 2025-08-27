@@ -13,11 +13,14 @@
         public DateTime? DataExpiracaoSenha { get; set; } = DateTime.UtcNow.AddDays(365);
         public string? Email { get; set; }
         public string? Celular { get; set; }
-        public char? TipoUsuario { get; set; }
+        public char? TipoUsuario { get; set; } = 'C';
         public byte[]? Foto { get; set; }
         public bool FlagBloqueado { get; set; } 
         public bool Ativo { get; set; } = true;
         public bool PrimeiroAcesso { get; set; }
+        public int ClienteId { get; set; }
         public List<ClienteViewModel>? ListClientes { get; set; }
+        // public List<PerfilViewModel>? PerfisCliente { get; set; }
+        public int? PerfilClienteId { get; set; }
     }
 }

@@ -10,21 +10,25 @@ namespace TSmartClinic.API.Services
     public class UsuarioService : BaseService<Usuario>, IUsuarioService
     {
         private readonly IUsuarioRepository? _usuarioRepository;
+        private readonly IPerfilRepository? _perfilRepository;
         private readonly ICriptografiaProvider _criptografiaProvider;
+        private readonly IUsuarioLogadoService _usuarioLogadoService;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository, ICriptografiaProvider criptografiaProvider = null) : base(usuarioRepository)
+        public UsuarioService(IUsuarioLogadoService usuarioLogadoService, IPerfilRepository perfilRepository, IUsuarioRepository usuarioRepository, ICriptografiaProvider criptografiaProvider = null) : base(usuarioRepository)
         {
             _usuarioRepository = usuarioRepository;
+            _perfilRepository = perfilRepository;
             _criptografiaProvider = criptografiaProvider;
+            _usuarioLogadoService = usuarioLogadoService;
         }
 
         public void Bloquear(int id)
         {
-            var usuario = _usuarioRepository.ObterPorId(id);
+            var usuario = _usuarioRepository?.ObterPorId(id);
 
-            usuario.Bloquear();
+            usuario?.Bloquear();
 
-            _usuarioRepository.Atualizar(usuario);
+            _usuarioRepository?.Atualizar(usuario);
         }
 
         public Usuario ObterPorEmail(string email)
@@ -35,10 +39,13 @@ namespace TSmartClinic.API.Services
         public override Usuario Inserir(Usuario usuario)
         {
             usuario.Senha = _criptografiaProvider.Criptografar(usuario.Senha);
+            
+            if (_usuarioLogadoService.UsuarioMaster)
+            {
+                _perfilRepository.ListarTodos();
+            }
 
-           // _usuarioClinicaPerfilRepository.Inserir()
-
-            return base.Inserir(usuario);
+                return base.Inserir(usuario);
         }
 
         public override Usuario Atualizar(int id, Usuario usuario)

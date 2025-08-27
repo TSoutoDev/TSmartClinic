@@ -1,5 +1,4 @@
-﻿
-@model TSmartClinic.Presentation.Models.UsuarioViewModel
+﻿@model TSmartClinic.Presentation.Models.UsuarioViewModel
 @{
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
     ViewBag.Titulo = "Cadastro de Usuario";
@@ -51,21 +50,30 @@
                         @Html.ValidationMessageFor(model => model.Modelo)
                     </span> *@
                 </div>
-                <!-- Tipo de Usuário -->
-                <div class="col-md-3">
-                    <label for="TipoUsuarioId" class="form-label">Tipo de Usuário</label>
-                    <select @* asp-for="TipoUsuarioId" *@ class="form-select">
-                        <option value=""></option>
-                        <option value="C">Usuário Cliente</option>
-                        <option value="M">Usuário Master</option>
 
+          
+               
+      @*           <div class="col-lg-3">
+                    <label for="PerfilClienteId">Perfil</label>
+                    <select id="PerfilClienteId" name="PerfilClienteId" class="form-select"
+                            asp-for="PerfilClienteId" asp-items="@ViewBag.Perfis">
+                        <option value="">- Selecione o Perfil -</option>
                     </select>
+                    <span class="text-danger">@Html.ValidationMessageFor(m => m.PerfilClienteId)</span>
+                </div> *@
+                <div class="col-lg-3">
+                    <label for="PerfilClienteId">Perfil</label>
+                    <select id="PerfilClienteId" name="PerfilClienteId"
+                            class="form-select"
+                            asp-for="PerfilClienteId" asp-items="@ViewBag.Perfis">
+                    </select>
+                    <span class="text-danger">@Html.ValidationMessageFor(m => m.PerfilClienteId)</span>
                 </div>
 
             </div>
-            
+
             <div class="row mt-3">
-               
+
 
                 <!-- Campo de upload -->
                 <div class="col-md-6 mt-0">
@@ -107,21 +115,6 @@
                         @Html.ValidationMessageFor(model => model.Celular)
                     </span>
                 </div>
-            </div>
-
-            <div class="row mt-4">
-            @*     <!-- Chave Seletora Agendamento (Switch) -->
-                <div class="col-md-2 d-flex align-items-center">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input"
-                               id="ContaExpiraSwitch"
-                               type="checkbox" />
-                        <label class="form-check-label ms-2" for="ContaExpiraSwitch">
-                            Conta Expira?
-                        </label>
-                    </div>
-                </div> *@
-
             </div>
 
             <div class="row mt-4">

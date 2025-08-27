@@ -132,6 +132,25 @@ namespace TSmartClinic.API.Repositories
             return base.Inserir(entity);
         }
 
+        public async Task<List<Perfil>> ListarPerfilPorCliente(int clienteId)
+        {
+            return await _dbSet
+            .Include(x => x.Cliente)             // carrega navegação
+            .Where(x => x.ClienteId == clienteId) // filtra pelo cliente
+            .OrderBy(x => x.NomePerfil)           // ordena
+            .ToListAsync();                        // retorna lista assincronamente
+        }
+
+        public async Task<List<Perfil>> ListarTodos()
+        {
+            var response = _dbSet      
+              .OrderBy(x => x.NomePerfil)     // ordena pelo nome
+              .ToList();
+
+            return response;
+        }
+
+     
     }
 }
 

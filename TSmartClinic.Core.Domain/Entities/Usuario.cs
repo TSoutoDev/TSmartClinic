@@ -49,6 +49,7 @@ namespace TSmartClinic.Core.Domain.Entities
             this.FlagBloqueado = usuario.FlagBloqueado;
             this.Ativo = usuario.Ativo;
             this.PrimeiroAcesso = usuario.PrimeiroAcesso;
+            this.ClienteId = usuario.ClienteId;
 
 
             this.UsuarioClientePerfil = usuario.UsuarioClientePerfil

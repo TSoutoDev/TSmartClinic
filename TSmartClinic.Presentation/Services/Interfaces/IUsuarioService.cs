@@ -1,4 +1,5 @@
-﻿using TSmartClinic.Presentation.Models;
+﻿using TSmartClinic.Core.Domain.Entities;
+using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.ViewModels.Filters;
 
 namespace TSmartClinic.Presentation.Services.Interfaces

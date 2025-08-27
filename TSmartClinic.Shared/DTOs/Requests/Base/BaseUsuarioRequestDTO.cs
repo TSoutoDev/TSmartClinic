@@ -12,6 +12,8 @@
         public byte[]? Foto { get; set; }
         public bool FlagBloqueado { get; set; } = false;
         public bool Ativo { get; set; }
+        public int ClienteId { get; set; }
+
     }
 }
 

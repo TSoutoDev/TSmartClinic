@@ -53,6 +53,14 @@ namespace TSmartClinic.API.Services
             return perfilAtualizado;
         }
 
+        public async Task<List<Perfil>> ListarPerfilPorCliente(int clienteId)
+        {
+            if (clienteId == 0)
+            {
+                return await _perfilRepository.ListarTodos();
+            }
 
+            return await _perfilRepository.ListarPerfilPorCliente(clienteId);
+        }
     }
 }

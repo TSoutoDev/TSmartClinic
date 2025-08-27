@@ -218,6 +218,23 @@
       "UpstreamHttpMethod": [ "POST" ]
     },
     {
+      "DownstreamPathTemplate": "/api/perfis/dropdown-perfil/{idCliente}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/perfis/dropdown-perfil/{idCliente}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+
+
+    {
       "DownstreamPathTemplate": "/api/perfis",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
