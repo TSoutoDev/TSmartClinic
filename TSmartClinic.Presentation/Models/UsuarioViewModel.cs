@@ -1,4 +1,6 @@
-﻿namespace TSmartClinic.Presentation.Models
+﻿using TSmartClinic.Shared.DTOs.Requests.Update;
+
+namespace TSmartClinic.Presentation.Models
 {
     public class UsuarioViewModel : BaseViewModel
     {
@@ -20,6 +22,7 @@
         public bool PrimeiroAcesso { get; set; }
         public int ClienteId { get; set; }
         public List<ClienteViewModel>? ListClientes { get; set; }
+        public List<UsuarioClientePerfilViewModel>? UsuarioClientePerfil { get; set; }
         // public List<PerfilViewModel>? PerfisCliente { get; set; }
         public int? PerfilClienteId { get; set; }
     }

@@ -55,7 +55,6 @@ namespace TSmartClinic.Presentation.Controllers
                 if (!id.HasValue)
                 {
                     model.DataExpiracaoSenha = DateTime.Today.AddDays(365);
-                    model.PerfilClienteId = null; // força "-Selecione o Perfil-"
                 }
 
                 // Obtem cliente do claim
@@ -65,11 +64,15 @@ namespace TSmartClinic.Presentation.Controllers
 
                 if (!string.IsNullOrEmpty(tipoUsuario) && tipoUsuario != "M" && !string.IsNullOrEmpty(clienteIdClaim))
                 {
-                    clienteId = int.Parse(clienteIdClaim); // restringe para o cliente do usuário
+                    clienteId = int.Parse(clienteIdClaim); 
                 }
 
-                // Preenche dropdown de perfis
-                await CriarViewPerfisPorCliente(clienteId);
+                if (model.UsuarioClientePerfil != null && model.UsuarioClientePerfil.Any())
+                {
+                    model.PerfilClienteId = model.UsuarioClientePerfil.First().PerfilId;
+                }
+
+                await CriarViewPerfisPorCliente(clienteId, model.PerfilClienteId);
             }
 
             return result;
@@ -92,7 +95,7 @@ namespace TSmartClinic.Presentation.Controllers
             // Aqui você pode popular outros ViewBags se necessário
         }
 
-        private async Task CriarViewPerfisPorCliente(int clienteId)
+        private async Task CriarViewPerfisPorCliente(int clienteId, int? perfilSelecionado = null)
         {
             var resultado = await _perfilService.ListarPerfilPorCliente(clienteId);
 

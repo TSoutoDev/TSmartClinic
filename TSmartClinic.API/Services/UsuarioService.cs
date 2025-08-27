@@ -45,6 +45,7 @@ namespace TSmartClinic.API.Services
                 _perfilRepository.ListarTodos();
             }
 
+
                 return base.Inserir(usuario);
         }
 
