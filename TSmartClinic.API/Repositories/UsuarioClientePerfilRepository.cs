@@ -55,5 +55,11 @@ namespace TSmartClinic.API.Repositories
             if (usuarioClientePerfis == null) return;
             _dbContext.Set<UsuarioClientePerfil>().AddRange(usuarioClientePerfis);
         }
+
+        public void Inserir(UsuarioClientePerfil usuarioClientePerfil)
+        {
+            _dbContext.UsuarioClientePerfil.Add(usuarioClientePerfil);
+            _dbContext.SaveChanges();
+        }
     }
 }

@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using TSmartClinic.Core.Domain.Interfaces.Providers;
+﻿using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Core.Infra.CrossCutting.Providers;
+using TSmartClinic.Presentation.Helpers;
 using TSmartClinic.Presentation.Services;
 using TSmartClinic.Presentation.Services.Interfaces;
 
@@ -12,7 +12,7 @@ namespace TSmartClinic.Presentation.Extentions
         {
             // Registro do IHttpContextAccessor
             services.AddHttpContextAccessor();
-      
+
             services.AddTransient<IAccessTokenService, AccessTokenService>();
             services.AddTransient<IAutenticacaoService, AutenticacaoService>();
             services.AddSingleton<ICriptografiaProvider, CriptografiaProvider>();

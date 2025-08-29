@@ -10,5 +10,7 @@ namespace TSmartClinic.Core.Domain.Interfaces.Repositories
         bool UsuarioPossuiAcessoClinica(int usuarioId, int clinicaId);
         void ExluirPorUsuarioId(int usuarioId);
         void AdicionarRange(IEnumerable<UsuarioClientePerfil> usuarioClientePerfis);// Adiciona uma lista de OperacaoPerfis
+        void Inserir(UsuarioClientePerfil usuarioClientePerfil);
+
     }
 }

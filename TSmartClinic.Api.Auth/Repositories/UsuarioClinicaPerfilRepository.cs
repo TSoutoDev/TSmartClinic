@@ -25,6 +25,11 @@ namespace TSmartClinic.Api.Auth.Repositories
             throw new NotImplementedException();
         }
 
+        public void Inserir(UsuarioClientePerfil usuarioClientePerfil)
+        {
+            throw new NotImplementedException();
+        }
+
         public Cliente ObterClinicaPadraoDoUsuario(int usuarioId)
         {
             return _tsmartClinicContext.UsuarioClientePerfil
