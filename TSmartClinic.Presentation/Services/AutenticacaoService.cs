@@ -47,36 +47,30 @@ namespace TSmartClinic.Presentation.Services
 
 
                 HttpResponseMessage response = await client.PostAsJsonAsync($"{_baseUrlController}/login", accountViewModel);
-
                 retorno.StatusCode = response.StatusCode.GetHashCode();
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+
+                if (response.IsSuccessStatusCode)
                 {
-                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    try
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                        var obj = JsonSerializer.Deserialize<AccountViewModel>(content, options);
 
-                    var content = await response.Content.ReadAsStringAsync();
-                    var obj = JsonSerializer.Deserialize<AccountViewModel>(content, options);
-
-                    retorno.Itens = new List<AccountViewModel>() { obj };
-                    retorno.Sucesso = true;
+                        retorno.Itens = new List<AccountViewModel> { obj };
+                        retorno.Sucesso = true;
+                    }
+                    catch
+                    {
+                        retorno.Sucesso = false;
+                        retorno.Mensagem = "Erro ao gravar o registro. Favor validar as informações.";
+                    }
                 }
                 else
                 {
-                    var content = await response.Content.ReadAsStringAsync();
-                    ErroViewModel erro = string.IsNullOrWhiteSpace(content)
-                        ? null
-                        : JsonSerializer.Deserialize<ErroViewModel>(content);
-
+                    // Mensagem padronizada para qualquer erro
                     retorno.Sucesso = false;
-                    if (erro == null || erro?.StatusCode == 0)
-                    {
-                        retorno.StatusCode = retorno.StatusCode;
-                        retorno.Mensagem = "Erro ao gravar o registro.  Favor validar as informações.";
-                    }
-                    else
-                    {
-                        retorno.StatusCode = erro.StatusCode;
-                        retorno.Mensagem = erro.Message;
-                    }
+                    retorno.Mensagem = "Erro ao gravar o registro. Favor validar as informações.";
                 }
 
                 return retorno;

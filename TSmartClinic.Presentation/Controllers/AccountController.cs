@@ -46,7 +46,7 @@ namespace TSmartClinic.Presentation.Controllers
 
 
         [HttpPost]
-        public IActionResult Login(AccountViewModel model)
+        public async Task<IActionResult> Login(AccountViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -58,12 +58,18 @@ namespace TSmartClinic.Presentation.Controllers
                     {
                         case 404:
                             IncrementaTentativa();
+                            TempData["MensagemErro"] = "Usuário não encontrado.";
+                            break;
+
+                        case 401:
+                            TempData["MensagemErro"] = "E-mail ou senha inválidos.";
                             break;
 
                         default:
-                            TempData["MensagemErro"] = response.Mensagem;
+                            TempData["MensagemErro"] = response.Mensagem ?? "Erro ao autenticar. Tente novamente.";
                             break;
                     }
+                    return View(model); // retorna para a tela com mensagem
                 }
                 else
                 {
@@ -73,9 +79,8 @@ namespace TSmartClinic.Presentation.Controllers
                         // Aqui você busca o usuário no banco (simulado abaixo)
                        // var usuario = _usuarioService.ObterPorEmail(model.Email);
 
-
-                        var autenticacao = response.Itens.FirstOrDefault();
-                        var cliente = autenticacao.ListClientes.FirstOrDefault();
+                        var autenticacao =  response.Itens.FirstOrDefault();
+                        var cliente =  autenticacao.ListClientes.FirstOrDefault();
 
                         _accessTokenService.Salvar(autenticacao.AccessToken);
 
