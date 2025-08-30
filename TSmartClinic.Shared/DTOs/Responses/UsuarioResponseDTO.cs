@@ -22,6 +22,7 @@ namespace TSmartClinic.Shared.DTOs.Responses
         public bool FlagBloqueado { get; set; }
         public bool Ativo { get; set; }
         public int ClienteId { get; set; }
+        
         public List<UsuarioClientePerfilUpdateRequestDto>? UsuarioClientePerfil { get; set; }
         //public Cliente? Cliente { get; set; } = null!; // Navegação para Cliente
     }

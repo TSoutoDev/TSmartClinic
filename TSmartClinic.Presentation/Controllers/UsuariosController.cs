@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Services.Interfaces;
 using TSmartClinic.Presentation.ViewModels.Filters;
@@ -11,12 +12,14 @@ namespace TSmartClinic.Presentation.Controllers
         private readonly IUsuarioService _usuarioService;
         private readonly IPerfilService _perfilService;
         private readonly IUsuarioLogadoService _usuarioLogadoService;
+        private readonly IClienteService _clienteService;
 
-        public UsuariosController(IUsuarioLogadoService usuarioLogadoService, IPerfilService perfilService, IUsuarioService usuarioService) : base(usuarioService)
+        public UsuariosController(IClienteService clienteService, IUsuarioLogadoService usuarioLogadoService, IPerfilService perfilService, IUsuarioService usuarioService) : base(usuarioService)
         {
             _usuarioService = usuarioService;
             _perfilService = perfilService;
             _usuarioLogadoService = usuarioLogadoService;
+            _clienteService = clienteService;
         }
 
         // POST: Cadastro
@@ -39,17 +42,16 @@ namespace TSmartClinic.Presentation.Controllers
             var foto = Request.Form["Foto"].ToString();
             await _usuarioService.ProcessarFotoAsync(model, foto);
             await _usuarioService.PreencherDados(model);
-            
-            
-            model.ClienteId = _usuarioLogadoService.ClienteId ?? 1; // pega da sessão ou fallback Cliente Master
 
             var ucp = new UsuarioClientePerfilViewModel
             {
-                ClienteId = _usuarioLogadoService.ClienteId.Value,
+                // se master, usa o cliente escolhido na tela senão, pega da sessão
+                ClienteId = _usuarioLogadoService.UsuarioMaster ? model.ClienteId : _usuarioLogadoService.ClienteId.Value, 
                 PerfilId = model.PerfilClienteId.Value,
                 ClientePadrao = false
             };
 
+            model.ClienteId = ucp.ClienteId; 
             model.UsuarioClientePerfil = new List<UsuarioClientePerfilViewModel> { ucp };
 
             return await base.Cadastro(model);
@@ -77,7 +79,11 @@ namespace TSmartClinic.Presentation.Controllers
 
                 if (!string.IsNullOrEmpty(tipoUsuario) && tipoUsuario != "M" && !string.IsNullOrEmpty(clienteIdClaim))
                 {
-                    clienteId = int.Parse(clienteIdClaim); 
+                    clienteId = int.Parse(clienteIdClaim); //usuario cliente
+                }
+                else
+                {
+                    clienteId = 1; //master
                 }
 
                 if (model.UsuarioClientePerfil != null && model.UsuarioClientePerfil.Any())
@@ -105,6 +111,8 @@ namespace TSmartClinic.Presentation.Controllers
 
         private async Task CriarViewBags()
         {
+            await CriarViewClientes();
+  
             // Aqui você pode popular outros ViewBags se necessário
         }
 
@@ -124,6 +132,19 @@ namespace TSmartClinic.Presentation.Controllers
             lista.Insert(0, new SelectListItem { Text = "- Selecione o Perfil -", Value = "" });
 
             ViewBag.Perfis = lista;
+        }
+
+
+        private async Task CriarViewClientes()
+        {
+            var resultado = await _clienteService.ListarClientes();
+
+            ViewBag.Clientes = resultado
+                .Select(x => new SelectListItem
+                {
+                    Text = $"{x.NomeCliente} - {x.CNPJ}", // Nome + CNPJ
+                    Value = x.Id.ToString()
+                });
         }
     }
 }

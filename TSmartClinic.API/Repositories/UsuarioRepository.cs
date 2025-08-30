@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Xml.XPath;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Helpers.FilterHelper;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
@@ -43,8 +44,9 @@ namespace TSmartClinic.API.Repositories
             query = query?.Where(x => (int)x.Id == id);
 
             query = query?
-                .Include(x => x.Cliente)
-                .Include(x => x.UsuarioClientePerfil);
+                .Include(x => x.UsuarioClientePerfil)
+                .ThenInclude(x => x.Perfil)
+                .ThenInclude(x => x.Cliente);
 
             var usuario = query?.FirstOrDefault();
 

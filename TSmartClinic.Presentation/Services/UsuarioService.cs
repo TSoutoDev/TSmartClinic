@@ -63,6 +63,7 @@ namespace TSmartClinic.Presentation.Services
             if (viewModel.Id.HasValue)
             {
                 viewModel.Senha = viewModel.Senha;
+                viewModel.Email = viewModel.Email;
                 //viewModel.Login = viewModel.Login;
 
             }

@@ -1,7 +1,15 @@
-﻿@model TSmartClinic.Presentation.Models.UsuarioViewModel
+﻿@using System.Linq
+@using Microsoft.AspNetCore.Http
+@using TSmartClinic.Presentation.Models.PermissoesAcesso
+@using TSmartClinic.Presentation.Services.Interfaces
+@inject IUsuarioLogadoService UsuarioLogado
+@inject IHttpContextAccessor HttpContextAccessor
+@model TSmartClinic.Presentation.Models.UsuarioViewModel
+
 @{
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
     ViewBag.Titulo = "Cadastro de Usuario";
+    var user = HttpContextAccessor.HttpContext?.User;
 }
 
 @using (Html.BeginForm())
@@ -51,16 +59,6 @@
                     </span> *@
                 </div>
 
-          
-               
-      @*           <div class="col-lg-3">
-                    <label for="PerfilClienteId">Perfil</label>
-                    <select id="PerfilClienteId" name="PerfilClienteId" class="form-select"
-                            asp-for="PerfilClienteId" asp-items="@ViewBag.Perfis">
-                        <option value="">- Selecione o Perfil -</option>
-                    </select>
-                    <span class="text-danger">@Html.ValidationMessageFor(m => m.PerfilClienteId)</span>
-                </div> *@
                 <div class="col-lg-3">
                     <label for="PerfilClienteId">Perfil</label>
                     <select id="PerfilClienteId" name="PerfilClienteId"
@@ -69,12 +67,11 @@
                     </select>
                     <span class="text-danger">@Html.ValidationMessageFor(m => m.PerfilClienteId)</span>
                 </div>
-
             </div>
 
+
+
             <div class="row mt-3">
-
-
                 <!-- Campo de upload -->
                 <div class="col-md-6 mt-0">
                     <label for="UploadFoto" class="form-label">Foto</label>
@@ -115,6 +112,22 @@
                         @Html.ValidationMessageFor(model => model.Celular)
                     </span>
                 </div>
+            </div>
+            <div class="row mt-3">
+                @*se usaurio master pode selecionar cliente*@ 
+                @if (UsuarioLogado != null && UsuarioLogado.UsuarioMaster)
+                {
+                    <div class="mt-6">
+                        <div class="col-lg-3">
+                            <label for="ClienteId">Cliente</label>
+                            <i class="fa-solid fa-crown" title="Usuário Master" style="color: gold; margin-left: 5px;"></i>
+                            <select id="ClienteId" name="ClienteId" class="form-select" asp-for="ClienteId" asp-items="@ViewBag.Clientes">
+                                <option value="">Selecione o Cliente</option>
+                            </select>
+                            <span class="text-danger">@Html.ValidationMessageFor(m => m.ClienteId)</span>
+                        </div>
+                    </div>
+                }
             </div>
 
             <div class="row mt-4">

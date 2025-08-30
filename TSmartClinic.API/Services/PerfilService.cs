@@ -55,7 +55,7 @@ namespace TSmartClinic.API.Services
 
         public async Task<List<Perfil>> ListarPerfilPorCliente(int clienteId)
         {
-            if (clienteId == 0)
+            if (clienteId == 1)
             {
                 return await _perfilRepository.ListarTodos();
             }
