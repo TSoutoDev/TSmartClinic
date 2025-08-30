@@ -6,5 +6,6 @@
         public int ClienteId { get; set; }
         public int PerfilId { get; set; }
         public bool ClientePadrao { get; set; }
+        public PerfilResponseDTO? Perfil { get; set; }
     }
 }

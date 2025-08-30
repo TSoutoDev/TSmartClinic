@@ -5,6 +5,7 @@ using System.Xml.XPath;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Helpers.FilterHelper;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
+using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Data.Contexts;
 using TSmartClinic.Data.Repositories;
 
@@ -16,12 +17,14 @@ namespace TSmartClinic.API.Repositories
         private readonly IMapper _mapper;
         private readonly TSmartClinicContext _dbContext;
         private readonly IUsuarioClientePerfilRepository _operacaoPerfilRepository;
+        private readonly IUsuarioLogadoService _usuarioLogadoService;
 
-        public UsuarioRepository(IUsuarioClientePerfilRepository usuarioClientePerfilRepository , IMapper mapper, TSmartClinicContext TSmartClinicContext) : base(TSmartClinicContext)
+        public UsuarioRepository(IUsuarioLogadoService usuarioLogadoService, IUsuarioClientePerfilRepository usuarioClientePerfilRepository , IMapper mapper, TSmartClinicContext TSmartClinicContext) : base(TSmartClinicContext)
         {
             _mapper = mapper;
             _dbContext = TSmartClinicContext;
             _operacaoPerfilRepository = usuarioClientePerfilRepository;
+            _usuarioLogadoService = usuarioLogadoService;
         }
 
         public List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clientesUsuario)
@@ -63,7 +66,15 @@ namespace TSmartClinic.API.Repositories
             query = MontarFiltro(filtro, properties);
 
             query = query
-                .Include(x => x.Cliente);
+                .Include(x => x.Cliente)
+                .Include(x => x.UsuarioClientePerfil)
+                    .ThenInclude(x => x.Perfil);
+
+            // Não mostrar usuário master (exceto se o próprio estiver logado)
+            if (!_usuarioLogadoService.UsuarioMaster)
+            {
+                query = query.Where(u => u.TipoUsuario != 'M');
+            }
 
             //Filtrar pelo nome se estiver presente no filtro
             if (!string.IsNullOrWhiteSpace(filtroPerfil.Nome))

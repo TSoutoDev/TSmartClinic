@@ -5,6 +5,7 @@ using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Exceptions;
 using TSmartClinic.Core.Domain.Helpers.FilterHelper;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
+using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Data.Contexts;
 using TSmartClinic.Data.Repositories;
 
@@ -14,11 +15,12 @@ namespace TSmartClinic.API.Repositories
     {
         private readonly TSmartClinicContext _dbContext;
         private readonly IOperacaoPerfilRepository _operacaoPerfilRepository;
-        public PerfilRepository(IOperacaoPerfilRepository operacaoPerfilRepository, TSmartClinicContext dbContext, TSmartClinicContext context) : base(dbContext)
+        private readonly IUsuarioLogadoService _usuarioLogadoService;
+        public PerfilRepository(IUsuarioLogadoService usuarioLogadoService, IOperacaoPerfilRepository operacaoPerfilRepository, TSmartClinicContext dbContext, TSmartClinicContext context) : base(dbContext)
         {
             _dbContext = context;
-
             _operacaoPerfilRepository = operacaoPerfilRepository;
+            _usuarioLogadoService = usuarioLogadoService;
         }
 
         public override Perfil ObterPorId(int id, params Expression<Func<Perfil, object>>[] properties)
@@ -50,7 +52,12 @@ namespace TSmartClinic.API.Repositories
             query = query
                 .Include(x => x.Nicho)
                 .Include(x => x.Cliente);
-               // .Include(x => x.OperacaoPerfis); 
+
+            // Não mostrar usuário master (exceto se o próprio estiver logado)
+            if (!_usuarioLogadoService.UsuarioMaster)
+            {
+                query = query.Where(u => !u.UsuarioClientePerfil.Any(p => p.PerfilId == 1));
+            }
 
             //Filtrar pelo nome se estiver presente no filtro
             if (!string.IsNullOrWhiteSpace(filtroPerfil.Nome))

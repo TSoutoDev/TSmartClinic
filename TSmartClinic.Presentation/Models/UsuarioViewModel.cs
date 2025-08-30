@@ -21,8 +21,10 @@ namespace TSmartClinic.Presentation.Models
         public bool Ativo { get; set; } = true;
         public bool PrimeiroAcesso { get; set; }
         public int ClienteId { get; set; }
+        public string? NomePerfil { get; set; }
         public List<ClienteViewModel>? ListClientes { get; set; }
         public List<UsuarioClientePerfilViewModel>? UsuarioClientePerfil { get; set; }
+
         // public List<PerfilViewModel>? PerfisCliente { get; set; }
         public int? PerfilClienteId { get; set; }
     }

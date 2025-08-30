@@ -46,7 +46,8 @@ namespace AgendaApp.API.Mapper
              .ForMember(dest => dest.OperacaoPerfis, opt => opt.MapFrom(src => src.OperacaoPerfis)).ReverseMap();
             CreateMap<UsuarioClientePerfil, UsuarioClientePerfilUpdateRequestDto>().ReverseMap();
             CreateMap<Tarefa, TarefaUpdateRequestDTO>().ReverseMap();
-            CreateMap<Usuario, UsuarioUpdateRequestDTO>().ForMember(dest => dest.UsuarioClientePerfil, opt => opt.MapFrom(src => src.UsuarioClientePerfil)).ReverseMap();
+            CreateMap<Usuario, UsuarioUpdateRequestDTO>()
+                .ForMember(dest => dest.UsuarioClientePerfil, opt => opt.MapFrom(src => src.UsuarioClientePerfil)).ReverseMap();
             CreateMap<OperacaoPerfil, UsuarioUpdateRequestDTO>().ReverseMap();
            
             //Response
@@ -56,7 +57,7 @@ namespace AgendaApp.API.Mapper
             CreateMap<Tarefa, TarefaResponseDTO>()
                .ForMember(dest => dest.CategoriaId, opt => opt.MapFrom(src => src.CategoriaId))
                .ReverseMap();
-            CreateMap<Usuario, UsuarioResponseDTO>();
+            CreateMap<Usuario, UsuarioResponseDTO>().ReverseMap();
             CreateMap<Paciente, PacienteResponseDTO>();
             CreateMap<Perfil, PerfilResponseDTO>()
                  .ForMember(dest => dest.OperacaoPerfis, opt => opt.MapFrom(src => src.OperacaoPerfis))
@@ -65,10 +66,9 @@ namespace AgendaApp.API.Mapper
             CreateMap<Operacao, PermissoesAcessoResponseDTO.OperacaoResponseDTO>().ReverseMap();
             CreateMap<Funcionalidade, PermissoesAcessoResponseDTO.FuncionalidadeResponseDTO>().ReverseMap();
             CreateMap<Modulo, PermissoesAcessoResponseDTO.ModuloResponseDTO>().ReverseMap();
-            CreateMap<UsuarioClientePerfil, UsuarioClientePerfilResponseDto>().ReverseMap();
-
-
-
+            CreateMap<UsuarioClientePerfil, UsuarioClientePerfilResponseDto>()
+                .ForMember(dest => dest.Perfil, opt => opt.MapFrom(src => src.Perfil))
+                 .ReverseMap();
         }
     }
 }
