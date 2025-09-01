@@ -14,7 +14,8 @@ namespace TSmartClinic.Data.Configurations
             //definindo o campo 'chave primária'
             builder.HasKey(c => c.Id);
             builder.Property(c => c.Id).HasColumnName("Id");
-            builder.Property(c => c.NomeNicho).HasColumnName("NomeNicho").HasMaxLength(200).IsRequired();   
+            builder.Property(c => c.NomeNicho).HasColumnName("NomeNicho").HasMaxLength(200).IsRequired();
+            builder.Property(c => c.Ativo).HasColumnName("Ativo").IsRequired();
         }
     }
 }

@@ -4,18 +4,16 @@
 @Html.AntiForgeryToken()
 @inject IHttpContextAccessor HttpContextAccessor
 @using Newtonsoft.Json
-
+@using TSmartClinic.Presentation.Services.Interfaces
+@inject IUsuarioLogadoService _usuarioLogadoService
 
 @{
     var nome = HttpContextAccessor.HttpContext.Session.GetString("Usuario_Nome");
     var email = HttpContextAccessor.HttpContext.Session.GetString("Usuario_Email");
     var nomeClinica = HttpContextAccessor.HttpContext.Session.GetString("Cliente_Nome");
     var nomeCnpj = HttpContextAccessor.HttpContext.Session.GetString("Cliente_Cnpj");
+    var usuarioMaster = _usuarioLogadoService.UsuarioMaster;
 }
-
-
-
-
 
 <!doctype html>
 <html lang="en">
@@ -487,18 +485,25 @@
                                             <li>
                                                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                                                     <i class="bx bx-layout"></i>
-                                                    <span key="t-layouts">Cadastros básicos</span>
+                                                    <span key="t-layouts">Cadastros</span>
                                                 </a>
                                                 <ul class="sub-menu" aria-expanded="true">
-                                                    @*   <li>
-                                                    <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Empresas</a>
-                                                    <ul class="sub-menu" aria-expanded="true">
-                                                    <li><a href=/Grupo/Consulta key="t-blog">Grupos</a></li>
-                                                    <li><a href=/Regiao/Consulta key="t-blog">Regiões</a></li>
-                                                    <li><a href=/Empresa/Consulta key="empresa">Empresas</a></li>
-                                                    <li><a href=/AmbienteTrabalho/Consulta key="t-blog">Ambientes de Trabalho</a></li>
-                                                    </ul>
-                                                    </li> *@
+                                                   
+                                                    <li>
+                                                        <a href="javascript: void(0);" class="has-arrow waves-effect" @* class="has-arrow" *@
+                                                            <i class="bx bx-shield"></i>
+                                                            <span key="t-layouts">Gerais</span>
+                                                        </a>
+
+                                                        <ul class="sub-menu" aria-expanded="false">
+                                                            @if (usuarioMaster)
+                                                            {
+                                                                <li><a href="/Nichos/Consulta" key="t-blog" style="margin-left: 5px;">Nichos<i class="bx bx-crown"></i></a></li>
+                                                            }
+                                                        </ul>
+
+
+                                                    </li>
                                                     <li>
                                                         <a href="javascript: void(0);" class="has-arrow waves-effect" @* class="has-arrow" *@
                                                             <i class="bx bx-shield"></i>
