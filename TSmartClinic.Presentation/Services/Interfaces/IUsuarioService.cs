@@ -12,5 +12,6 @@ namespace TSmartClinic.Presentation.Services.Interfaces
         Task ProcessarFotoAsync(UsuarioViewModel model, string foto);
         string GerarLogin();
         string GerarSenha();
+        Task<ResponseViewModel<PrimeiroAcessoViewModel>> DefinirSenhaPrimeiroAcesso(int usuarioId, string novaSenha);
     }
 }

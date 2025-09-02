@@ -186,6 +186,21 @@
       "UpstreamPathTemplate": "/usuarios/{id}/bloquear",
       "UpstreamHttpMethod": [ "PATCH" ]
     },
+    {
+      "DownstreamPathTemplate": "/api/usuarios/{id}/primeiro-acesso",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/usuarios/{id}/primeiro-acesso",
+      "UpstreamHttpMethod": [ "PATCH" ]
+    },
 
     //PERFIS
     {

@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Services.Interfaces;
-using System.IdentityModel.Tokens.Jwt;
-using TSmartClinic.Core.Domain.Entities;
+
 
 namespace TSmartClinic.Presentation.Controllers
 {
@@ -23,8 +22,11 @@ namespace TSmartClinic.Presentation.Controllers
             IAccessTokenService accessTokenService,
             IAutenticacaoService autenticacaoService,
             ICriptografiaProvider criptografiaProvider,
-            IHttpContextAccessor httpContextAccessor, 
+            IHttpContextAccessor httpContextAccessor,
             IUsuarioService usuarioService
+
+
+
         )
         {
             _accessTokenService = accessTokenService;
@@ -48,9 +50,16 @@ namespace TSmartClinic.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(AccountViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["MensagemAlerta"] = "Verifique o preenchimento dos dados no formulário.";
+                return View(model);
+            }
+
             if (ModelState.IsValid)
             {
-                var response = _autenticacaoService.Logar(model).Result; // da erro
+                // Use await em vez de .Result
+                var response = await _autenticacaoService.Logar(model);
 
                 if (!response.Sucesso)
                 {
@@ -71,6 +80,7 @@ namespace TSmartClinic.Presentation.Controllers
                     }
                     return View(model); // retorna para a tela com mensagem
                 }
+
                 else
                 {
                     try
@@ -80,6 +90,25 @@ namespace TSmartClinic.Presentation.Controllers
                        // var usuario = _usuarioService.ObterPorEmail(model.Email);
 
                         var autenticacao =  response.Itens.FirstOrDefault();
+
+                        // Converte seguro para int
+                        if (!int.TryParse(autenticacao.IdUsuario?.ToString(), out int usuarioId))
+                        {
+                            TempData["MensagemErro"] = "Id do usuário inválido.";
+                            return RedirectToAction("Login");
+                        }
+
+                        // Se primeiro acesso, redireciona para redefinir senha
+                        if (autenticacao.PrimeiroAcesso)
+                        {
+                            var primeiroAcesso = new PrimeiroAcessoViewModel
+                            {
+                                IdUsuario = usuarioId, // Converte string para int
+                                Email = autenticacao.Email
+                            };
+                            return View("PrimeiroAcesso", primeiroAcesso);
+                        }
+
                         var cliente =  autenticacao.ListClientes.FirstOrDefault();
 
                         _accessTokenService.Salvar(autenticacao.AccessToken);
@@ -97,7 +126,7 @@ namespace TSmartClinic.Presentation.Controllers
                         {
                             new Claim(ClaimTypes.Name, autenticacao.Nome),
                             new Claim(ClaimTypes.Email, autenticacao.Email),
-                            new Claim("Usuario_Id", autenticacao.IdUsuario),
+                            new Claim("Usuario_Id", autenticacao.IdUsuario.ToString()),
                             new Claim("Usuario_Tipo", autenticacao.TipoUsuario),
                             new Claim("Cliente_Nome", cliente.NomeCliente ?? ""),
                             new Claim("Cliente_Cnpj", cliente.CNPJ ?? ""),
@@ -126,7 +155,7 @@ namespace TSmartClinic.Presentation.Controllers
                         // Salvar na sessão
                         HttpContext.Session.SetString("Usuario_Nome", autenticacao.Nome);
                         HttpContext.Session.SetString("Usuario_Email", autenticacao.Email);
-                        HttpContext.Session.SetString("Usuario_Id", autenticacao.IdUsuario);
+                        HttpContext.Session.SetString("Usuario_Id", autenticacao.IdUsuario.ToString());
                         HttpContext.Session.SetString("Usuario_Tipo", autenticacao.TipoUsuario);
                         HttpContext.Session.SetString("Cliente_Nome", cliente.NomeCliente);
                         HttpContext.Session.SetString("Cliente_Id", cliente.Id.ToString());
@@ -212,5 +241,38 @@ namespace TSmartClinic.Presentation.Controllers
                 }
             }
         }
+
+        [HttpPost]
+        public IActionResult PrimeiroAcesso(PrimeiroAcessoViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
+            {
+                _usuarioService.DefinirSenhaPrimeiroAcesso(model.IdUsuario, model.NovaSenha);
+
+                ModelState.Clear();
+                if (model is not null) model.NovaSenha = string.Empty;
+
+                TempData["MensagemSucesso"] = "Senha definida com sucesso! Faça login novamente.";
+                return RedirectToAction("Login");
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("Usuário não encontrado"))
+                {
+                    ModelState.AddModelError(string.Empty, "Usuário não encontrado.");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Não foi possível definir a senha. Tente novamente.");
+                }
+
+                return View(model);
+            }
+        }
+
+
     }
 }

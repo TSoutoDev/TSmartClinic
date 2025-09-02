@@ -42,7 +42,7 @@ namespace TSmartClinic.Api.Auth.Services
                 if (usuario == null)
                     return null;
 
-               // var senhaCifrada = _criptografiaProvider.Criptografar(usuario.Senha);
+                // var senhaCifrada = _criptografiaProvider.Criptografar(usuario.Senha);
                 var senhaDecifrada = _criptografiaProvider.Decriptografar(usuario.Senha);
 
                 if (!senhaDecifrada.Equals(loginRequestDto.Senha))
@@ -60,20 +60,20 @@ namespace TSmartClinic.Api.Auth.Services
                 //var permissoes = _usuarioService.ObterPermissaoUsuario(usuario.Id, loginRequestDto.ClinicaId, loginRequestDto.ModuloId);
 
                 var clinicasUsuario = _usuarioClinicaPerfilService.ObterClinicasDoUsuario(usuario.Id);
-                 
-                var permissoes = _usuarioService.ObterPermissaoUsuario(usuario.Id, clinicasUsuario); 
 
+                var permissoes = _usuarioService.ObterPermissaoUsuario(usuario.Id, clinicasUsuario);
 
                 var accessToken = _tokenService.GerarToken(usuarioAutenticacao, permissoes);
 
-                var response =  new LoginResponseDto
+                var response = new LoginResponseDto
                 {
                     AccessToken = accessToken,
                     Nome = usuario.Nome,
                     Email = usuario.Email,
-                    IdUsuario = usuario.Id.ToString(),
+                    IdUsuario = usuarioAutenticacao.Id,
                     TipoUsuario = usuarioAutenticacao.TipoUsuario.ToString(),
                     ListClientes = clinicasUsuario,// loginRequestDto.ClinicaId,
+                    PrimeiroAcesso = usuario.PrimeiroAcesso
                 };
 
                 return response;

@@ -1,0 +1,240 @@
+﻿@{
+    Layout = null;
+}
+
+@using Microsoft.AspNetCore.Antiforgery
+@inject IAntiforgery Antiforgery
+@model TSmartClinic.Presentation.Models.PrimeiroAcessoViewModel
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+<head>
+    <meta charset="utf-8" />
+    <title>TSmartClinic - Primeiro Acesso</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="~/main.css" rel="stylesheet">
+    <link href="~/home.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(rgba(0,169,143,0.8), rgba(0,100,85,0.9)), url('/images/bglogin.jpg') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            width: 900px;
+            height: 500px;
+            display: flex;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0,0,0,0.15);
+            background-color: white;
+        }
+
+        .login-left {
+            background: linear-gradient(135deg, #00c9a7, #92fe9d);
+            color: #fff;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: center;
+        }
+
+            .login-left h2 {
+                font-size: 32px;
+                font-weight: bold;
+            }
+
+            .login-left p {
+                font-size: 16px;
+                margin-top: 10px;
+            }
+
+        .logo-tsmart {
+            width: 80%;
+            max-width: 250px;
+            height: auto;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .login-right {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+            .login-right h5 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+        .form-label-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+            .form-label-group i {
+                position: absolute;
+                top: 12px;
+                left: 15px;
+                color: #aaa;
+            }
+
+            .form-label-group input {
+                padding-left: 40px;
+                border-radius: 30px;
+                height: 45px;
+            }
+
+        .form-control {
+            width: 100%;
+            border: 1px solid #ccc;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, #00c9a7, #92fe9d);
+            border: none;
+            border-radius: 30px;
+            padding: 12px;
+            color: #fff;
+            font-weight: bold;
+            width: 100%;
+        }
+
+            .btn-primary:hover {
+                background: #00b59e;
+            }
+
+        .text-danger {
+            font-size: 0.875rem;
+        }
+
+        .alert {
+            margin-top: 15px;
+        }
+
+        #loading {
+            position: fixed;
+            z-index: 999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+            #loading img {
+                width: 70px;
+                height: 70px;
+            }
+    </style>
+</head>
+
+<body>
+    @Html.AntiForgeryToken()
+
+    <div id="loading">
+        <img id="loading-image" src="~/images/loading.TSmartClinic.gif" alt="Loading..." width="70" height="70" />
+    </div>
+
+    <div class="login-container">
+
+        <!-- Painel Esquerdo -->
+        <div class="login-left">
+            <div class="text-center mb-3">
+                <img src="~/images/TSmart_Clinic_WhiteTSmart_Logo_HighRes.png" class="img-fluid logo-tsmart" />
+            </div>
+            <h2>Primeiro Acesso</h2>
+            <p>Por favor, defina sua nova senha para acessar o sistema.</p>
+        </div>
+
+        <!-- Painel Direito com formulário -->
+        <div class="login-right">
+            <h5 class="card-title text-center">
+                <i class="fas fa-key"></i>&nbsp;Redefinir Senha
+            </h5>
+
+            @using (Html.BeginForm("PrimeiroAcesso", "Account", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.IdUsuario)
+                @Html.HiddenFor(m => m.Email)
+
+                <div class="form-label-group">
+                    <i class="fa fa-key"></i>
+                    @Html.PasswordFor(m => m.NovaSenha, new { @class = "form-control", placeholder = "Nova Senha", autocomplete = "off" })
+                    <span class="text-danger">@Html.ValidationMessageFor(m => m.NovaSenha)</span>
+                </div>
+
+                <div class="form-label-group">
+                    <i class="fa fa-key"></i>
+                    @Html.PasswordFor(m => m.ConfirmarSenha, new { @class = "form-control", placeholder = "Confirmar Senha", autocomplete = "off" })
+                    <span class="text-danger">@Html.ValidationMessageFor(m => m.ConfirmarSenha)</span>
+                </div>
+
+                <button type="submit" class="btn btn-primary" onclick="loading()">
+                    <i class="fa fa-check"></i> Salvar Senha
+                </button>
+
+                @if (TempData["MensagemSucesso"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @Html.Raw(TempData["MensagemSucesso"])
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
+                else if (TempData["MensagemErro"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @Html.Raw(TempData["MensagemErro"])
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
+
+            }
+        </div>
+    </div>
+
+    <!-- Scripts -->
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript" src="~/scripts/main.js"></script>
+
+    <script>
+        function loading() {
+            $('#loading').show();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var allInputs = document.querySelectorAll('input[type="text"], input[type="password"], textarea');
+            allInputs.forEach(function (input) {
+                input.addEventListener('input', function () {
+                    this.value = this.value.replace(/</g, '').replace(/>/g, '');
+                });
+            });
+        });
+    </script>
+</body>
+

@@ -33,5 +33,10 @@ namespace TSmartClinic.Api.Auth.Services
         {
             return _usuarioRepository?.ObterPorEmail(email);
         }
+
+        public void DefinirSenhaPrimeiroAcesso(int usuarioId, string novaSenha)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

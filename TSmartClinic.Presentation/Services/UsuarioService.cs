@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Services.Interfaces;
 using TSmartClinic.Presentation.Settings;
@@ -12,7 +12,8 @@ namespace TSmartClinic.Presentation.Services
 {
     public class UsuarioService : BaseService<UsuarioFilterViewModel, UsuarioViewModel>, IUsuarioService
     {
-        public UsuarioService(IAccessTokenService accessTokenService, IOptions<UrlApiSettings>? urlApiSettings) : base(accessTokenService, urlApiSettings, "usuarios")
+
+        public UsuarioService(IAccessTokenService accessTokenService,IOptions<UrlApiSettings>? urlApiSettings) : base(accessTokenService, urlApiSettings, "usuarios")
         {
         }
 
@@ -126,6 +127,43 @@ namespace TSmartClinic.Presentation.Services
             {
                 byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(senha));
                 return Convert.ToBase64String(bytes);
+            }
+        }
+
+        public async Task<ResponseViewModel<PrimeiroAcessoViewModel>> DefinirSenhaPrimeiroAcesso(int usuarioId, string novaSenha)
+        {
+            ResponseViewModel<PrimeiroAcessoViewModel> retorno = new ResponseViewModel<PrimeiroAcessoViewModel>();
+
+            using (var client = new HttpClient())
+            {
+                // HttpResponseMessage response = await client.GetAsync($"{_baseUrlController}/primeiro-acesso/{usuarioId}");
+                //var url2 = ($"{_baseUrlController}/{usuarioId}/primeiro-acesso");
+                var url = $"http://localhost:5136/api/usuarios/{usuarioId}/primeiro-acesso";
+                var dto = new PrimeiroAcessoViewModel { NovaSenha = novaSenha}; // "novaSenha" se a API usa camelCase
+                HttpResponseMessage response = await client.PatchAsync(url, JsonContent.Create(dto));
+            
+                retorno.StatusCode = response.StatusCode.GetHashCode();
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+                    var content = await response.Content.ReadAsStringAsync();
+                    var obj = JsonSerializer.Deserialize<PrimeiroAcessoViewModel>(content, options);
+
+                    retorno.Sucesso = true;
+                    retorno.Itens = new List<PrimeiroAcessoViewModel> { obj };
+                }
+                else
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var erro = JsonSerializer.Deserialize<ErroViewModel>(content);
+
+                    retorno.Sucesso = false;
+                    retorno.StatusCode = erro.StatusCode;
+                    retorno.Mensagem = erro.Message;
+                }
+
+                return retorno;
             }
         }
     }

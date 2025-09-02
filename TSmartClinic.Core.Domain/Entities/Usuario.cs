@@ -24,14 +24,18 @@ namespace TSmartClinic.Core.Domain.Entities
         public virtual  Cliente? Cliente { get; set; } = null!; // Navegação para Cliente
         public virtual  List<UsuarioClientePerfil>? UsuarioClientePerfil { get; set; } = new();      // Relação com UsuarioClientePerfil
 
-
-
         public void Bloquear()
         {
             this.FlagBloqueado = true;
             this.DataBloqueio = DateTime.Now;
         }
 
+        public void DefinirSenhaPrimeiroAcesso(string senhaCriptografada)
+        {
+            this.Senha = senhaCriptografada;
+            this.PrimeiroAcesso = false; // já redefiniu a senha
+            this.DataAlteracao = DateTime.Now;
+        }
         public override void Atualizar(Object obj)
         {
             Usuario usuario = obj as Usuario;

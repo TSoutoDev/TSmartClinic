@@ -90,5 +90,10 @@ namespace TSmartClinic.API.Services
         {
             throw new NotImplementedException();
         }
+
+        public void DefinirSenhaPrimeiroAcesso(int usuarioId, string novaSenha)
+        {
+            _usuarioRepository.DefinirSenhaPrimeiroAcesso(usuarioId, novaSenha);
+        }
     }
 }

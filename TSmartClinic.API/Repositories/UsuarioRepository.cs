@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Xml.XPath;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Helpers.FilterHelper;
+using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Data.Contexts;
@@ -18,13 +19,21 @@ namespace TSmartClinic.API.Repositories
         private readonly TSmartClinicContext _dbContext;
         private readonly IUsuarioClientePerfilRepository _operacaoPerfilRepository;
         private readonly IUsuarioLogadoService _usuarioLogadoService;
+        private readonly ICriptografiaProvider _criptografiaProvider;
 
-        public UsuarioRepository(IUsuarioLogadoService usuarioLogadoService, IUsuarioClientePerfilRepository usuarioClientePerfilRepository , IMapper mapper, TSmartClinicContext TSmartClinicContext) : base(TSmartClinicContext)
+        public UsuarioRepository(
+            IUsuarioLogadoService usuarioLogadoService,
+            IUsuarioClientePerfilRepository usuarioClientePerfilRepository,
+            IMapper mapper,
+            TSmartClinicContext tSmartClinicContext,
+            ICriptografiaProvider criptografiaProvider = null
+        ) : base(tSmartClinicContext)
         {
             _mapper = mapper;
-            _dbContext = TSmartClinicContext;
+            _dbContext = tSmartClinicContext;
             _operacaoPerfilRepository = usuarioClientePerfilRepository;
             _usuarioLogadoService = usuarioLogadoService;
+            _criptografiaProvider = criptografiaProvider;
         }
 
         public List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clientesUsuario)
@@ -189,6 +198,20 @@ namespace TSmartClinic.API.Repositories
             _dbContext.Remove(entity);
             _dbContext.SaveChanges();
 
+        }
+
+        public void DefinirSenhaPrimeiroAcesso(int usuarioId, string novaSenha)
+        {
+            var usuario = ObterPorId(usuarioId);
+
+            if (usuario == null)
+                throw new Exception("Usuário não encontrado.");
+
+            var senhaCriptografada = _criptografiaProvider.Criptografar(novaSenha);
+
+            usuario.DefinirSenhaPrimeiroAcesso(senhaCriptografada);
+
+            Atualizar(usuario);
         }
     }
 }

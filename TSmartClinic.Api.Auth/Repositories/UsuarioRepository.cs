@@ -13,6 +13,12 @@ namespace TSmartClinic.Api.Auth.Repositories
         {
             _context = TSmartClinicContext;
         }
+
+        public void DefinirSenhaPrimeiroAcesso(int usuarioId, string novaSenha)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clinicasUsuario)
         {
             if (clinicasUsuario == null || !clinicasUsuario.Any())

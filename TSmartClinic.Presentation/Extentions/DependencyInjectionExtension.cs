@@ -1,6 +1,7 @@
-﻿using TSmartClinic.Core.Domain.Interfaces.Providers;
+﻿using TSmartClinic.API.Repositories;
+using TSmartClinic.Core.Domain.Interfaces.Providers;
+using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Core.Infra.CrossCutting.Providers;
-using TSmartClinic.Presentation.Helpers;
 using TSmartClinic.Presentation.Services;
 using TSmartClinic.Presentation.Services.Interfaces;
 

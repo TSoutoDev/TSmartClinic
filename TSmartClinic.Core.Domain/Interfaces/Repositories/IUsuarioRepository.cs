@@ -6,6 +6,7 @@ namespace TSmartClinic.Core.Domain.Interfaces.Repositories
     {
         Usuario ObterPorEmail(string email);
         List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clientesUsuario);
-   
+        void DefinirSenhaPrimeiroAcesso(int usuarioId, string novaSenha);
+
     }
 }

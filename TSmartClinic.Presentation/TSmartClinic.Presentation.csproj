@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TSmartClinic.API\TSmartClinic.API.csproj" />
     <ProjectReference Include="..\TSmartClinic.Core.Domain\TSmartClinic.Core.Domain.csproj" />
     <ProjectReference Include="..\TSmartClinic.Core.Infra.CrossCutting\TSmartClinic.Core.Infra.CrossCutting.csproj" />
     <ProjectReference Include="..\TSmartClinic.Shared\TSmartClinic.Shared.csproj" />
