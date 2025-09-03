@@ -109,15 +109,15 @@ namespace TSmartClinic.Presentation.Services
 
         public string GerarSenha()
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-@*!#";
             var random = new Random();
 
             string senha = new string(Enumerable.Repeat(chars, 6)
                  .Select(s => s[random.Next(s.Length)]).ToArray());
 
-            string senhaHash = HashSenhaSHA256(senha);
+            //string senhaHash = HashSenhaSHA256(senha);
 
-            return senhaHash;
+            return senha;
         }
 
         //criptografar a senha

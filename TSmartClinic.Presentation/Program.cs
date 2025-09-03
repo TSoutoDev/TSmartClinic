@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using TSmartClinic.Core.Infra.CrossCutting.Email;
 using TSmartClinic.Core.Infra.CrossCutting.Providers;
 using TSmartClinic.Presentation.Extentions;
 
@@ -6,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 Console.WriteLine("Chave lida: " + builder.Configuration["CryptoSettings:Chave"]);
 
+//Console.WriteLine("Enviando email...");
+//SendEmail.Send("pxbsimcbivyoqllatw@fxavaj.com");
+//Console.WriteLine("EMail enviado");
 
 builder.Services.AddControllersWithViews();
 

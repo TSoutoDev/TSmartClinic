@@ -4,6 +4,7 @@ using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Core.Domain.Service;
+using TSmartClinic.Core.Infra.CrossCutting.Email;
 using TSmartClinic.Core.Infra.CrossCutting.Providers;
 using TSmartClinic.Data.Repositories;
 
@@ -41,16 +42,12 @@ namespace TSmartClinic.API.Extensions
             services.AddTransient<IOperacaoPerfilRepository, OperacaoPerfilRepository>();
             services.AddTransient<IPacienteRepository, PacienteRepository>();
             services.AddTransient<IPerfilRepository, PerfilRepository>();
-            
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ICriptografiaProvider, CriptografiaProvider>();
 
-
             // Novo: Acesso ao HttpContext para ler claims do token
             services.AddHttpContextAccessor();
-
-            // services.AddTransient<ITokenService, TokenService>();
 
             return services;
         }

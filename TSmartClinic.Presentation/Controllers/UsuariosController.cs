@@ -53,7 +53,7 @@ namespace TSmartClinic.Presentation.Controllers
 
             model.ClienteId = ucp.ClienteId; 
             model.UsuarioClientePerfil = new List<UsuarioClientePerfilViewModel> { ucp };
-
+            await CriarViewBags();
             return await base.Cadastro(model);
         }
 
@@ -92,6 +92,7 @@ namespace TSmartClinic.Presentation.Controllers
                 }
 
                 await CriarViewPerfisPorCliente(clienteId, model.PerfilClienteId);
+                await CriarViewBags();
             }
 
             return result;
