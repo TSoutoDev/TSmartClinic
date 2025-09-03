@@ -1,4 +1,5 @@
 ﻿using TSmartClinic.Core.Infra.CrossCutting.Email;
+using TSmartClinic.Core.Infra.CrossCutting.Email.FilaEmails;
 
 namespace TSmartClinic.API.Extensions
 {
@@ -12,6 +13,11 @@ namespace TSmartClinic.API.Extensions
             // Registra o serviço de envio de e-mails
             services.AddScoped<IEmailService, SmtpEmailService>();
 
+            //Registra a fila (singleton, pois deve ser única na aplicação)
+            services.AddSingleton<EmailQueue>();
+
+            //Registra o serviço em background que processa a fila
+            services.AddHostedService<EmailBackgroundService>();
             return services;
         }
     }

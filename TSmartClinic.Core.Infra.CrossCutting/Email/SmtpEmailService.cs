@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
 
@@ -7,10 +8,13 @@ namespace TSmartClinic.Core.Infra.CrossCutting.Email
     public class SmtpEmailService : IEmailService
     {
         private readonly SmtpSettings _smtpSettings;
+        private readonly ILogger<SmtpEmailService> _logger;
 
-        public SmtpEmailService(IOptions<SmtpSettings> smtpSettings)
+        public SmtpEmailService(IOptions<SmtpSettings> smtpSettings, ILogger<SmtpEmailService> logger)
         {
             _smtpSettings = smtpSettings.Value;
+            _logger = logger;
+
         }
 
         public async Task EnviarEmailAsync(string destinatario, string assunto, string corpoHtml)
@@ -40,9 +44,8 @@ namespace TSmartClinic.Core.Infra.CrossCutting.Email
             }
             catch (SmtpException ex)
             {
-                // LOGUE a exceção para entender se foi bloqueio do Gmail, credenciais, etc.
-                // ex.StatusCode pode ajudar (por ex: GeneralFailure, ClientNotPermitted)
-                throw; // ou registre no seu logger e rethrow conforme a sua política
+                _logger.LogError(ex, "Erro ao enviar e-mail para {Destinatario}", destinatario);
+                throw;
             }
         }
     }

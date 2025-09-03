@@ -6,6 +6,7 @@ using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Core.Domain.Service;
 using TSmartClinic.Core.Infra.CrossCutting.Email;
+using TSmartClinic.Core.Infra.CrossCutting.Email.FilaEmails;
 
 namespace TSmartClinic.API.Services
 {
@@ -17,9 +18,11 @@ namespace TSmartClinic.API.Services
         private readonly ICriptografiaProvider _criptografiaProvider;
         private readonly IUsuarioLogadoService _usuarioLogadoService;
         private readonly IEmailService _emailService;
+        private readonly EmailQueue _emailQueue;
 
         public UsuarioService(IUsuarioClientePerfilRepository usuarioClientePerfilRepository,
                                 IUsuarioLogadoService usuarioLogadoService,
+                                EmailQueue emailQueue,
                                 IPerfilRepository perfilRepository,
                                 IUsuarioRepository usuarioRepository,
                                 ICriptografiaProvider criptografiaProvider = null,
@@ -31,6 +34,7 @@ namespace TSmartClinic.API.Services
             _usuarioLogadoService = usuarioLogadoService;
             _usuarioClientePerfilRepository = usuarioClientePerfilRepository;
             _emailService = emailService;
+            _emailQueue = emailQueue;
         }
 
         public void Bloquear(int id)
@@ -76,31 +80,18 @@ namespace TSmartClinic.API.Services
 
                usuario.UsuarioClientePerfil = perfis;
             }
-            // --- Envio de e-mail ---
-            if (_emailService != null)
-            {
-                string corpoEmail = $@"
-                    <h2>Bem-vindo ao sistema!</h2>
-                    <p>Seu usuário foi criado com sucesso.</p>
-                    <p><strong>Login de acesso:</strong> {usuario.Email}</p>
-                    <p><strong>Senha temporária:</strong> {_criptografiaProvider.Decriptografar(usuario.Senha)}</p>
-                    <p>No primeiro acesso você deverá alterar a senha para uma de sua preferência.</p>
-                    <p>Acesse o sistema aqui: <a href='https://meusistema.com/login'>Login</a></p>
-                ";
+            // --- Envio de e-mail via fila ---
+            string corpoEmail = $@"
+                <h2>Bem-vindo ao sistema!</h2>
+                <p>Seu usuário foi criado com sucesso.</p>
+                <p><strong>Login de acesso:</strong> {usuario.Email}</p>
+                <p><strong>Senha temporária:</strong> {_criptografiaProvider.Decriptografar(usuario.Senha)}</p>
+                <p>No primeiro acesso você deverá alterar a senha para uma de sua preferência.</p>
+                <p>Acesse o sistema aqui: <a href='https://meusistema.com/login'>Login</a></p>
+            ";
 
-                _ = Task.Run(async () =>
-                {
-                    try
-                    {
-                        await _emailService.EnviarEmailAsync(usuario.Email, "Acesso ao sistema", corpoEmail);
-                    }
-                    catch (Exception ex)
-                    {
-                        // logue o erro; sem isso, você nunca saberá por que “não chegou”
-                        // logger.LogError(ex, "Falha ao enviar email para {Email}", usuario.Email);
-                    }
-                });
-            }
+            // Enfileira o e-mail para ser processado em background
+            _emailQueue.Enqueue(usuario.Email, "Acesso ao sistema", corpoEmail);
             return  usuario;
         }
 
