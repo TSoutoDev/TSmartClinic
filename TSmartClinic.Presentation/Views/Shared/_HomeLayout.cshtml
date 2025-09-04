@@ -130,7 +130,6 @@
             text-align: center;
             border-top: 1px solid #dee2e6;
         }
-
     </style>
 
 </head>
@@ -166,9 +165,17 @@
                         </a>
                     </div>
 
-                    <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect" id="vertical-menu-btn">
+                   @*  <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect" id="vertical-menu-btn">
                         <i class="fa fa-fw fa-bars"></i>
-                    </button>
+                    </button> *@
+                <button type="button"
+                        class="btn btn-sm px-3 font-size-16 header-item waves-effect"
+                        id="vertical-menu-btn"
+                        aria-expanded="false">
+                    <i class="fa fa-angle-double-left d-none" id="icon-left"></i>
+                    <i class="fa fa-angle-double-right" id="icon-right"></i>
+                </button>
+
 
                 <div class="navbar-header">
                     <!-- Busca rápida de Paciente -->
@@ -898,7 +905,30 @@
     <script src="~/assets/js/app.js"></script>
     <script src="~/js/site.js"></script>
 
+    <script>
+        $(function () {
+            $("#vertical-menu-btn").on("click", function () {
+                // lê o estado atual
+                var expanded = $(this).attr("aria-expanded") === "true";
 
+                // inverte o estado
+                $(this).attr("aria-expanded", !expanded);
+
+                // troca ícones conforme o estado
+                if (expanded) {
+                    // estava expandido → vai recolher → mostra seta p/ direita
+                    $("#icon-right").removeClass("d-none");
+                    $("#icon-left").addClass("d-none");
+                } else {
+                    // estava recolhido → vai expandir → mostra seta p/ esquerda
+                    $("#icon-left").removeClass("d-none");
+                    $("#icon-right").addClass("d-none");
+                }
+            });
+        });
+
+
+    </script>
 
     @RenderSection("Scripts", required: false)
 </body>

@@ -45,22 +45,22 @@
         <div class="card-body">
             <div class="row mt-4">
                 <div class="col-md-4">
-                    <label for="Nome">Nome</label>
+                    <label for="Nome">Nome *</label>
                     @Html.TextBoxFor(model => model.Nome, new { @class = "form-control", @autocomplete = "off", @placeholder = "Digite o nome do Usuario" })
                     <span class="text-danger">
                         @Html.ValidationMessageFor(model => model.Nome)
                     </span>
                 </div>
                 <div class="col-md-5">
-                    <label>Email</label><br />
+                    <label>Email *</label><br />
                     @Html.TextBoxFor(model => model.Email, new { @class = "form-control Email", @autocomplete = "off", type = "email" })
-                    @*  <span class="text-danger">
-                        @Html.ValidationMessageFor(model => model.Modelo)
-                    </span> *@
+                      <span class="text-danger">
+                        @Html.ValidationMessageFor(model => model.Email)
+                    </span> 
                 </div>
 
                 <div class="col-lg-3">
-                    <label for="PerfilClienteId">Perfil</label>
+                    <label for="PerfilClienteId">Perfil *</label>
                     <select id="PerfilClienteId" name="PerfilClienteId"
                             class="form-select"
                             asp-for="PerfilClienteId" asp-items="@ViewBag.Perfis">
@@ -97,7 +97,7 @@
 
                 <!-- Data Expiração Senha -->
                 <div class="col-md-3">
-                    <label asp-for="DataExpiracaoSenha" class="form-label">Data de Expiração Senha</label>
+                    <label asp-for="DataExpiracaoSenha" class="form-label">Data de Expiração Senha *</label>
                     <input asp-for="DataExpiracaoSenha" class="form-control" type="date" />
                     <span class="text-danger">
                         @Html.ValidationMessageFor(model => model.DataExpiracaoSenha)
@@ -119,7 +119,7 @@
                 {
                     <div class="mt-6">
                         <div class="col-lg-3">
-                            <label for="ClienteId">Cliente</label>
+                            <label for="ClienteId">Cliente *</label>
                             <i class="fa-solid fa-crown" title="Usuário Master" style="color: gold; margin-left: 5px;"></i>
                             <select id="ClienteId" name="ClienteId" class="form-select" asp-for="ClienteId" asp-items="@ViewBag.Clientes">
                                 <option value="">Selecione o Cliente</option>
