@@ -1,4 +1,6 @@
-﻿using TSmartClinic.API.Repositories;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using TSmartClinic.API.Repositories;
 using TSmartClinic.API.Services;
 using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
@@ -6,13 +8,15 @@ using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Core.Domain.Service;
 using TSmartClinic.Core.Infra.CrossCutting.Email;
 using TSmartClinic.Core.Infra.CrossCutting.Providers;
+using TSmartClinic.Core.Infra.Security.Services;   // 👈 namespace do TokenService
+using TSmartClinic.Core.Infra.Security.Settings;  // 👈 namespace do TokenSettings
 using TSmartClinic.Data.Repositories;
 
 namespace TSmartClinic.API.Extensions
 {
     public static class DependencyInjectionExtension
     {
-        public static IServiceCollection AddDependencyInjection(this IServiceCollection services)
+        public static IServiceCollection AddDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             //Servicos
             services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
@@ -48,6 +52,10 @@ namespace TSmartClinic.API.Extensions
 
             // Novo: Acesso ao HttpContext para ler claims do token
             services.AddHttpContextAccessor();
+
+            // Registro do TokenService e TokenSettings
+            services.Configure<TokenSettings>(configuration.GetSection("TokenSettings"));
+            services.AddScoped<ITokenService, TokenService>();
 
             return services;
         }

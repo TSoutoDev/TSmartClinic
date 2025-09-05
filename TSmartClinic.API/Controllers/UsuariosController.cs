@@ -3,6 +3,8 @@
 //using TSmartClinic.API.DTOs.Responses;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Exceptions;
 using TSmartClinic.Core.Domain.Helpers.FilterHelper;
@@ -20,9 +22,11 @@ namespace TSmartClinic.API.Controllers
     public class UsuariosController : BaseController<Usuario, IUsuarioService, UsuarioFiltro, UsuarioInsertRequestDTO, UsuarioUpdateRequestDTO, UsuarioResponseDTO>
     {
         private readonly IUsuarioService _usuarioService;
-        public UsuariosController(IUsuarioService usuarioService, IMapper mapper) : base(usuarioService, mapper)
+        private readonly ITokenService _tokenService;
+        public UsuariosController(ITokenService tokenService, IUsuarioService usuarioService, IMapper mapper) : base(usuarioService, mapper)
         {
             _usuarioService = usuarioService;
+            _tokenService = tokenService;
         }
 
         //[AuthorizePermission("Usuarios_Acessar")]
@@ -51,16 +55,22 @@ namespace TSmartClinic.API.Controllers
             return StatusCode(200);
         }
 
-        // POST /api/usuarios/{id}/primeiro-acesso
-        [HttpPatch("{id}/primeiro-acesso")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        // POST /api/usuarios/primeiro-acesso
+        [HttpPost("primeiro-acesso")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DefinirSenhaPrimeiroAcesso(int id, [FromBody] BaseUsuarioPrimeiroAcessoRequestoDTO req)
+        public IActionResult DefinirSenha([FromBody] BaseUsuarioPrimeiroAcessoRequestoDTO req)
         {
-            _usuarioService.DefinirSenhaPrimeiroAcesso(id, req.NovaSenha);
-
-            return StatusCode(200);
+            try
+            {
+                _usuarioService.DefinirSenha(req.Token, req.NovaSenha);
+                return Ok(new { message = "Senha definida com sucesso." });
+            }
+            catch (SecurityTokenException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // [AuthorizePermission("Usuarios_Acessar")]

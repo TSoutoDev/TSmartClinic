@@ -1,5 +1,4 @@
-﻿using TSmartClinic.Core.Domain.Entities;
-using TSmartClinic.Presentation.Models;
+﻿using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.ViewModels.Filters;
 
 namespace TSmartClinic.Presentation.Services.Interfaces
@@ -10,8 +9,6 @@ namespace TSmartClinic.Presentation.Services.Interfaces
         Task Bloquear(int id);
         Task<UsuarioViewModel> PreencherDados(UsuarioViewModel viewModel);
         Task ProcessarFotoAsync(UsuarioViewModel model, string foto);
-        string GerarLogin();
-        string GerarSenha();
-        Task<ResponseViewModel<PrimeiroAcessoViewModel>> DefinirSenhaPrimeiroAcesso(int usuarioId, string novaSenha);
+        Task<ResponseViewModel<PrimeiroAcessoViewModel>> DefinirSenhaTokenAsync(string token, string novaSenha);
     }
 }

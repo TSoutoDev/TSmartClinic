@@ -14,7 +14,7 @@ namespace TSmartClinic.Api.Auth.Repositories
             _context = TSmartClinicContext;
         }
 
-        public void DefinirSenhaPrimeiroAcesso(int usuarioId, string novaSenha)
+        public void AtualizarSenhaHash(int usuarioId, string senhaHash)
         {
             throw new NotImplementedException();
         }

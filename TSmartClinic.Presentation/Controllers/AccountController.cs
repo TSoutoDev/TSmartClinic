@@ -87,9 +87,9 @@ namespace TSmartClinic.Presentation.Controllers
                     {
 
                         // Aqui você busca o usuário no banco (simulado abaixo)
-                       // var usuario = _usuarioService.ObterPorEmail(model.Email);
+                        // var usuario = _usuarioService.ObterPorEmail(model.Email);
 
-                        var autenticacao =  response.Itens.FirstOrDefault();
+                        var autenticacao = response.Itens.FirstOrDefault();
 
                         // Converte seguro para int
                         if (!int.TryParse(autenticacao.IdUsuario?.ToString(), out int usuarioId))
@@ -109,7 +109,7 @@ namespace TSmartClinic.Presentation.Controllers
                             return View("PrimeiroAcesso", primeiroAcesso);
                         }
 
-                        var cliente =  autenticacao.ListClientes.FirstOrDefault();
+                        var cliente = autenticacao.ListClientes.FirstOrDefault();
 
                         _accessTokenService.Salvar(autenticacao.AccessToken);
 
@@ -136,7 +136,7 @@ namespace TSmartClinic.Presentation.Controllers
 
                         claims.Add(new Claim("permissao", string.Join(',', permissoes)));
                         // Verificando se há clínicas
-                        
+
                         //if (autenticacao.ListClientes != null && autenticacao.ListClientes.Any())
                         //{ 
                         //    claims.Add(new Claim("Cliente_Nome", cliente.NomeCliente ?? ""));
@@ -164,7 +164,7 @@ namespace TSmartClinic.Presentation.Controllers
 
 
                         return RedirectToAction("Index", "Home");
-                       // return RedirectToAction("Login", "Account");
+                        // return RedirectToAction("Login", "Account");
                     }
                     catch (Exception e)
                     {
@@ -242,37 +242,48 @@ namespace TSmartClinic.Presentation.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult PrimeiroAcesso(PrimeiroAcessoViewModel model)
+        [HttpGet("account/primeiro-acesso")]
+        public IActionResult PrimeiroAcesso([FromQuery] string token)
         {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                TempData["MensagemErro"] = "Link inválido ou expirado. Solicite um novo e-mail de primeiro acesso.";
+                return RedirectToAction("Login");
+            }
+
+            var vm = new PrimeiroAcessoViewModel { Token = token };
+            return View("PrimeiroAcesso", vm);
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost("account/primeiro-acesso")]
+        public async Task<IActionResult> PrimeiroAcesso(PrimeiroAcessoViewModel model,
+      [FromServices] TSmartClinic.Presentation.Services.Interfaces.IUsuarioService usuarioService)
+        {
+            // campos não usados neste fluxo
+            ModelState.Remove(nameof(PrimeiroAcessoViewModel.Email));
+            ModelState.Remove(nameof(PrimeiroAcessoViewModel.IdUsuario));
+
             if (!ModelState.IsValid)
                 return View(model);
 
             try
             {
-                _usuarioService.DefinirSenhaPrimeiroAcesso(model.IdUsuario, model.NovaSenha);
-
-                ModelState.Clear();
-                if (model is not null) model.NovaSenha = string.Empty;
+                var resp = await usuarioService.DefinirSenhaTokenAsync(model.Token, model.NovaSenha);
+                if (!resp.Sucesso)
+                {
+                    TempData["MensagemErro"] = resp.Mensagem ?? "Não foi possível definir a senha.";
+                    return View("PrimeiroAcesso", model);
+                }
 
                 TempData["MensagemSucesso"] = "Senha definida com sucesso! Faça login novamente.";
                 return RedirectToAction("Login");
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains("Usuário não encontrado"))
-                {
-                    ModelState.AddModelError(string.Empty, "Usuário não encontrado.");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Não foi possível definir a senha. Tente novamente.");
-                }
-
+                TempData["MensagemErro"] = ex.Message;
                 return View(model);
             }
         }
-
-
     }
 }

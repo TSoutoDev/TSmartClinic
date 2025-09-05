@@ -187,7 +187,7 @@
       "UpstreamHttpMethod": [ "PATCH" ]
     },
     {
-      "DownstreamPathTemplate": "/api/usuarios/{id}/primeiro-acesso",
+      "DownstreamPathTemplate": "/api/usuarios/primeiro-acesso",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -195,11 +195,8 @@
           "Port": 5136
         }
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      },
-      "UpstreamPathTemplate": "/usuarios/{id}/primeiro-acesso",
-      "UpstreamHttpMethod": [ "PATCH" ]
+      "UpstreamPathTemplate": "/usuarios/primeiro-acesso",
+      "UpstreamHttpMethod": [ "POST" ]
     },
 
     //PERFIS

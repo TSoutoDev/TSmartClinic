@@ -35,7 +35,7 @@ namespace TSmartClinic.Core.Infra.Security.Services
                 throw new InvalidOperationException("Configuração de TokenSettings inválida.");
 
             // 1. Buscar o usuário com cliente carregado
-            var usuario = _usuarioRepository.ObterPorId(autenticacao.Id,x => x.Cliente);
+            var usuario = _usuarioRepository.ObterPorId(autenticacao.Id, x => x.Cliente);
 
             var nichoId = usuario.Cliente != null ? usuario.Cliente.NichoId : 0;
 
@@ -74,15 +74,65 @@ namespace TSmartClinic.Core.Infra.Security.Services
 
         public string GerarTokenRedefinicaoSenha(string email)
         {
-            throw new NotImplementedException();
+            if (_tokenSettings == null || string.IsNullOrWhiteSpace(_tokenSettings.SecretKey))
+                throw new InvalidOperationException("TokenSettings inválido.");
+
+            var usuario = _usuarioRepository.ObterPorEmail(email)
+                ?? throw new InvalidOperationException("Usuário não encontrado.");
+
+            var jti = Guid.NewGuid().ToString("N");
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, usuario.Email),
+                new Claim("purpose", "set_password"),
+                new Claim(JwtRegisteredClaimNames.Jti, jti)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenSettings.SecretKey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _tokenSettings.Issuer,
+                audience: _tokenSettings.Audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(24),
+                signingCredentials: creds
+            );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            // se for usar uso-único
+            //_conviteRepo.Salvar(new ConviteSenha { UsuarioId = usuario.Id, Jti = jti, ExpiraEmUtc = DateTime.UtcNow.AddHours(24) });
+
+            return tokenString;
+        }
+
+        // dentro de TokenService
+        public ClaimsPrincipal ValidarToken(string token)
+        {
+            if (_tokenSettings == null || string.IsNullOrWhiteSpace(_tokenSettings.SecretKey))
+                throw new InvalidOperationException("TokenSettings inválido.");
+
+            var handler = new JwtSecurityTokenHandler();
+            var parms = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenSettings.SecretKey)),
+                ValidateIssuer = true,
+                ValidIssuer = _tokenSettings.Issuer,
+                ValidateAudience = true,
+                ValidAudience = _tokenSettings.Audience,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.FromMinutes(2)
+            };
+
+            try { return handler.ValidateToken(token, parms, out _); }
+            catch (Exception ex) { throw new SecurityTokenException("Token inválido ou expirado.", ex); }
         }
 
         public void InValidarRefreshToken(string refreshToken, int usuarioId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ClaimsPrincipal ValidarToken(string token)
         {
             throw new NotImplementedException();
         }

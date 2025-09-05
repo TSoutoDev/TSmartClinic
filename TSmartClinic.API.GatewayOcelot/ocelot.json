@@ -1034,7 +1034,7 @@
       "AddQueriesToRequest": {},
       "AuthenticationOptions": {
         "AllowedScopes": [],
-        "AuthenticationProviderKey": "Bearer",
+        "AuthenticationProviderKey": null,
         "AuthenticationProviderKeys": []
       },
       "ChangeDownstreamPathTemplate": {},
@@ -1049,7 +1049,7 @@
       ],
       "DownstreamHttpMethod": null,
       "DownstreamHttpVersion": null,
-      "DownstreamPathTemplate": "/api/usuarios/{id}/primeiro-acesso",
+      "DownstreamPathTemplate": "/api/usuarios/primeiro-acesso",
       "DownstreamScheme": "http",
       "FileCacheOptions": {
         "TtlSeconds": 0,
@@ -1097,9 +1097,9 @@
       "UpstreamHeaderTransform": {},
       "UpstreamHost": null,
       "UpstreamHttpMethod": [
-        "PATCH"
+        "POST"
       ],
-      "UpstreamPathTemplate": "/usuarios/{id}/primeiro-acesso"
+      "UpstreamPathTemplate": "/usuarios/primeiro-acesso"
     },
     {
       "AddClaimsToRequest": {},

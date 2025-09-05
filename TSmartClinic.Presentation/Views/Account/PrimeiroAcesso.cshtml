@@ -175,7 +175,8 @@
             @using (Html.BeginForm("PrimeiroAcesso", "Account", FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
-                @Html.HiddenFor(m => m.IdUsuario)
+                @* TOKEN do link *@
+                @Html.HiddenFor(m => m.Token)
                 @Html.HiddenFor(m => m.Email)
 
                 <div class="form-label-group">
@@ -234,6 +235,23 @@
                     this.value = this.value.replace(/</g, '').replace(/>/g, '');
                 });
             });
+        });
+    </script>
+  
+    <script>
+          //Preencher e limpar o token via JS
+        document.addEventListener('DOMContentLoaded', function () {
+          const params = new URLSearchParams(window.location.search);
+          const t = params.get('token');
+          if (t) {
+            const input = document.querySelector('input[name="Token"]');
+            if (input) input.value = t;
+
+            // remove o token da URL (higiene)
+            const url = new URL(window.location.href);
+            url.searchParams.delete('token');
+            window.history.replaceState({}, "", url.pathname);
+          }
         });
     </script>
 </body>

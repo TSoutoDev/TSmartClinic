@@ -1,5 +1,7 @@
-﻿using System.Runtime.InteropServices;
-using TSmartClinic.API.Repositories;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
@@ -17,14 +19,17 @@ namespace TSmartClinic.API.Services
         private readonly IPerfilRepository? _perfilRepository;
         private readonly ICriptografiaProvider _criptografiaProvider;
         private readonly IUsuarioLogadoService _usuarioLogadoService;
-        private readonly IEmailService _emailService;
         private readonly EmailQueue _emailQueue;
+        private readonly ITokenService _tokenService;
+        private readonly IConfiguration _configuration; // injete no ctor
 
         public UsuarioService(IUsuarioClientePerfilRepository usuarioClientePerfilRepository,
                                 IUsuarioLogadoService usuarioLogadoService,
                                 EmailQueue emailQueue,
                                 IPerfilRepository perfilRepository,
                                 IUsuarioRepository usuarioRepository,
+                                ITokenService tokenService,
+                                IConfiguration configuration,
                                 ICriptografiaProvider criptografiaProvider = null,
                                 IEmailService emailService = null ) : base(usuarioRepository)
         {
@@ -32,9 +37,10 @@ namespace TSmartClinic.API.Services
             _perfilRepository = perfilRepository;
             _criptografiaProvider = criptografiaProvider;
             _usuarioLogadoService = usuarioLogadoService;
+            _configuration = configuration;
             _usuarioClientePerfilRepository = usuarioClientePerfilRepository;
-            _emailService = emailService;
             _emailQueue = emailQueue;
+            _tokenService = tokenService;
         }
 
         public void Bloquear(int id)
@@ -53,47 +59,66 @@ namespace TSmartClinic.API.Services
 
         public override Usuario Inserir(Usuario usuario)
         {
-            usuario.Senha = _criptografiaProvider.Criptografar(usuario.Senha);
-
-            if (_usuarioLogadoService.UsuarioMaster)
-            {
-                _perfilRepository.ListarTodos();
-            }
-
-            // guarda a lista antes
-            var perfis = usuario.UsuarioClientePerfil?.ToList();
-
-            // zera pra não tentar salvar tudo junto
-            usuario.UsuarioClientePerfil = null;
+            // 👉 Não armazene senha reversível na criação
+            // Se vier senha no DTO, ignore aqui e force o primeiro acesso via link
+            usuario.Senha = null; // ou algum placeholder; ideal é null e a coluna permitir null até o primeiro acesso
             usuario.PrimeiroAcesso = true;
 
-            // insere só o usuario
-           var usuarioGravado = _usuarioRepository?.Inserir(usuario);
+            if (_usuarioLogadoService.UsuarioMaster)
+                _perfilRepository.ListarTodos();
 
-            if (perfis != null)
+            // guarda a lista antes e zera para evitar save em cascata indevido
+            var perfis = usuario.UsuarioClientePerfil?.ToList();
+            usuario.UsuarioClientePerfil = null;
+
+            // 1) Persistir o usuário
+            var usuarioGravado = _usuarioRepository!.Inserir(usuario);
+
+            // 2) Persistir os perfis vinculados
+            if (perfis != null && perfis.Count > 0)
             {
                 foreach (var p in perfis)
                 {
                     p.UsuarioId = usuarioGravado.Id;
-                    _usuarioClientePerfilRepository.Inserir(p);
+                    _usuarioClientePerfilRepository!.Inserir(p);
                 }
-
-               usuario.UsuarioClientePerfil = perfis;
+                usuarioGravado.UsuarioClientePerfil = perfis;
             }
-            // --- Envio de e-mail via fila ---
-            string corpoEmail = $@"
-                <h2>Bem-vindo ao sistema!</h2>
-                <p>Seu usuário foi criado com sucesso.</p>
-                <p><strong>Login de acesso:</strong> {usuario.Email}</p>
-                <p><strong>Senha temporária:</strong> {_criptografiaProvider.Decriptografar(usuario.Senha)}</p>
-                <p>No primeiro acesso você deverá alterar a senha para uma de sua preferência.</p>
-                <p>Acesse o sistema aqui: <a href='https://meusistema.com/login'>Login</a></p>
-            ";
 
-            // Enfileira o e-mail para ser processado em background
-            _emailQueue.Enqueue(usuario.Email, "Acesso ao sistema", corpoEmail);
-            return  usuario;
+            // 3) Gerar token de primeiro acesso (purpose=set_password)
+            // preferível usar o ID, mas sua assinatura atual usa e-mail; ok também:
+            //  var url = $"https://meusistema.com/alterar-senha?token={Uri.EscapeDataString(tokenPrimeiroAcesso)}";
+            // var url = $"http://localhost:5041/primeiro-acesso?token={Uri.EscapeDataString(tokenPrimeiroAcesso)}";
+
+            var tokenRedefinicao = _tokenService.GerarTokenRedefinicaoSenha(usuarioGravado.Email);
+            var frontBaseUrl = _configuration["FrontSettings:BaseUrl"];
+            var url = $"{frontBaseUrl}/account/primeiro-acesso?token={Uri.EscapeDataString(tokenRedefinicao)}";
+
+            // 4) Enfileirar e-mail (sem bloquear o fluxo principal)
+            var corpoEmail = $@"
+                    <h2>Bem-vindo ao sistema!</h2>
+                    <p>Seu usuário foi criado com sucesso.</p>
+                    <p><strong>Login de acesso:</strong> {usuarioGravado.Email}</p>
+                    <p>Para definir sua senha, clique no link abaixo (válido por 24 horas):</p>
+                    <p><a href=""{url}"" style=""display:inline-block;padding:10px 16px;background:#1976d2;color:#fff;text-decoration:none;border-radius:6px"">
+                       Definir minha senha</a></p>
+                    <p>Se o botão não funcionar, copie e cole este link no navegador:</p>
+                    <p>{url}</p>";
+
+            try
+            {
+                _emailQueue.Enqueue(usuarioGravado.Email, "Defina sua senha de acesso", corpoEmail);
+            }
+            catch (Exception ex)
+            {
+                // logue mas não quebre a criação do usuário
+                // _logger?.LogError(ex, "Falha ao enfileirar e-mail de primeiro acesso para {Email}", usuarioGravado.Email);
+            }
+
+            // 5) Retornar o objeto já persistido
+            return usuarioGravado;
         }
+
 
         public override Usuario Atualizar(int id, Usuario usuario)
         {
@@ -115,9 +140,35 @@ namespace TSmartClinic.API.Services
             throw new NotImplementedException();
         }
 
-        public void DefinirSenhaPrimeiroAcesso(int usuarioId, string novaSenha)
+        public void DefinirSenha(string token, string novaSenha)
         {
-            _usuarioRepository.DefinirSenhaPrimeiroAcesso(usuarioId, novaSenha);
+            if (string.IsNullOrWhiteSpace(token))
+                throw new ArgumentException("Token é obrigatório.", nameof(token));
+
+            if (string.IsNullOrWhiteSpace(novaSenha) || novaSenha.Length < 6)
+                throw new ArgumentException("A senha deve ter no mínimo 6 caracteres.", nameof(novaSenha));
+
+            var principal = _tokenService.ValidarToken(token); // valida assinatura/issuer/audience/exp
+            var purpose = principal.FindFirst("purpose")?.Value;
+
+            if (purpose != "set_password" && purpose != "reset_password")
+                throw new SecurityTokenException("Token não é válido para definir senha.");
+
+            // tenta Sub, depois NameIdentifier, por fim "sub" literal
+            var subClaim =
+                principal.FindFirst(JwtRegisteredClaimNames.Sub) ??
+                principal.FindFirst(ClaimTypes.NameIdentifier) ??
+                principal.Claims.FirstOrDefault(c => c.Type == "sub");
+
+            if (subClaim is null || !int.TryParse(subClaim.Value, out var usuarioId))
+                throw new SecurityTokenException("Token inválido (sub).");
+
+            var hasher = new PasswordHasher<object>();
+            var hash = hasher.HashPassword(new object(), novaSenha);
+
+            _usuarioRepository.AtualizarSenhaHash(usuarioId, hash);
+
         }
+
     }
 }

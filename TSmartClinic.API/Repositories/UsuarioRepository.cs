@@ -7,6 +7,7 @@ using TSmartClinic.Core.Domain.Helpers.FilterHelper;
 using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Core.Domain.Interfaces.Services;
+using TSmartClinic.Core.Infra.Security.Services;
 using TSmartClinic.Data.Contexts;
 using TSmartClinic.Data.Repositories;
 
@@ -200,18 +201,17 @@ namespace TSmartClinic.API.Repositories
 
         }
 
-        public void DefinirSenhaPrimeiroAcesso(int usuarioId, string novaSenha)
+        public void AtualizarSenhaHash(int usuarioId, string senhaHash)
         {
-            var usuario = ObterPorId(usuarioId);
+            var usuario = _dbSet.FirstOrDefault(u => u.Id == usuarioId);
 
             if (usuario == null)
                 throw new Exception("Usuário não encontrado.");
 
-            var senhaCriptografada = _criptografiaProvider.Criptografar(novaSenha);
+            usuario.DefinirSenhaPrimeiroAcesso(senhaHash);
+            usuario.PrimeiroAcesso = false;
 
-            usuario.DefinirSenhaPrimeiroAcesso(senhaCriptografada);
-
-            Atualizar(usuario);
+            _dbContext.SaveChanges();
         }
     }
 }

@@ -19,7 +19,7 @@ builder.Services.AddSwaggerDoc();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapperConfig();
 builder.Services.AddSqlServerConfig(builder.Configuration);
-builder.Services.AddDependencyInjection();
+builder.Services.AddDependencyInjection(builder.Configuration);
 builder.Services.AddFluentValidationConfig();
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
