@@ -1,0 +1,91 @@
+﻿@using TSmartClinic.Presentation.Models
+@model TSmartClinic.Presentation.Models.MinhaContaViewModel
+
+@{
+    var tituloPagina = "Minha Conta";
+    var iconeTitulo = "fa-user";
+
+    var nomeUsuario = Model.Nome ?? "Usuário";
+
+    // Iniciais (até 2 letras)
+    var partes = nomeUsuario.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+    var iniciais = new string(partes
+        .Where(p => !string.IsNullOrWhiteSpace(p))
+        .Take(2)
+        .Select(p => char.ToUpperInvariant(p[0]))
+        .ToArray());
+
+    // Verifica se tem foto (byte[])
+    bool temFoto = Model?.Foto != null && Model.Foto.Length > 0;
+
+    // Assume JPEG como padrão (se for PNG é só trocar)
+    var contentType = "image/jpeg";
+
+    // Gera Base64 se houver foto
+    string? fotoBase64 = temFoto ? Convert.ToBase64String(Model!.Foto!) : null;
+}
+
+<div class="modal-header">
+    <h5 class="modal-title">
+        <i class="fa @iconeTitulo titulo-icone" aria-hidden="true"></i>
+        @tituloPagina
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body">
+    <div class="usuario-card d-flex gap-3 align-items-start">
+        <!-- Foto / Avatar -->
+        <div class="foto me-3">
+            @if (temFoto)
+            {
+                <img src="data:@contentType;base64,@fotoBase64"
+                     alt="Foto de @nomeUsuario"
+                     class="foto__img rounded-circle" style="width: 80px; height: 80px; object-fit: cover;" />
+            }
+            else
+            {
+                <svg class="foto__avatar" width="80" height="80" viewBox="0 0 64 64" role="img">
+                    <circle cx="32" cy="32" r="32" fill="#ddd"></circle>
+                    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                          font-size="24" fill="#555">@iniciais</text>
+                    <title>@nomeUsuario</title>
+                </svg>
+            }
+        </div>
+
+        <!-- Dados em 2 colunas -->
+        <div class="flex-grow-1">
+            <div class="nome-status mb-3">
+                <h4 class="mb-0">@Model.Nome</h4>
+                <span class="badge bg-success">
+                    <i class="fa fa-check-circle"></i> Ativo
+                </span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <dt><i class="fa fa-envelope"></i> Email:</dt>
+                    <dd>@Model.Email</dd>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <dt><i class="fa fa-phone"></i> Celular:</dt>
+                    <dd>@Model.Celular</dd>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <dt><i class="fa fa-id-badge"></i> Perfil:</dt>
+                    <dd>@(Model.NomePerfil ?? "-")</dd>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <dt><i class="fa fa-user-circle"></i> Outro dado:</dt>
+                    <dd>-</dd>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+</div>

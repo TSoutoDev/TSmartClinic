@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using TSmartClinic.Core.Domain.Entities;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
 using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Services.Interfaces;
 using TSmartClinic.Presentation.ViewModels.Filters;
 
-namespace TSmartClinic.Presentation.Controllers
+namespace TSmartClinic.Presentation.Controllers.Usuarios
 {
     public class UsuariosController : BaseController<IUsuarioService, UsuarioFilterViewModel, UsuarioViewModel>
     {
@@ -46,12 +46,12 @@ namespace TSmartClinic.Presentation.Controllers
             var ucp = new UsuarioClientePerfilViewModel
             {
                 // se master, usa o cliente escolhido na tela senão, pega da sessão
-                ClienteId = _usuarioLogadoService.UsuarioMaster ? model.ClienteId : _usuarioLogadoService.ClienteId.Value, 
+                ClienteId = _usuarioLogadoService.UsuarioMaster ? model.ClienteId : _usuarioLogadoService.ClienteId.Value,
                 PerfilId = model.PerfilClienteId.Value,
                 ClientePadrao = false
             };
 
-            model.ClienteId = ucp.ClienteId; 
+            model.ClienteId = ucp.ClienteId;
             model.UsuarioClientePerfil = new List<UsuarioClientePerfilViewModel> { ucp };
             await CriarViewBags();
             return await base.Cadastro(model);
@@ -113,8 +113,6 @@ namespace TSmartClinic.Presentation.Controllers
         private async Task CriarViewBags()
         {
             await CriarViewClientes();
-  
-            // Aqui você pode popular outros ViewBags se necessário
         }
 
         private async Task CriarViewPerfisPorCliente(int clienteId, int? perfilSelecionado = null)

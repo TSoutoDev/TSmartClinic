@@ -244,14 +244,17 @@
                         </button>
 
                         <div class="dropdown-menu dropdown-menu-end">
-                            <a class="dropdown-item" href="#"><i class="bx bx-user font-size-16 align-middle me-1"></i> Minha Conta</a>
+                            <a class="dropdown-item" href="#" id="btnMinhaConta" data-id="1">
+                                <i class="bx bx-user font-size-16 align-middle me-1"></i> Minha Conta
+                            </a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="/Account/Logout"><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> Sair do Sistema</a>
+                            <a class="dropdown-item text-danger" href="/Account/Logout">
+                                <i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> Sair do Sistema
+                            </a>
                         </div>
+
                     </div>
                 </div>
-
-
             </div>
         </header>
 
@@ -875,6 +878,15 @@
         </div>
     </div>
 
+    <div class="modal fade" id="minhaContaModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="minhaContaContent">
+                <!-- aqui entra o miolo carregado via AJAX -->
+            </div>
+        </div>
+    </div>
+
+
     <environment include="Development">
         <script src="~/_framework/aspnetcore-browser-refresh.js"></script>
     </environment>
@@ -929,6 +941,34 @@
 
 
     </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const btnMinhaConta = document.getElementById("btnMinhaConta");
+            const modalEl = document.getElementById("minhaContaModal");
+            const modal = new bootstrap.Modal(modalEl);
+
+            btnMinhaConta.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                let userId = this.getAttribute("data-id");
+
+                fetch(`/MinhaConta/DetalhesMinhaConta/${userId}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error("Erro ao carregar modal");
+                        return response.text();
+                    })
+                    .then(html => {
+                        document.getElementById("minhaContaContent").innerHTML = html;
+                        modal.show();
+                    })
+                    .catch(err => console.error(err));
+            });
+        });
+    </script>
+
+
+
 
     @RenderSection("Scripts", required: false)
 </body>
