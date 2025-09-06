@@ -2,7 +2,7 @@
 
 namespace TSmartClinic.Presentation.Models
 {
-    public class PrimeiroAcessoViewModel : BaseViewModel
+    public class ResetSenhaEPrimeiroAcessoViewModel : BaseViewModel
     {
         public int IdUsuario { get; set; }
 
@@ -10,7 +10,7 @@ namespace TSmartClinic.Presentation.Models
         public string Token { get; set; } = default!;   // 👈 novo
 
         // Pode manter se usar em outro fluxo; para o link com JWT não precisa:
-         public string Email { get; set; }
+        public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

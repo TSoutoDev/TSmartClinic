@@ -22,9 +22,9 @@ namespace TSmartClinic.Presentation.Services
             }
         }
 
-        public async Task<ResponseViewModel<ResetSenhaViewModel>> GerarTokenResetSenhaAsync(string email)
+        public async Task<ResponseViewModel<ResetSenhaEPrimeiroAcessoViewModel>> GerarTokenResetSenhaAsync(string email)
         {
-            var retorno = new ResponseViewModel<ResetSenhaViewModel>();
+            var retorno = new ResponseViewModel<ResetSenhaEPrimeiroAcessoViewModel>();
 
             using var client = new HttpClient();
             var url = $"{_baseUrlController}/reset-senha";
@@ -58,9 +58,9 @@ namespace TSmartClinic.Presentation.Services
 
 
 
-        public async Task<ResponseViewModel<PrimeiroAcessoViewModel>> DefinirSenhaTokenAsync(string token, string novaSenha)
+        public async Task<ResponseViewModel<ResetSenhaEPrimeiroAcessoViewModel>> DefinirSenhaTokenAsync(string token, string novaSenha)
         {
-            var retorno = new ResponseViewModel<PrimeiroAcessoViewModel>();
+            var retorno = new ResponseViewModel<ResetSenhaEPrimeiroAcessoViewModel>();
 
             using var client = new HttpClient();
             var url = $"{_baseUrlController}/primeiro-acesso"; // ex.: http://localhost:5136/api/usuarios/primeiro-acesso

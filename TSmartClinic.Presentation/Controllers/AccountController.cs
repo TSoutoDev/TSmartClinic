@@ -101,7 +101,7 @@ namespace TSmartClinic.Presentation.Controllers
                         // Se primeiro acesso, redireciona para redefinir senha
                         if (autenticacao.PrimeiroAcesso)
                         {
-                            var primeiroAcesso = new PrimeiroAcessoViewModel
+                            var primeiroAcesso = new ResetSenhaEPrimeiroAcessoViewModel
                             {
                                 IdUsuario = usuarioId, // Converte string para int
                                 Email = autenticacao.Email
@@ -251,18 +251,18 @@ namespace TSmartClinic.Presentation.Controllers
                 return RedirectToAction("Login");
             }
 
-            var vm = new PrimeiroAcessoViewModel { Token = token };
+            var vm = new ResetSenhaEPrimeiroAcessoViewModel { Token = token };
             return View("PrimeiroAcesso", vm);
         }
 
         [ValidateAntiForgeryToken]
         [HttpPost("account/primeiro-acesso")]
-        public async Task<IActionResult> PrimeiroAcesso(PrimeiroAcessoViewModel model,
+        public async Task<IActionResult> PrimeiroAcesso(ResetSenhaEPrimeiroAcessoViewModel model,
       [FromServices] TSmartClinic.Presentation.Services.Interfaces.IUsuarioService usuarioService)
         {
             // campos não usados neste fluxo
-            ModelState.Remove(nameof(PrimeiroAcessoViewModel.Email));
-            ModelState.Remove(nameof(PrimeiroAcessoViewModel.IdUsuario));
+            ModelState.Remove(nameof(ResetSenhaEPrimeiroAcessoViewModel.Email));
+            ModelState.Remove(nameof(ResetSenhaEPrimeiroAcessoViewModel.IdUsuario));
 
             if (!ModelState.IsValid)
                 return View(model);
@@ -296,9 +296,7 @@ namespace TSmartClinic.Presentation.Controllers
         // POST - Recebe e-mail e envia o link com token
         [HttpPost("account/esqueci-senha")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EsqueciSenha(
-            EsqueciSenhaViewModel model,
-            [FromServices] IUsuarioService usuarioService)
+        public async Task<IActionResult> EsqueciSenha(EsqueciSenhaViewModel model,[FromServices] IUsuarioService usuarioService)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -309,7 +307,7 @@ namespace TSmartClinic.Presentation.Controllers
 
                 if (!resp.Sucesso)
                 {
-                    TempData["MensagemErro"] = resp.Mensagem ?? "Não foi possível enviar o e-mail de redefinição.";
+                    TempData["MensagemErro"] = "Não foi possível enviar o e-mail de redefinição.";
                     return View(model);
                 }
 
