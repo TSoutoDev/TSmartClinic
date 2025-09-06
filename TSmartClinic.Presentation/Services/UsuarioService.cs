@@ -14,7 +14,6 @@ namespace TSmartClinic.Presentation.Services
         {
         }
 
-
         public async Task Bloquear(int id)
         {
             using (var client = new HttpClient())
@@ -22,6 +21,43 @@ namespace TSmartClinic.Presentation.Services
                 HttpResponseMessage response = await client.GetAsync($"{_baseUrlController}/{id}/bloquear");
             }
         }
+
+        public async Task<ResponseViewModel<ResetSenhaViewModel>> GerarTokenResetSenhaAsync(string email)
+        {
+            var retorno = new ResponseViewModel<ResetSenhaViewModel>();
+
+            using var client = new HttpClient();
+            var url = $"{_baseUrlController}/reset-senha";
+            var payload = new { email };
+
+            var response = await client.PostAsync(url, JsonContent.Create(payload));
+            retorno.StatusCode = (int)response.StatusCode;
+
+            if (response.IsSuccessStatusCode)
+            {
+                retorno.Sucesso = true;
+                retorno.Mensagem = "Link de redefinição enviado com sucesso.";
+                return retorno;
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var erro = JsonSerializer.Deserialize<ErroViewModel>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                retorno.Sucesso = false;
+                retorno.Mensagem = erro?.Message ?? "Falha ao gerar o token de redefinição.";
+            }
+            catch
+            {
+                retorno.Sucesso = false;
+                retorno.Mensagem = "Falha ao gerar o token de redefinição.";
+            }
+
+            return retorno;
+        }
+
+
+
         public async Task<ResponseViewModel<PrimeiroAcessoViewModel>> DefinirSenhaTokenAsync(string token, string novaSenha)
         {
             var retorno = new ResponseViewModel<PrimeiroAcessoViewModel>();
@@ -106,5 +142,6 @@ namespace TSmartClinic.Presentation.Services
         {
             throw new NotImplementedException();
         }
+
     }
 }

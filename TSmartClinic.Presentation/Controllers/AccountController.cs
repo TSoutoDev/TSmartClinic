@@ -285,5 +285,42 @@ namespace TSmartClinic.Presentation.Controllers
                 return View(model);
             }
         }
+
+        // GET - Tela "Esqueci minha senha"
+        [HttpGet("account/esqueci-senha")]
+        public IActionResult EsqueciSenha()
+        {
+            return View(new EsqueciSenhaViewModel());
+        }
+
+        // POST - Recebe e-mail e envia o link com token
+        [HttpPost("account/esqueci-senha")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EsqueciSenha(
+            EsqueciSenhaViewModel model,
+            [FromServices] IUsuarioService usuarioService)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
+            {
+                var resp = await usuarioService.GerarTokenResetSenhaAsync(model.Email);
+
+                if (!resp.Sucesso)
+                {
+                    TempData["MensagemErro"] = resp.Mensagem ?? "Não foi possível enviar o e-mail de redefinição.";
+                    return View(model);
+                }
+
+                TempData["MensagemSucesso"] = "Um link de redefinição foi enviado para seu e-mail.";
+                return RedirectToAction("Login");
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = ex.Message;
+                return View(model);
+            }
+        }
     }
 }

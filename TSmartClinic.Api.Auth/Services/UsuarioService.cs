@@ -38,5 +38,10 @@ namespace TSmartClinic.Api.Auth.Services
         {
             throw new NotImplementedException();
         }
+
+        public string GerarTokenResetSenha(string email)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

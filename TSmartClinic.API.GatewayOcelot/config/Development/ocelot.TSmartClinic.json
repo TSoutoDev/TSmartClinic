@@ -197,6 +197,18 @@
       "UpstreamPathTemplate": "/usuarios/primeiro-acesso",
       "UpstreamHttpMethod": [ "POST" ]
     },
+    {
+      "DownstreamPathTemplate": "/api/usuarios/reset-senha",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "UpstreamPathTemplate": "/usuarios/reset-senha",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
 
     //PERFIS
     {

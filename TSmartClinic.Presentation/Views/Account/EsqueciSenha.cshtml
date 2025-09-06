@@ -4,16 +4,15 @@
 
 @using Microsoft.AspNetCore.Antiforgery
 @inject IAntiforgery Antiforgery
-@model TSmartClinic.Presentation.Models.AccountViewModel
+@model TSmartClinic.Presentation.Models.EsqueciSenhaViewModel
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@addTagHelper *, DNTCaptcha.Core
 
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="utf-8" />
-    <title>TSmartClinic - Login</title>
+    <title>TSmartClinic - Esqueci minha Senha</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="~/main.css" rel="stylesheet">
@@ -34,8 +33,8 @@
         }
 
         .login-container {
-            width: 900px;
-            height: 500px;
+            width: 700px;
+            height: 420px;
             display: flex;
             border-radius: 20px;
             overflow: hidden;
@@ -44,31 +43,29 @@
         }
 
         .login-left {
-            background: linear-gradient(135deg, #00c9a7, #92fe9d); /* de #00c9a7, #92fe9d */
-
+            background: linear-gradient(135deg, #00c9a7, #92fe9d);
             color: #fff;
             padding: 40px 30px;
             display: flex;
             flex-direction: column;
-            align-items: center; /* centraliza horizontalmente */
-            justify-content: flex-start; /* coloca o conteúdo no topo */
+            align-items: center;
+            justify-content: flex-start;
             text-align: center;
         }
 
-
             .login-left h2 {
-                font-size: 32px;
+                font-size: 28px;
                 font-weight: bold;
             }
 
             .login-left p {
-                font-size: 16px;
+                font-size: 15px;
                 margin-top: 10px;
             }
 
         .logo-tsmart {
             width: 80%;
-            max-width: 250px;
+            max-width: 220px;
             height: auto;
             display: block;
             margin-bottom: 10px;
@@ -124,10 +121,6 @@
                 background: #00b59e;
             }
 
-        .text-danger {
-            font-size: 0.875rem;
-        }
-
         a {
             color: #00a98f;
             text-decoration: none;
@@ -138,42 +131,16 @@
             margin-top: 15px;
         }
 
-        #loading {
-            position: fixed;
-            z-index: 999;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.6);
-            display: none;
-            align-items: center;
-            justify-content: center;
+        #Email {
+            width: 280px; /* defina a largura desejada */
+            max-width: 100%; /* evita quebrar em telas pequenas */
+            font-size: 1rem;
         }
-
-            #loading img {
-                width: 70px;
-                height: 70px;
-            }
-
-        .logo-tsmart {
-            width: 80%;
-            max-width: 250px;
-            height: auto;
-            display: block;
-            margin: 0 auto 20px auto;
-        }
-
     </style>
 </head>
 
-
 <body>
     @Html.AntiForgeryToken()
-
-    <div id="loading">
-        <img id="loading-image" src="~/images/loading.TSmartClinic.gif" alt="Loading..." width="70" height="70" />
-    </div>
 
     <div class="login-container">
 
@@ -182,52 +149,33 @@
             <div class="text-center mb-3">
                 <img src="~/images/TSmart_Clinic_WhiteTSmart_Logo_HighRes.png" class="img-fluid logo-tsmart" />
             </div>
-            <h2>Bem Vindo!</h2>
-            <p>“Comece agora a transformar suas ideias em resultados reais.”</p>
+            <h2>Redefinir Senha</h2>
+            <p>Informe seu e-mail para receber o link de redefinição.</p>
         </div>
 
-
-        <!-- Painel Direito com o formulário -->
+        <!-- Painel Direito -->
         <div class="login-right">
-
-
             <h5 class="card-title text-center">
-                <i class="fas fa-sign-in-alt"></i>&nbsp;Acesso ao Sistema
+                <i class="fas fa-envelope-open-text"></i>&nbsp; Recuperar Senha
             </h5>
 
-            @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+            @using (Html.BeginForm("EsqueciSenha", "Account", FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
 
                 <div class="form-label-group">
                     <i class="fa fa-envelope"></i>
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Email", autocomplete = "off" })
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Digite seu e-mail", autocomplete = "off" })
                     <span class="text-danger">@Html.ValidationMessageFor(m => m.Email)</span>
                 </div>
 
-                <div class="mb-1">
-                    <div class="form-label-group position-relative">
-                        <i class="fa fa-key"></i>
-                        @Html.PasswordFor(m => m.Senha, new { @class = "form-control", placeholder = "Senha", autocomplete = "off" })
-                        <span class="text-danger">@Html.ValidationMessageFor(m => m.Senha)</span>
-
-                        <!-- Link colado e alinhado à direita -->
-                        <div style="width: 100%; text-align: right; margin-top: 0px;">
-                            <a href="~/account/esqueci-senha" onclick="loading()">Esqueci minha Senha</a>
-                        </div>
-                    </div>
-                </div>
-
-                @if (ViewBag.OpcaoPrimeiroAcesso == 1)
-                {
-                    <div class="w-100 text-end mb-3">
-                        <a href="~/account/primeiroacesso" onclick="loading()">Primeiro Acesso</a>
-                    </div>
-                }
-
-                <button type="submit" class="btn btn-primary" onclick="loading()">
-                    <i class="fa fa-sign-in-alt"></i> Entrar
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-paper-plane"></i> Enviar link de redefinição
                 </button>
+
+                <div class="text-center mt-4">
+                    <a href="~/account/login">Voltar ao Login</a>
+                </div>
 
                 @if (TempData["MensagemSucesso"] != null)
                 {
@@ -248,39 +196,7 @@
                     </div>
                 }
             }
-
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <div style="color: #fff;">Copyright © 2025 | Versão 1.0.0</div>
-                </div>
-            </div>
         </div>
     </div>
-
-    <!-- Scripts -->
-
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script type="text/javascript" src="~/scripts/main.js"></script>
-
-    <script>
-        function loading() {
-            $('#loading').show();
-        }
-
-        $(document).on('keydown', '#inputEmail', function (e) {
-            if (e.keyCode == 32) return false;
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            var allInputs = document.querySelectorAll('input[type="text"], input[type="password"], textarea');
-            allInputs.forEach(function (input) {
-                input.addEventListener('input', function () {
-                    this.value = this.value.replace(/</g, '').replace(/>/g, '');
-                });
-            });
-        });
-
-        console.log("⚠️ ATENÇÃO: Código destinado apenas a desenvolvedores autorizados.");
-    </script>
 </body>
 </html>

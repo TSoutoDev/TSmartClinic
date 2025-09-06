@@ -55,7 +55,6 @@ namespace TSmartClinic.API.Controllers
             return StatusCode(200);
         }
 
-        // POST /api/usuarios/primeiro-acesso
         [HttpPost("primeiro-acesso")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -65,6 +64,23 @@ namespace TSmartClinic.API.Controllers
             try
             {
                 _usuarioService.DefinirSenha(req.Token, req.NovaSenha);
+                return Ok(new { message = "Senha definida com sucesso." });
+            }
+            catch (SecurityTokenException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+       
+        [HttpPost("reset-senha")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult ResetSenha([FromBody] BaseEsqueciSenhaRequestDTO req)
+        {
+            try
+            {
+                _usuarioService.GerarTokenResetSenha(req.Email);
                 return Ok(new { message = "Senha definida com sucesso." });
             }
             catch (SecurityTokenException ex)

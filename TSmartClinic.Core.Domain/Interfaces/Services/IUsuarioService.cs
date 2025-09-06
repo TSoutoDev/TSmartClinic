@@ -6,9 +6,7 @@ namespace TSmartClinic.Core.Domain.Interfaces.Services
         Usuario ObterPorEmail(string email);
         void Bloquear(int id);
         List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clinicasUsuario);
-
-        // Serviço recebe TOKEN e faz toda validação,
-        // extrai o id do usuário e só então persiste.
-        void DefinirSenha(string token, string novaSenha);
+        void DefinirSenha(string token, string novaSenha);//extrai o id do usuário e só então persiste. Serviço recebe TOKEN e faz toda validação,
+        string GerarTokenResetSenha(string email);//  novo serviço: gerar token de reset
     }
 }

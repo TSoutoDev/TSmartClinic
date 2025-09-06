@@ -169,6 +169,41 @@ namespace TSmartClinic.API.Services
             _usuarioRepository.AtualizarSenhaHash(usuarioId, hash);
 
         }
+        public string GerarTokenResetSenha(string email)
+        {
+            var usuario = _usuarioRepository.ObterPorEmail(email);
+
+            if (usuario == null)
+                throw new ArgumentException("Usuário não encontrado.", nameof(email));
+
+            // gera token JWT com claim "purpose=reset_password"
+            var tokenRedefinicao = _tokenService.GerarTokenRedefinicaoSenha(usuario.Email);
+
+            var frontBaseUrl = _configuration["FrontSettings:BaseUrl"];
+            var url = $"{frontBaseUrl}/account/primeiro-acesso?token={Uri.EscapeDataString(tokenRedefinicao)}";
+
+            var corpoEmail = $@"
+                        <h2>Redefinição de Senha</h2>
+                        <p>Você solicitou a redefinição da sua senha.</p>
+                        <p><strong>Login de acesso:</strong> {usuario.Email}</p>
+                        <p>Para criar uma nova senha, clique no link abaixo (válido por 24 horas):</p>
+                        <p><a href=""{url}"" style=""display:inline-block;padding:10px 16px;background:#1976d2;color:#fff;text-decoration:none;border-radius:6px"">
+                           Redefinir minha senha</a></p>
+                        <p>Se o botão não funcionar, copie e cole este link no navegador:</p>
+                        <p>{url}</p>";
+
+            try
+            {
+                _emailQueue.Enqueue(usuario.Email, "Redefinição de senha", corpoEmail);
+            }
+            catch (Exception ex)
+            {
+                // logar mas não quebrar o fluxo
+                //_logger?.LogError(ex, "Falha ao enfileirar e-mail de redefinição de senha para {Email}", usuario.Email);
+            }
+
+            return tokenRedefinicao;
+        }
 
     }
 }
