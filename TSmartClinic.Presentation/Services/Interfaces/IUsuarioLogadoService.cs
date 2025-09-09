@@ -8,5 +8,6 @@
         int? ClienteId { get; }
         string? NomeCliente { get; }
         int? NichoClienteId { get; }
+        string? Email { get; }
     }
 }

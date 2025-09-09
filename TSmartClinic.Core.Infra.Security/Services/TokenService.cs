@@ -49,7 +49,8 @@ namespace TSmartClinic.Core.Infra.Security.Services
                     new Claim("Usuario_Id", autenticacao.Id.ToString() ?? ""),
                     new Claim("Cliente_Id", autenticacao.ClienteId.ToString() ?? ""),
                     new Claim("Cliente_NichoId", nichoId.ToString() ?? ""),
-                    new Claim("TipoUsuario", autenticacao.TipoUsuario.ToString() ?? "") // "M" para master, por exemplo
+                    new Claim("TipoUsuario", autenticacao.TipoUsuario.ToString() ?? ""), // "M" para master, por exemplo
+                    new Claim("Usuario_Email", autenticacao.Email.ToString() ?? "") // "M" para master, por exemplo
                   
             };
 

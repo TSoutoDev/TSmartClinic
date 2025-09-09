@@ -58,5 +58,7 @@ namespace TSmartClinic.Presentation.Services
                 return null;
             }
         }
+
+        public string? Email => _contextAccessor.HttpContext?.User?.FindFirst("Usuario_Email")?.Value;
     }
 }

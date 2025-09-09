@@ -7,9 +7,9 @@ namespace TSmartClinic.Presentation.Models
         public string? Senha { get; set; }
         public string? Nome { get; set; }
         public string? LoginInclusao { get; set; }
-        public DateTime? DataInclusao { get; set; } = DateTime.UtcNow;
+        public DateTime? DataInclusao { get; set; }
         public string? LoginAlteracao { get; set; }
-        public DateTime? DataAlteracao { get; set; } = DateTime.UtcNow;
+        public DateTime? DataAlteracao { get; set; } 
         public DateTime? DataBloqueio { get; set; } 
         public DateTime? DataUltimoAcesso { get; set; } = DateTime.UtcNow;
         public DateTime? DataExpiracaoSenha { get; set; } = DateTime.UtcNow.AddDays(365);

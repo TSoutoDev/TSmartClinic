@@ -2,10 +2,11 @@
 {
     public interface IUsuarioLogadoService
     {
-       public int? UsuarioLogadoId { get; }
-       public string TipoUsuario { get; }
-       public bool UsuarioMaster { get; }
-       public int? ClienteId { get; }
-       public int? NichoClienteId { get; }
+        public int? UsuarioLogadoId { get; }
+        public string TipoUsuario { get; }
+        public bool UsuarioMaster { get; }
+        public int? ClienteId { get; }
+        public int? NichoClienteId { get; }
+        public string? Email { get; }
     }
 }

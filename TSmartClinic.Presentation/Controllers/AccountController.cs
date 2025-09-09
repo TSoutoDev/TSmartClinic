@@ -131,7 +131,8 @@ namespace TSmartClinic.Presentation.Controllers
                             new Claim("Cliente_Nome", cliente.NomeCliente ?? ""),
                             new Claim("Cliente_Cnpj", cliente.CNPJ ?? ""),
                             new Claim("Cliente_Id", cliente.Id.ToString() ?? ""),
-                            new Claim("Cliente_NichoId", cliente.NichoId.ToString() ?? "")
+                            new Claim("Cliente_NichoId", cliente.NichoId.ToString() ?? ""),
+                            new Claim("Usuario_Email", autenticacao.Email.ToString() ?? "")
                         };
 
                         claims.Add(new Claim("permissao", string.Join(',', permissoes)));
@@ -296,7 +297,7 @@ namespace TSmartClinic.Presentation.Controllers
         // POST - Recebe e-mail e envia o link com token
         [HttpPost("account/esqueci-senha")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EsqueciSenha(EsqueciSenhaViewModel model,[FromServices] IUsuarioService usuarioService)
+        public async Task<IActionResult> EsqueciSenha(EsqueciSenhaViewModel model, [FromServices] IUsuarioService usuarioService)
         {
             if (!ModelState.IsValid)
                 return View(model);

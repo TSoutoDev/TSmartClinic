@@ -20,12 +20,13 @@
     <link href="~/home.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 
     <style>
         body {
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(rgba(0,169,143,0.8), rgba(0,100,85,0.9)), url('/images/bglogin.jpg') no-repeat center center;
+            background: linear-gradient( rgba(123,104,238,0.35), rgba(186,85,211,0.35) ), url('/images/bglogin.jpg') no-repeat center center;
             background-size: cover;
             display: flex;
             align-items: center;
@@ -33,27 +34,50 @@
             height: 100vh;
         }
 
+            body::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(255, 255, 255, 0.2); /* camada branca translúcida */
+                z-index: -1;
+            }
+
+
         .login-container {
             width: 900px;
-            height: 500px;
+            height: 400px;
             display: flex;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(0,0,0,0.15);
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
             background-color: white;
         }
 
         .login-left {
-            background: linear-gradient(135deg, #00c9a7, #92fe9d); /* de #00c9a7, #92fe9d */
-
-            color: #fff;
-            padding: 40px 30px;
+            position: relative;
+            background: rgba(255,255,255,0.8);
+            color: #333;
+            padding: 30px 30px;
             display: flex;
             flex-direction: column;
-            align-items: center; /* centraliza horizontalmente */
-            justify-content: flex-start; /* coloca o conteúdo no topo */
+            align-items: center;
+            justify-content: center;
             text-align: center;
         }
+
+            /* divisor ajustado */
+            .login-left::after {
+                content: "";
+                position: absolute;
+                right: -1px; /* cola na borda direita */
+                top: 40px; /* distância do topo → ajuste aqui */
+                bottom: 0px; /* distância do rodapé → ajuste aqui */
+                width: 1px;
+                background: rgba(123,104,238,0.3);
+            }
 
 
             .login-left h2 {
@@ -66,14 +90,6 @@
                 margin-top: 10px;
             }
 
-        .logo-tsmart {
-            width: 80%;
-            max-width: 250px;
-            height: auto;
-            display: block;
-            margin-bottom: 10px;
-        }
-
         .login-right {
             flex: 1;
             padding: 40px;
@@ -85,6 +101,7 @@
             .login-right h5 {
                 text-align: center;
                 margin-bottom: 20px;
+                color: #6a0dad;
             }
 
         .form-label-group {
@@ -103,25 +120,22 @@
                 padding-left: 40px;
                 border-radius: 30px;
                 height: 45px;
+                border: 1px solid #ccc;
             }
 
-        .form-control {
-            width: 100%;
-            border: 1px solid #ccc;
-        }
-
         .btn-primary {
-            background: linear-gradient(to right, #00c9a7, #92fe9d);
+            background: linear-gradient(to right, #6a0dad, #9b30ff);
             border: none;
             border-radius: 30px;
             padding: 12px;
             color: #fff;
             font-weight: bold;
             width: 100%;
+            cursor: pointer;
         }
 
             .btn-primary:hover {
-                background: #00b59e;
+                background: #5b0ca8;
             }
 
         .text-danger {
@@ -129,7 +143,7 @@
         }
 
         a {
-            color: #00a98f;
+            color: #6a0dad;
             text-decoration: none;
             font-size: 0.9rem;
         }
@@ -164,6 +178,14 @@
             margin: 0 auto 20px auto;
         }
 
+        .card-title {
+            font-size: 20px; /* aumenta o tamanho */
+            font-weight: bold; /* deixa mais destacado */
+            color: #6a0dad; /* opcional: reforça o roxo da identidade */
+        }
+
+
+
     </style>
 </head>
 
@@ -176,14 +198,15 @@
     </div>
 
     <div class="login-container">
-
-        <!-- Painel Esquerdo -->
-        <div class="login-left">
-            <div class="text-center mb-3">
-                <img src="~/images/TSmart_Clinic_WhiteTSmart_Logo_HighRes.png" class="img-fluid logo-tsmart" />
+        <div class="auth-card">
+            <!-- Painel Esquerdo -->
+            <div class="login-left">
+                <div class="text-center mb-3">
+                    <img src="~/images/Logo_Smart.png" class="img-fluid logo-tsmart" />
+                </div>
+                <h2>Bem Vindo!</h2>
+                <p>“Comece agora a transformar suas ideias em <br /> resultados reais.”</p>
             </div>
-            <h2>Bem Vindo!</h2>
-            <p>“Comece agora a transformar suas ideias em resultados reais.”</p>
         </div>
 
 
@@ -191,15 +214,15 @@
         <div class="login-right">
 
 
-            <h5 class="card-title text-center">
+            <h3 class="card-title text-center">
                 <i class="fas fa-sign-in-alt"></i>&nbsp;Acesso ao Sistema
-            </h5>
+            </h3>
 
             @using (Html.BeginForm("Login", "Account", FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
 
-                <div class="form-label-group">
+                <div class="form-label-group mt-5">
                     <i class="fa fa-envelope"></i>
                     @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Email", autocomplete = "off" })
                     <span class="text-danger">@Html.ValidationMessageFor(m => m.Email)</span>

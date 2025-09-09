@@ -70,7 +70,7 @@ namespace TSmartClinic.API.Services
             // guarda a lista antes e zera para evitar save em cascata indevido
             var perfis = usuario.UsuarioClientePerfil?.ToList();
             usuario.UsuarioClientePerfil = null;
-
+            usuario.LoginInclusao = _usuarioLogadoService.Email;
             // 1) Persistir o usuário
             var usuarioGravado = _usuarioRepository!.Inserir(usuario);
 

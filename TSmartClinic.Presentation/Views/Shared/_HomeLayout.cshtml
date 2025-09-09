@@ -130,6 +130,29 @@
             text-align: center;
             border-top: 1px solid #dee2e6;
         }
+        /* 1) Aumentar a logo grande */
+        .logo.logo-light .logo-lg img {
+            height: 60px !important; /* ajuste o número que quiser */
+            width: auto; /* mantém proporção */
+        }
+
+        /* 2) Descer a logo */
+        .logo.logo-light .logo-lg {
+            display: inline-block;
+            margin-top: 12px !important; /* substitui o mt-3 se estiver sendo ignorado */
+        }
+
+        /* 3) Se o box da marca for baixo e estiver cortando a margem/topo */
+        .navbar-brand-box {
+            height: auto; /* ou um valor maior, ex.: 84px */
+            padding-top: 12px; /* dá respiro sem depender do mt-3 */
+            overflow: visible; /* evita cortar a logo/margem */
+        }
+
+        /* 4) Alguns temas forçam um max-height na imagem – neutralize */
+        .logo img {
+            max-height: none !important;
+        }
     </style>
 
 </head>
@@ -147,20 +170,20 @@
                     <div class="navbar-brand-box">
                         <a href=/home/index class="logo logo-dark">
                             <span class="logo-sm">
-                                <img src="~/images/logo_branca_2.png" alt="" height="42">
+                            <img src="~/images/logo TSSmartCLinic2_branca.png" alt="" height="42">
                             </span>
-                            <span class="logo-lg">
-                                <img src="~/images/logo_branca.png" alt="" height="42">
+                            <span class="logo-lg mt-33">
+                            <img src="~/images/lg-branca-g.png" alt="" height="42">
                             </span>
                         </a>
 
                         <!-- Logo recolhida / expandida no menu lateral -->
                         <a href=/home/index class="logo logo-light">
-                            <span class="logo-sm">
-                                <img src="/images/logo_branca_2.png" alt="" height="30">
+                            <span class="logo-sm mt-3">
+                            <img src="/images/lg_branca_icon.png" alt="" height="34">
                             </span>
-                            <span class="logo-lg">
-                                <img src="/images/logo_branca.png" alt="" height="42">
+                            <span class="logo-lg mt-3">
+                            <img src="/images/lg_branca_g.png" alt="" height="50">
                             </span>
                         </a>
                     </div>
@@ -776,7 +799,7 @@
 
         <div class="main-content">
             <div class="page-content">
-                <div class="main-content" style="padding-top: 70px;">
+                <div class="main-content"  style="padding-top: 70px;margin-left: 10px;" >
                     <div class="container-fluid">
 
                         <!-- start page title -->
