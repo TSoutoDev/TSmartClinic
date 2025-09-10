@@ -212,19 +212,25 @@
             </script>
 
             <div class="mt-3 d-flex gap-2">
-                <button type="submit" class="btn btn-success" onclick="loading()">Gravar</button>
+
+                <button type="submit"
+                        asp-permissao="@(Model.Id.HasValue ? "Perfis_Editar" : "Perfis_Incluir")"
+                        onclick="loading()"
+                        class="btn btn-success">
+                    Gravar
+                </button>
 
                 @if (Model.Id.HasValue)
                 {
                     <button type="submit"
-                            class="btn btn-danger"
-                            formaction="@Url.Action("Excluir","Perfis", new { id = Model.Id })"
+                            asp-action="Excluir"
+                            asp-permissao="Perfis_Excluir"
+                            onclick="loading()"
                             formmethod="post"
-                            onclick="loading()">
+                            class="btn btn-danger">
                         Excluir
                     </button>
                 }
-
                 <a href="/Perfis/Consulta" class="btn btn-secondary">Voltar</a>
             </div>
 

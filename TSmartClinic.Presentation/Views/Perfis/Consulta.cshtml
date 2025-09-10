@@ -46,17 +46,24 @@
                         </div>
 
                         <div class="col-md-2">
-                            <button type="submit" class="btn btn-success" onclick="loading()" style="height: 38px;">
+                            <button type="submit"
+                                    asp-permissao="Perfis_Acessar"
+                                    class="btn btn-success"
+                                    onclick="loading()"
+                                    style="height: 38px;">
                                 <i class="fa fa-search"></i>&nbsp;Pesquisar
                             </button>
                         </div>
 
                         <div class="col-md-3 text-end">
-                            <a href="~/Perfis/cadastro" class="btn btn-primary" onclick="loading()" style="height: 38px;">
+                            <a href="~/Perfis/cadastro"
+                               asp-permissao="Perfis_Incluir"
+                               class="btn btn-primary"
+                               onclick="loading()"
+                               style="height: 38px;">
                                 <i class="fa fa-check"></i>&nbsp;Novo Perfil
                             </a>
                         </div>
-
                     </div>
                 }
             </div>

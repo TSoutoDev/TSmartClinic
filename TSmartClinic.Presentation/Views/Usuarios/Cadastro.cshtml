@@ -142,20 +142,22 @@
                 </div>
 
                 <div class="mt-3">
-                    <input type="submit"
-                           asp-permissao="CADASTRO_USUARIO_INCLUIR,CADASTRO_USUARIO_ALTERAR"
-                           value="Gravar"
-                           onclick="loading()"
-                           class="btn btn-success" />
+                    <button type="submit"
+                            asp-permissao="@(Model.Id.HasValue ? "Usuarios_Editar" : "Usuarios_Incluir")"
+                            onclick="loading()"
+                            class="btn btn-success">
+                        Gravar
+                    </button>
 
                     @if (Model.Id.HasValue)
                     {
-                        <input asp-action="Excluir"
-                               asp-permissao="CADASTRO_USUARIO_EXCLUIR"
-                               type="submit"
-                               value="Excluir"
-                               onclick="loading()"
-                               class="btn btn-danger" />
+                        <button type="submit"
+                                asp-action="Excluir"
+                                asp-permissao="Usuarios_Excluir"
+                                onclick="loading()"
+                                class="btn btn-danger">
+                            Excluir
+                        </button>
                     }
 
                     <a href="/Usuarios/Consulta" class="btn btn-secondary">Voltar</a>

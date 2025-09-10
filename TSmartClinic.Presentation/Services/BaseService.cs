@@ -73,6 +73,8 @@ namespace TSmartClinic.Presentation.Services
 
                     if (retorno.StatusCode == 401)
                         retorno.Mensagem = "Operação não autorizada!";
+                    else if (retorno.StatusCode == 403)
+                        retorno.Mensagem = "Usuario não tem permissão!";
                     else
                         retorno.Mensagem = erro?.Message ?? "Erro não tratado.  Operação não realizada.";
 
@@ -104,6 +106,8 @@ namespace TSmartClinic.Presentation.Services
 
                     if (retorno.StatusCode == 401)
                         retorno.Mensagem = "Operação não autorizada!";
+                    else if (retorno.StatusCode == 403)
+                        retorno.Mensagem = "Usuario não tem permissão!";
                     else
                         retorno.Mensagem = erro?.Message ?? "Erro não tratado.  Operação não realizada.";
 
@@ -138,6 +142,8 @@ namespace TSmartClinic.Presentation.Services
 
                     if (retorno.StatusCode == 401)
                         retorno.Mensagem = "Operação não autorizada!";
+                    else if (retorno.StatusCode == 403)
+                        retorno.Mensagem = "Usuario não tem permissão!";
                     else
                         retorno.Mensagem = erro?.Message ?? "Erro não tratado.  Operação não realizada.";
 
@@ -183,6 +189,9 @@ namespace TSmartClinic.Presentation.Services
 
                     if (retorno.StatusCode == 401)
                         retorno.Mensagem = "Operação não autorizada!";
+
+                    else if (retorno.StatusCode == 403)
+                        retorno.Mensagem = "Usuario não tem permissão!";
                     else
                         retorno.Mensagem = erro?.Message ?? "Erro não tratado.  Operação não realizada.";
 
@@ -222,6 +231,8 @@ namespace TSmartClinic.Presentation.Services
 
                     if (retorno.StatusCode == 401)
                         retorno.Mensagem = "Operação não autorizada!";
+                    else if (retorno.StatusCode == 403)
+                        retorno.Mensagem = "Usuario não tem permissão!";
                     else
                         retorno.Mensagem = erro?.Message ?? "Erro não tratado.  Operação não realizada.";
 
