@@ -1,0 +1,193 @@
+﻿@using System.Linq
+@using Microsoft.AspNetCore.Http
+@using TSmartClinic.Presentation.Models.PermissoesAcesso
+@using TSmartClinic.Presentation.Services.Interfaces
+@inject IUsuarioLogadoService UsuarioLogado
+@inject IHttpContextAccessor HttpContextAccessor
+@model TSmartClinic.Presentation.Models.ClienteViewModel
+
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewBag.Titulo = "Cadastro de Cliente";
+    var user = HttpContextAccessor.HttpContext?.User;
+}
+
+@using (Html.BeginForm())
+{
+    @if (Model != null && Model.Id.HasValue)
+    {
+        <input asp-for="Id" type="hidden" />
+    }
+
+    <style>
+        .card {
+            border: none;
+            box-shadow: none;
+            overflow: hidden;
+        }
+
+        /* Wrapper para ícone dentro do input */
+        .input-icon {
+            position: relative;
+        }
+
+            .input-icon i {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #888;
+                font-size: 1rem;
+            }
+
+            .input-icon input,
+            .input-icon select {
+                padding-left: 2.5rem; /* espaço para o ícone */
+                border-radius: 8px;
+                border: 1px solid #dcdfe6;
+                transition: 0.2s ease-in-out;
+            }
+
+                .input-icon input:focus,
+                .input-icon select:focus {
+                    border-color: #4887d7;
+                    box-shadow: 0 0 0 3px rgba(72, 135, 215, 0.15);
+                }
+
+        .logo {
+            height: 28px;
+            vertical-align: middle;
+            position: relative;
+            top: -3px;
+        }
+    </style>
+
+    <div class="card">
+        <div class="card-body">
+            <ul class="nav nav-tabs" role="tablist" id="tabBusca">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#busca_padrao" role="tab">
+                        <span class="d-block d-sm-none"><i class="fas fa-search"></i></span>
+                        <span class="d-none d-sm-block">Dados Gerais</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Linha 1 -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <label for="NomeCliente">Nome *</label>
+                    <div class="input-icon">
+                        <i class="fa fa-building"></i>
+                        @Html.TextBoxFor(model => model.NomeCliente, new { @class = "form-control", @autocomplete = "off", @placeholder = "Digite o nome da empresa" })
+                    </div>
+                    <span class="text-danger">@Html.ValidationMessageFor(model => model.NomeCliente)</span>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="RazaoSocial">Razão Social *</label>
+                    <div class="input-icon">
+                        <i class="fa fa-briefcase"></i>
+                        @Html.TextBoxFor(model => model.RazaoSocial, new { @class = "form-control", @autocomplete = "off", @placeholder = "Digite o nome da razão social" })
+                    </div>
+                    <span class="text-danger">@Html.ValidationMessageFor(model => model.RazaoSocial)</span>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="Cnpj">CNPJ *</label>
+                    <div class="input-icon">
+                        <i class="fa fa-id-card"></i>
+                        @Html.TextBoxFor(model => model.CNPJ, new { @class = "form-control", @autocomplete = "off", @maxlength = "18", @placeholder = "Digite o CNPJ" })
+                    </div>
+                    <span class="text-danger">@Html.ValidationMessageFor(model => model.CNPJ)</span>
+                </div>
+            </div>
+
+            <!-- Linha 2 -->
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <label>Email *</label>
+                    <div class="input-icon">
+                        <i class="fa fa-envelope"></i>
+                        @Html.TextBoxFor(model => model.EmailContato, new { @class = "form-control Email", @placeholder = "Digite o email", @autocomplete = "off", type = "email" })
+                    </div>
+                    <span class="text-danger">@Html.ValidationMessageFor(model => model.EmailContato)</span>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="Telefone">Telefone</label>
+                    <div class="input-icon">
+                        <i class="fa fa-phone"></i>
+                        @Html.TextBoxFor(model => model.Telefone, new { @class = "form-control", @autocomplete = "off", @maxlength = "20", @placeholder = "Digite o telefone" })
+                    </div>
+                    <span class="text-danger">@Html.ValidationMessageFor(model => model.Telefone)</span>
+                </div>
+
+                <div class="col-md-4">
+                    @if (UsuarioLogado != null && UsuarioLogado.UsuarioMaster)
+                    {
+                        <label for="NichoId">Nicho *</label>
+                        <i class="fa-solid fa-crown" title="Usuário Master" style="color: gold; margin-left: 5px;"></i>
+                        <div class="input-icon">
+                            <i class="fa fa-layer-group"></i>
+                            <select id="NichoId" name="NichoId" class="form-select" asp-for="NichoId" asp-items="@ViewBag.Nichos"></select>
+                        </div>
+                        <span class="text-danger">@Html.ValidationMessageFor(m => m.NichoId)</span>
+                    }
+                </div>
+            </div>
+
+            <!-- Situação -->
+            <div class="row mt-4">
+                <div class="col-md-2">
+                    <label>Situação</label>
+                    <select asp-for="Ativo" class="form-select" disabled="@(!Model.Id.HasValue ? "disabled" : null)">
+                        <option value="true">Ativo</option>
+                        <option value="false">Inativo</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Botões -->
+            <div class="mt-4">
+                <button type="submit"
+                        asp-permissao="@(Model.Id.HasValue ? "Clientes_Editar" : "Clientes_Incluir")"
+                        onclick="loading()"
+                        class="btn btn-success">
+                    Gravar
+                </button>
+
+                @if (Model.Id.HasValue)
+                {
+                    <button type="submit"
+                            asp-action="Excluir"
+                            asp-permissao="Clientes_Excluir"
+                            onclick="loading()"
+                            class="btn btn-danger">
+                        Excluir
+                    </button>
+                }
+
+                <a href="/Clientes/Consulta" class="btn btn-secondary">Voltar</a>
+            </div>
+
+            <!-- Script upload logo -->
+            <script>
+                document.getElementById('UploadFoto')?.addEventListener('change', function (evt) {
+                    const file = evt.target.files[0];
+                    if (!file) {
+                        document.getElementById('FotoBase64').value = '';
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const base64String = e.target.result.split(',')[1];
+                        document.getElementById('FotoBase64').value = base64String;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            </script>
+        </div>
+    </div>
+}

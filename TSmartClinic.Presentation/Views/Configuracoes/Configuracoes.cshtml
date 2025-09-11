@@ -29,11 +29,11 @@
 
 
 </style>
-<div class="container mt-4">
+<div class="container mt-12">
     <div class="row">
 
         <!-- Card: Central de Usuario -->
-        <div class="col-md-4 mb-4">
+        <div class="col-md-3 mb-3">
             <div class="card card-menu h-100 shadow-sm position-relative bg-light-blue">
                 <div class="card-body text-center d-flex flex-column">
                     <!-- Ícone com degradê -->
@@ -55,7 +55,7 @@
             </div>
         </div>
 
-        <div class="col-md-4 mb-4">
+        <div class="col-md-3 mb-4">
             <div class="card card-menu h-100 shadow-sm position-relative bg-light-blue ">
                 <div class="card-body text-center d-flex flex-column">
                     <!-- Ícone com degradê -->
@@ -76,7 +76,28 @@
             </div>
         </div>
 
-        <div class="col-md-4 mb-4">
+        <div class="col-md-3 mb-4">
+            <div class="card card-menu h-100 shadow-sm position-relative bg-light-blue ">
+                <div class="card-body text-center d-flex flex-column">
+                    <!-- Ícone com degradê -->
+                    <div class="gradient-icon mb-3">
+                        <i class="fa fa-users"></i>
+                    </div>
+
+                    <h5 class="card-title">Cadastro de Clientes</h5>
+                    <p class="card-description text-muted">
+                        Gerencie os dados dos clientes do sistema.
+                    </p>
+                    <!-- Botão com degradê -->
+                    <a href="@Url.Action("Consulta", "Clientes")"
+                       class="btn btn-gradient mt-auto">
+                        <i class="fa fa-chevron-right"></i>&nbsp;Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
             <div class="card card-menu h-100 shadow-sm position-relative bg-light-blue disabled-card">
                 <!-- Selo "Em breve" no canto -->
                 <div class="card-overlay">
@@ -87,9 +108,9 @@
                     <div class="gradient-icon mb-3">
                         <i class="fa fa-users"></i>
                     </div>
-                    <h5 class="card-title">Cadastro de Clientes</h5>
+                    <h5 class="card-title">Cadastro de Pacientes</h5>
                     <p class="card-description text-muted">
-                        Gerencie os dados dos clientes do sistema.
+                        Gerencie os dados dos Pacientes do sistema.
                     </p>
 
                     <a href="#" class="btn btn-gradient mt-auto disabled" tabindex="-1" aria-disabled="true">
