@@ -1,102 +1,335 @@
 ﻿@using TSmartClinic.Presentation.Models
-@model TSmartClinic.Presentation.Models.ResponseViewModel<ClienteViewModel>
-@using Newtonsoft.Json
+@model TSmartClinic.Presentation.Models.ResponseViewModel<PacienteViewModel>
 
 @{
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
-    ViewBag.Titulo = "Consulta de Clientes";
+    ViewBag.Titulo = "Consulta de Pacientes";
 }
 
 <div class="card">
     <div class="card-body">
+
         <ul class="nav nav-tabs" role="tablist" id="tabBusca">
+
+            <!-- Busca padrão -->
             <li class="nav-item">
-                <a class="nav-link active" data-bs-toggle="tab" href="#busca_padrao" role="tab">
-                    <span class="d-block d-sm-none"><i class="fas fa-search"></i></span>
-                    <span class="d-none d-sm-block">Busca padrão</span>
+                <a class="nav-link active"
+                   data-bs-toggle="tab"
+                   href="#busca_padrao"
+                   role="tab">
+
+                    <span class="d-block d-sm-none">
+                        <i class="fas fa-search"></i>
+                    </span>
+
+                    <span class="d-none d-sm-block">
+                        Busca padrão
+                    </span>
                 </a>
             </li>
-           @*  <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#busca_avancada" role="tab">
-                    <span class="d-block d-sm-none"><i class="fas fa-search"></i></span>
-                    <span class="d-none d-sm-block">Busca avançada</span>
+
+            <!-- Busca avançada -->
+            <li class="nav-item">
+                <a class="nav-link"
+                   data-bs-toggle="tab"
+                   href="#busca_avancada"
+                   role="tab">
+
+                    <span class="d-block d-sm-none">
+                        <i class="fas fa-filter"></i>
+                    </span>
+
+                    <span class="d-none d-sm-block">
+                        Busca avançada
+                    </span>
                 </a>
-            </li> *@
+            </li>
+
         </ul>
 
+
         <div class="tab-content pt-3 text-muted">
-            <div class="tab-pane active" id="busca_padrao" role="tabpanel">
-                @using (Html.BeginForm("BuscaPadrao", "clientes", FormMethod.Post))
+
+            <!-- ========================= -->
+            <!-- BUSCA PADRÃO              -->
+            <!-- ========================= -->
+
+            <div class="tab-pane active"
+                 id="busca_padrao"
+                 role="tabpanel">
+
+                @using (Html.BeginForm(
+                                "BuscaPadrao",
+                                "Pacientes",
+                                FormMethod.Post))
                 {
                     <div class="row">
+
                         <div class="col-md-5">
+
                             <input type="text"
                                    name="nome"
-                                   placeholder="Digite aqui para efetuar a busca"
+                                   placeholder="Digite o nome ou CPF do paciente"
                                    class="form-control"
                                    autocomplete="off"
-                                   value="@(ViewBag.Filtro?.Nome != null ? ViewBag.Filtro.Nome : "")" />
+                                   value="@(ViewBag.Filtro?.Nome != null
+                                                                                                             ? ViewBag.Filtro.Nome
+                                                                                                             : "")" />
+
                         </div>
 
-                        <div class=" col-md-2">
-                            <select class="form-select" name="ativo" autocomplete="off">
-                                <!option value="true">Ativo</!option>
-                                <!option value="false" @(ViewBag.Filtro != null && !ViewBag.Filtro.Ativo ? "selected" : "")>Inativo</!option>
-                            </select>
-                        </div>
 
                         <div class="col-md-2">
+
+                            <select class="form-select"
+                                    name="ativo"
+                                    autocomplete="off">
+
+                                <!option value="true">
+                                Ativo
+                                </!option>
+
+                                <!option value="false"
+                                @(ViewBag.Filtro != null &&
+                                                            !ViewBag.Filtro.Ativo
+                                                            ? "selected"
+                                                            : "")>
+                            Inativo
+                            </!option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-md-2">
+
                             <button type="submit"
-                                    asp-permissao="Clientes_Acessar"
+                                    asp-permissao="Pacientes_Acessar"
                                     class="btn btn-success"
                                     onclick="loading()"
                                     style="height: 38px;">
-                                <i class="fa fa-search"></i>&nbsp;Pesquisar
+
+                                <i class="fa fa-search"></i>
+                                &nbsp;Pesquisar
+
                             </button>
+
                         </div>
 
+
                         <div class="col-md-3 text-end">
-                            <a href="~/Clientes/cadastro"
-                               asp-permissao="Clientes_Incluir"
+
+                            <a href="~/Pacientes/Cadastro"
+                               asp-permissao="Pacientes_Incluir"
                                class="btn btn-primary"
                                onclick="loading()"
                                style="height: 38px;">
-                                <i class="fa fa-check"></i>&nbsp;Novo Cliente
+
+                                <i class="fa fa-check"></i>
+                                &nbsp;Novo Paciente
+
                             </a>
+
                         </div>
+
+                    </div>
+                                }
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- BUSCA AVANÇADA           -->
+            <!-- ========================= -->
+
+            <div class="tab-pane"
+                 id="busca_avancada"
+                 role="tabpanel">
+
+                @using (Html.BeginForm(
+                                "BuscaAvancada",
+                                "Pacientes",
+                                FormMethod.Post))
+                {
+                    <div class="row">
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Nome
+                            </label>
+
+                            <input type="text"
+                                   name="nome"
+                                   class="form-control"
+                                   autocomplete="off"
+                                   placeholder="Nome do paciente" />
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <label class="form-label">
+                                CPF
+                            </label>
+
+                            <input type="text"
+                                   name="cpf"
+                                   class="form-control"
+                                   autocomplete="off"
+                                   placeholder="CPF" />
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <label class="form-label">
+                                Telefone
+                            </label>
+
+                            <input type="text"
+                                   name="telefone"
+                                   class="form-control"
+                                   autocomplete="off"
+                                   placeholder="Telefone" />
+
+                        </div>
+
+
+                        <div class="col-md-2">
+
+                            <label class="form-label">
+                                Situação
+                            </label>
+
+                            <select name="ativo"
+                                    class="form-select">
+
+                                <option value="">
+                                    Todos
+                                </option>
+
+                                <option value="true">
+                                    Ativo
+                                </option>
+
+                                <option value="false">
+                                    Inativo
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row mt-3">
+
+                        <div class="col-md-3">
+
+                            <label class="form-label">
+                                Data de nascimento
+                            </label>
+
+                            <input type="date"
+                                   name="dataNascimento"
+                                   class="form-control" />
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Convênio
+                            </label>
+
+                            <select name="convenioId"
+                                    class="form-select">
+
+                                <option value="">
+                                    Todos os convênios
+                                </option>
+
+                                @if (ViewBag.Convenios != null)
+                                {
+                                    foreach (var item in ViewBag.Convenios)
+                                    {
+                                        <option value="@item.Value">
+                                            @item.Text
+                                        </option>
+                                    }
+                                }
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-md-5 d-flex align-items-end">
+
+                            <button type="submit"
+                                    asp-permissao="Pacientes_Acessar"
+                                    class="btn btn-success"
+                                    onclick="loading()"
+                                    style="height: 38px;">
+
+                                <i class="fa fa-search"></i>
+                                &nbsp;Pesquisar
+
+                            </button>
+
+                        </div>
+
                     </div>
                 }
+
             </div>
+
         </div>
+
     </div>
 </div>
 
-@if (Model != null && Model.Itens.Count > 0)
+
+@if (Model != null &&
+     Model.Itens != null &&
+     Model.Itens.Count > 0)
 {
     <div class="card">
+
         <div class="card-body">
-            <table id="gridResultados" class="table table-hover table-striped">
+
+            <table id="gridResultados"
+                   class="table table-hover table-striped">
+
                 <thead class="table-header">
                     <tr>
-                        <th class="col-md-3" width="200">Nome</th>
-                        <th class="col-md-3" width="200">CNPJ</th>
-                        <th class="col-md-3" width="200">Email</th>
-
+                        <th class="col-md-3">Paciente</th>
+                        <th class="col-md-2">CPF</th>
+                        <th class="col-md-2">Telefone</th>
+                        <th class="col-md-2">Nascimento</th>
+                        <th class="col-md-2">Convênio</th>
                     </tr>
+
                 </thead>
 
-                <tbody>
-                    @{
-                        foreach (var item in Model.Itens)
-                        {
-                            <tr class="clickable" onclick="javascript:location.href='Cadastro/@item.Id'">
-                                <td>@item.NomeCliente?.ToUpper()</td>
-                                <td>@item.CNPJ?.ToUpper()</td>
-                                <td>@item.EmailContato?.ToUpper()</td>
-                                @*<td>@item.Email.FirstOrDefault()?.Perfil?.NomePerfil</td>*@
 
-                            </tr>
-                        }
+                <tbody>
+
+                    @foreach (var item in Model.Itens)
+                    {
+                        <tr class="clickable" style="cursor:pointer;" onclick="location.href='@Url.Action("CentralPaciente", "Pacientes", new { id = item.Id })'">
+                            <td> @item.NomePaciente?.ToUpper() </td>
+                            <td> @(string.IsNullOrWhiteSpace(item.CPF) ? "-" : item.CPF)</td>
+                            <td> @(string.IsNullOrWhiteSpace(item.Telefone) ? "-" : item.Telefone)</td>
+                            <td> @(item.DataNascimento?.ToString("dd/MM/yyyy") ?? "-")</td>
+                            <td> @(item.Convenio?.NomeConvenio ?? "-")</td>
+                        </tr>
                     }
                 </tbody>
             </table>

@@ -10,7 +10,7 @@ namespace TSmartClinic.Data.Configurations
         public void Configure(EntityTypeBuilder<OperacaoPerfil> builder)
         {
 
-            builder.ToTable("OperacaoPerfil");
+            builder.ToTable("OperacaoPerfil", "dbo");
 
             // >>> UMA ÚNICA PK: composta <<<
             builder.HasKey(x => new { x.PerfilId, x.OperacaoId });

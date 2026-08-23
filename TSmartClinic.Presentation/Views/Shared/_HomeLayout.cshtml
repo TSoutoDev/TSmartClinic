@@ -1,411 +1,224 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Antiforgery
-@inject IAntiforgery Antiforgery
-@Html.AntiForgeryToken()
-@inject IHttpContextAccessor HttpContextAccessor
-@using Newtonsoft.Json
+@using System.Linq
 @using TSmartClinic.Presentation.Services.Interfaces
+@inject IAntiforgery Antiforgery
+@inject IHttpContextAccessor HttpContextAccessor
 @inject IUsuarioLogadoService _usuarioLogadoService
 
 @{
-    var nome = HttpContextAccessor.HttpContext.Session.GetString("Usuario_Nome");
-    var email = HttpContextAccessor.HttpContext.Session.GetString("Usuario_Email");
-    var nomeClinica = HttpContextAccessor.HttpContext.Session.GetString("Cliente_Nome");
-    var nomeCnpj = HttpContextAccessor.HttpContext.Session.GetString("Cliente_Cnpj");
+    var nome = HttpContextAccessor.HttpContext?.Session.GetString("Usuario_Nome") ?? "Usuário";
+    var nomeClinica = HttpContextAccessor.HttpContext?.Session.GetString("Cliente_Nome") ?? "TSmartClinic";
     var usuarioMaster = _usuarioLogadoService.UsuarioMaster;
+    var iniciais = string.Join("", nome.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(p => char.ToUpperInvariant(p[0])));
+    var titulo = ViewBag.Titulo as string ?? "Início";
 }
 
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <title>@ViewBag.Titulo - TSmartClinic</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="TSmartClinic - Gestão inteligente para clínicas." />
+    <meta name="theme-color" content="#0b1f4b" />
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Content-Language" content="en">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
-    <meta name="description" content="This is an example dashboard created using build-in elements and components.">
-    <meta name="msapplication-tap-highlight" content="no">
+    <title>@titulo - TSmartClinic</title>
 
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="~/assets/images/favicon.ico">
-
-    @RenderSection("Styles", required: false)
-
-    <!-- DataTables -->
-    <link href="~/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
-    @* <link href="~/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" /> *@
-
-    <!-- Bootstrap Css -->
+    <link rel="shortcut icon" href="~/assets/images/favicon.ico" />
+    <link href="~/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" />
-
-    <!-- Icons Css -->
     <link href="~/assets/css/icons.min.css" rel="stylesheet" />
-
-    <!-- App Css-->
     <link href="~/assets/css/app.min.css" id="app-style" rel="stylesheet" />
-
-    <!-- Css Customizado-->
-    <link rel="stylesheet" href="~/css/card-estilo.css" />
-    <link href="~/css/DadosPacientes-estilo.css" id="app-style" rel="stylesheet" />
-    <link href="~/css/busca-rapida-paciente.css" id="app-style" rel="stylesheet" />
-    <!-- Site -->
-    <link href="~/css/site.css" id="app-style" rel="stylesheet" />
-
-
+    <link href="~/css/card-estilo.css" rel="stylesheet" />
+    <link href="~/css/DadosPacientes-estilo.css" rel="stylesheet" />
+    <link href="~/css/busca-rapida-paciente.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/css/tsmartclinic-layout.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 
-
-    <style>
-        .clickable:hover {
-            cursor: pointer;
-        }
-
-        .card-header h5 {
-            position: relative;
-            display: inline-block;
-        }
-
-            .card-header h5::after {
-                content: '';
-                display: block;
-                width: 250%;
-                height: 1px;
-                background: linear-gradient(to right, #dee2e6, rgba(222,226,230,0));
-                position: absolute;
-                bottom: -10px;
-                left: 0;
-            }
-
-        .titulo-com-icone {
-            display: flex;
-            align-items: center;
-            font-size: 28px !important; /* Força o tamanho do texto */
-            font-weight: 600 !important; /* Força o peso */
-        }
-
-
-        .icone-titulo {
-            font-size: 34px; /* Tamanho do ícone */
-            color: #6c757d; /* Cinza */
-        }
-
-
-
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-        #layout-wrapper {
-            display: flex;
-            flex-direction: column;
-            height: 100vh; /* Ocupa a altura total da tela */
-        }
-
-        .main-content {
-            flex: 1; /* Ocupa todo o espaço disponível */
-            display: flex;
-            flex-direction: column;
-            min-height: 0; /* Permite que o conteúdo seja rolável */
-        }
-
-        .page-title-box h4 {
-            position: relative;
-            z-index: 5;
-        }
-
-        .page-content {
-            flex: 1;
-            overflow-y: auto; /* HABILITA A ROLAGEM */
-            padding: 1rem;
-        }
-
-        footer.footer {
-            flex-shrink: 0; /* Não deixa o footer colapsar */
-            background-color: #f8f9fa;
-            padding: 16px;
-            text-align: center;
-            border-top: 1px solid #dee2e6;
-        }
-        /* 1) Aumentar a logo grande */
-        .logo.logo-light .logo-lg img {
-            height: 60px !important; /* ajuste o número que quiser */
-            width: auto; /* mantém proporção */
-        }
-
-        /* 2) Descer a logo */
-        .logo.logo-light .logo-lg {
-            display: inline-block;
-            margin-top: 12px !important; /* substitui o mt-3 se estiver sendo ignorado */
-        }
-
-        /* 3) Se o box da marca for baixo e estiver cortando a margem/topo */
-        .navbar-brand-box {
-            height: auto; /* ou um valor maior, ex.: 84px */
-            padding-top: 12px; /* dá respiro sem depender do mt-3 */
-            overflow: visible; /* evita cortar a logo/margem */
-        }
-
-        /* 4) Alguns temas forçam um max-height na imagem – neutralize */
-        .logo img {
-            max-height: none !important;
-        }
-    </style>
-
+    @RenderSection("Styles", required: false)
 </head>
 
-<body data-sidebar="dark" data-keep-enlarged="true" class="vertical-collpsed">
+<body data-sidebar="dark" data-keep-enlarged="true" class="tsmart-app">
+    @Html.AntiForgeryToken()
     <input id="IdEmpresaAtiva" type="hidden" />
-    <!-- Begin page -->
+
     <div id="layout-wrapper">
-        <header id="page-topbar">
-
-        
-
-                <div class="d-flex">
-                    <!-- LOGO -->
-                    <div class="navbar-brand-box">
-                        <a href=/home/index class="logo logo-dark">
-                            <span class="logo-sm">
-                            <img src="~/images/logo TSSmartCLinic2_branca.png" alt="" height="42">
-                            </span>
-                            <span class="logo-lg mt-33">
-                            <img src="~/images/lg-branca-g.png" alt="" height="42">
-                            </span>
-                        </a>
-
-                        <!-- Logo recolhida / expandida no menu lateral -->
-                        <a href=/home/index class="logo logo-light">
-                            <span class="logo-sm mt-3">
-                            <img src="/images/lg_branca_icon.png" alt="" height="34">
-                            </span>
-                            <span class="logo-lg mt-3">
-                            <img src="/images/lg_branca_g.png" alt="" height="50">
-                            </span>
-                        </a>
-                    </div>
-
-                   @*  <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect" id="vertical-menu-btn">
-                        <i class="fa fa-fw fa-bars"></i>
-                    </button> *@
-                <button type="button"
-                        class="btn btn-sm px-3 font-size-16 header-item waves-effect"
-                        id="vertical-menu-btn"
-                        aria-expanded="false">
-                    <i class="fa fa-angle-double-left d-none" id="icon-left"></i>
-                    <i class="fa fa-angle-double-right" id="icon-right"></i>
-                </button>
-
-
-                <div class="navbar-header">
-                    <!-- Busca rápida de Paciente -->
-                    <!-- Busca rápida de Paciente -->
-                    <div class="quick-patient-search ms-3" id="quickPatientSearch">
-                        <div class="input-group input-group-sm quick-patient-input">
-                            <span class="input-group-text">
-                                <!-- Avatar do campo -->
-                                <span class="qp-avatar" aria-hidden="true">
-                                    <i class="bx bx-user"></i>
-                                </span>
-                                <span class="visually-hidden">Buscar Paciente</span>
-                            </span>
-
-                            <input id="pacienteSearch"
-                                   class="form-control"
-                                   type="text"
-                                   placeholder="Buscar paciente por nome, CPF ou código..."
-                                   autocomplete="off"
-                                   aria-label="Buscar paciente" />
-                        </div>
-
-                        <!-- Sugestões -->
-                        <div id="pacienteSugestoes" class="dropdown-menu quick-patient-dropdown shadow-lg" style="display:none;">
-                            <!-- itens montados via JS -->
-                        </div>
-                    </div>
-
-
-
-@* 
-                    <div class="empresa-ativa">
-                        <div id="divNomeEmpresaAtiva">
-                            <i class="fa fa-building"></i>&nbsp;<span id="nomeEmpresaAtiva"></span>
-                            <a href="javascript:exibirAutoComplete()">&nbsp;<i class="bx bx-search"></i> </a>
-                        </div>
-                        <div id="divAutocompleteEmpresa" style="display:none">
-                            <input id="autocompleteempresa" class="form-control" autocomplete="on" placeholder="Informe parte do nome da empresa" />
-                            <div id="sugestaoEmpresas" class="fixed-div"></div>
-                        </div>
-                    </div> *@
+        <header id="page-topbar" class="tsmart-topbar">
+            <div class="navbar-header tsmart-navbar-header">
+                <div class="navbar-brand-box tsmart-brand-box">
+                    <a href="/Home/Index" class="logo logo-light" aria-label="Ir para o início">
+                        <span class="logo-sm">
+                            <img src="~/images/branding/tsmartclinic-symbol.svg" alt="TSmartClinic" />
+                        </span>
+                        <span class="logo-lg">
+                            <img src="~/images/branding/tsmartclinic-logo-on-dark.svg" alt="TSmartClinic" />
+                        </span>
+                    </a>
                 </div>
 
+                <button type="button" class="btn tsmart-menu-toggle" id="vertical-menu-btn" aria-label="Expandir ou recolher menu" aria-expanded="false">
+                    <i class="bx bx-menu-alt-left"></i>
+                </button>
 
+                <div class="tsmart-search-area">
+                    <div class="quick-patient-search" id="quickPatientSearch">
+                        <div class="input-group input-group-sm quick-patient-input">
+                            <span class="input-group-text">
+                                <span class="qp-avatar" aria-hidden="true"><i class="bx bx-user"></i></span>
+                            </span>
+                            <input id="pacienteSearch" class="form-control" type="text"
+                                   placeholder="Buscar paciente por nome, CPF ou código..."
+                                   autocomplete="off" aria-label="Buscar paciente" />
+                        </div>
+                        <div id="pacienteSugestoes" class="dropdown-menu quick-patient-dropdown shadow-lg" style="display:none;"></div>
+                    </div>
+                </div>
 
-                <div class="d-flex align-items-center gap-2">
-                    <!-- Email -->
-
-                    <div class="d-flex flex-column">
-                        <span class="user-clinica fw-bold text-uppercase mb-1">@nomeClinica</span>
-                        @* <span class="user-clinica">@nomeCnpj</span> *@
+                <div class="tsmart-user-area">
+                    <div class="tsmart-clinic-context d-none d-md-flex">
+                        <span class="context-label">Clínica ativa</span>
+                        <span class="context-name" title="@nomeClinica">@nomeClinica</span>
                     </div>
 
-
-                    <!-- Separador visual com div -->
-                    <div style="width: 1px; height: 24px; background-color: #ccc;"></div>
-
-                    <!-- Dropdown com nome e avatar -->
                     <div class="dropdown">
-                        <button type="button" class="btn header-item d-flex align-items-center"
+                        <button type="button" class="btn header-item tsmart-user-button"
                                 id="page-header-user-dropdown" data-bs-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
-                            <img class="rounded-circle" src="~/images/users/avatar.png" alt="Avatar" style="width: 30px; height: 30px; object-fit: cover;">
-                            <span class="d-none d-xl-inline-block ms-2">@nome</span>
-                            <i class="mdi mdi-chevron-down d-none d-xl-inline-block ms-1"></i>
+                            <span class="tsmart-avatar">@iniciais</span>
+                            <span class="tsmart-user-name d-none d-xl-inline-block">@nome</span>
+                            <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                         </button>
-
-                        <div class="dropdown-menu dropdown-menu-end">
+                        <div class="dropdown-menu dropdown-menu-end tsmart-user-menu">
                             <a class="dropdown-item" href="#" id="btnMinhaConta" data-id="1">
-                                <i class="bx bx-user font-size-16 align-middle me-1"></i> Minha Conta
+                                <i class="bx bx-user font-size-16 align-middle me-2"></i>Minha Conta
                             </a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item text-danger" href="/Account/Logout">
-                                <i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> Sair do Sistema
+                                <i class="bx bx-power-off font-size-16 align-middle me-2"></i>Sair do Sistema
                             </a>
                         </div>
-
                     </div>
                 </div>
             </div>
         </header>
 
-        <!-- ========== Left Sidebar Start ========== -->
-        <div class="vertical-menu">
+        <aside class="vertical-menu tsmart-sidebar">
+            <div data-simplebar class="h-100">
+                <div id="sidebar-menu">
+                    <ul class="metismenu list-unstyled" id="side-menu">
+                        <li class="menu-title" key="t-menu">Menu Principal</li>
 
-            <div data-simplebar="init" class="h-100">
-                <div class="simplebar-wrapper" style="margin: 0px;">
-                    <div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask">
-                        <div class="simplebar-offset" style="right: -17px; bottom: 0px;">
-                            <div class="simplebar-content-wrapper" style="height: 100%; overflow: hidden scroll;">
-                                <div class="simplebar-content" style="padding: 0px;">
+                        <!-- Início do menu Pacientes -->
+                        <li>
+                            <a href="/Pacientes/Consulta" key="t-blog">
+                                <i class="bx bx-user"></i>
+                                <span>Pacientes</span>
+                            </a>
+                        </li>
 
-                                    <!--- Sidemenu -->
-                                    <div id="sidebar-menu">
-                                        <!-- Left Menu Start -->
-                                        <ul class="metismenu list-unstyled" id="side-menu">
-                                            <li class="menu-title" key="t-menu">Menu Principal</li>
-
-                                            <!-- Início do menu Pacientes -->
-                                            <li>
-                                                <a href="/Pacientes/CardsPacientes" key="t-blog">
-                                                    <i class="bx bx-user"></i>
-                                                    <span>Pacientes</span>
-                                                </a>
-                                            </li>
-
-                                            <!-- Início do menu Empresa -->
-                                            <li>
-                                                @*  <a href="javascript: void(0);" class="has-arrow waves-effect"> *@
-                                                <a href=/Empresa/Central key="t-blog">
-                                                    <i class="bx bx-building-house"></i>
-                                                    <span key="t-layouts">Clínicas</span>
-                                                </a>
-                                                @* <ul class="sub-menu" aria-expanded="false">
-                                                <li><a href=/Grupo/Consulta key="t-blog">Grupos</a></li>
-                                                <li><a href=/Regiao/Consulta key="t-blog">Regiões</a></li>
-                                                <li><a href=/Empresa/Consulta key="empresa">Empresas</a></li>
+                        <!-- Início do menu Empresa -->
+                        <li>
+                            @*  <a href="javascript:void(0);" class="has-arrow waves-effect"> *@
+                            <a href="/Empresa/Central" key="t-blog">
+                                <i class="bx bx-building-house"></i>
+                                <span key="t-layouts">Clínicas</span>
+                            </a>
+                            @* <ul class="sub-menu" aria-expanded="false">
+                                                <li><a href="/Grupo/Consulta" key="t-blog">Grupos</a></li>
+                                                <li><a href="/Regiao/Consulta" key="t-blog">Regiões</a></li>
+                                                <li><a href="/Empresa/Consulta" key="empresa">Empresas</a></li>
                                                 <li><a href="/Empresa/Central" key="empresa">Central da Empresa</a></li>
-                                                <li><a href=/Empresa/Central key="empresa">Trocar Empresa</a></li>
+                                                <li><a href="/Empresa/Central" key="empresa">Trocar Empresa</a></li>
                                                 </ul> *@
-                                            </li>
+                        </li>
 
-                                            <!-- Início do menu SST -->
-                                            @*    <li>
-                                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <!-- Início do menu SST -->
+                        @*    <li>
+                                                <a href="javascript:void(0);" class="has-arrow waves-effect">
                                                     <i class="bx bx-shield"></i>
                                                     <span key="t-layouts">SST</span>
                                                 </a>
-                                                <ul class="sub-menu" aria-expanded="true">
+                                                <ul class="sub-menu" aria-expanded="false">
                                                     <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">PGR</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            @* <li><a href=key ="t-blog">*Associação de Riscos</a></li> *@
-                                            @*    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Associação de Riscos</a></li>
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Avaliação dos Riscos</a></li>
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Reconhecimento dos <br />Riscos</a></li>
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Priorização e Medidas <br />de Controle</a></li>
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Associação de EPIs</a></li>
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Cronograma de Ações</a></li>
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Plano de Ação</a></li>
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Documento base do <br />PPRA</a></li>
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Declaração de <br />Inexistência de Riscos</a></li>
+                                                        <a href="javascript:void(0);" class="has-arrow" key="t-vertical">PGR</a>
+                                                        <ul class="sub-menu" aria-expanded="false">
+                                                            @* <li><a href="javascript:void(0);">*Associação de Riscos</a></li> *@
+                        @*    <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Associação de Riscos</a></li>
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Avaliação dos Riscos</a></li>
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Reconhecimento dos <br />Riscos</a></li>
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Priorização e Medidas <br />de Controle</a></li>
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Associação de EPIs</a></li>
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Cronograma de Ações</a></li>
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Plano de Ação</a></li>
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Documento base do <br />PPRA</a></li>
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Declaração de <br />Inexistência de Riscos</a></li>
                                                         </ul>
                                                     </li>
 
                                                     <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">PCMSO</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Programação de Exames <br />Por Ambiente de <br />Trabalho</a></li>
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Programação de Exames <br />por Classificação</a></li>
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Programação de Exames <br />por Idade</a></li>
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Documento Base do <br />PCMSO</a></li>
-
-                                                        </ul>
-                                                    </li>
-
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">LTCAT</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Associação de <br />Características <br />Ambientais</a></li>
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Controle de <br />Periculosidade e <br />Insalubridade</a></li>
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Documento LTCAT</a></li>
+                                                        <a href="javascript:void(0);" class="has-arrow" key="t-vertical">PCMSO</a>
+                                                        <ul class="sub-menu" aria-expanded="false">
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Programação de Exames <br />Por Ambiente de <br />Trabalho</a></li>
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Programação de Exames <br />por Classificação</a></li>
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Programação de Exames <br />por Idade</a></li>
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Documento Base do <br />PCMSO</a></li>
 
                                                         </ul>
                                                     </li>
 
                                                     <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">EPI</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Entrega de EPI em Lote</a></li>
+                                                        <a href="javascript:void(0);" class="has-arrow" key="t-vertical">LTCAT</a>
+                                                        <ul class="sub-menu" aria-expanded="false">
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Associação de <br />Características <br />Ambientais</a></li>
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Controle de <br />Periculosidade e <br />Insalubridade</a></li>
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Documento LTCAT</a></li>
+
                                                         </ul>
                                                     </li>
 
                                                     <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Treinamento</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Controle de <br />Treinamentos</a></li>
+                                                        <a href="javascript:void(0);" class="has-arrow" key="t-vertical">EPI</a>
+                                                        <ul class="sub-menu" aria-expanded="false">
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Entrega de EPI em Lote</a></li>
                                                         </ul>
                                                     </li>
 
                                                     <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Medicamento</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Estoque Mínimo de <br />Medicamentos</a></li>
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Movimentação de <br />Estoque de <br />Medicamentos</a></li>
+                                                        <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Treinamento</a>
+                                                        <ul class="sub-menu" aria-expanded="false">
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Controle de <br />Treinamentos</a></li>
                                                         </ul>
                                                     </li>
 
                                                     <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Vacinação</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Controle de Vacinação <br />em Lote</a></li>
+                                                        <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Medicamento</a>
+                                                        <ul class="sub-menu" aria-expanded="false">
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Estoque Mínimo de <br />Medicamentos</a></li>
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Movimentação de <br />Estoque de <br />Medicamentos</a></li>
                                                         </ul>
                                                     </li>
 
                                                     <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Proteção contra <br />Incêndios</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Identificação e <br />Manutenção</a></li>
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Brigada de Incêndio</a></li>
+                                                        <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Vacinação</a>
+                                                        <ul class="sub-menu" aria-expanded="false">
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Controle de Vacinação <br />em Lote</a></li>
                                                         </ul>
                                                     </li>
 
                                                     <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Ergonomia</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a href=key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Análise Ergonômica do <br />Trabalho</a></li>
+                                                        <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Proteção contra <br />Incêndios</a>
+                                                        <ul class="sub-menu" aria-expanded="false">
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Identificação e <br />Manutenção</a></li>
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Brigada de Incêndio</a></li>
+                                                        </ul>
+                                                    </li>
+
+                                                    <li>
+                                                        <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Ergonomia</a>
+                                                        <ul class="sub-menu" aria-expanded="false">
+                                                            <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Análise Ergonômica do <br />Trabalho</a></li>
                                                         </ul>
                                                     </li>
 
@@ -414,360 +227,360 @@
 
                                             <!-- Início do menu eSocial -->
                                             <li>
-                                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                                <a href="javascript:void(0);" class="has-arrow waves-effect">
                                                     <i class="bx bx-note"></i>
                                                     <span key="t-layouts">eSocial</span>
                                                 </a>
-                                                <ul class="sub-menu" aria-expanded="true">
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Arquivos Gerados</a></li>
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Erro na Geração</a></li>
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Erro no Processamento</a></li>
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Copiar Avaliações</a></li>
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Excluir Avaliações</a></li>
+                                                <ul class="sub-menu" aria-expanded="false">
+                                                    <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Arquivos Gerados</a></li>
+                                                    <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Erro na Geração</a></li>
+                                                    <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Erro no Processamento</a></li>
+                                                    <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Copiar Avaliações</a></li>
+                                                    <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Excluir Avaliações</a></li>
 
                                                 </ul>
                                             </li>
  *@
-                                            <!-- Início do menu Atendimentos -->
-                                            <li>
-                                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                                    <i class="bx bx-calendar"></i>
-                                                    <span key="t-layouts">Atendimentos</span>
-                                                </a>
-                                                <ul class="sub-menu" aria-expanded="true">
+                        <!-- Início do menu Atendimentos -->
+                        <li>
+                            <a href="javascript:void(0);" class="has-arrow waves-effect">
+                                <i class="bx bx-calendar"></i>
+                                <span key="t-layouts">Atendimentos</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
 
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Cadastros e Associações</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Cadastro de <br />Procedimentos</a></li>
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Cadastro de Salas</a></li>
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Associação de Sala <br />e Procedimento</a></li>
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Cadastros e Associações</a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Cadastro de <br />Procedimentos</a></li>
+                                        <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Cadastro de Salas</a></li>
+                                        <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Associação de Sala <br />e Procedimento</a></li>
 
-                                                        </ul>
-                                                    </li>
+                                    </ul>
+                                </li>
 
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Atendimentos</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Sala de Atendimentos</a></li>
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Agenda de Atendimentos</a></li>
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Painel de Atendimentos</a></li>
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Painel de últimas <br />Chamadas</a></li>
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Atendimentos</a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Sala de Atendimentos</a></li>
+                                        <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Agenda de Atendimentos</a></li>
+                                        <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Painel de Atendimentos</a></li>
+                                        <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Painel de últimas <br />Chamadas</a></li>
 
-                                                        </ul>
-                                                    </li>
+                                    </ul>
+                                </li>
 
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Central do Cliente</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Controle de <br />Atendimentos</a></li>
-                                                            <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Associação de <br />Credenciados</a></li>
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Central do Cliente</a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Controle de <br />Atendimentos</a></li>
+                                        <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Associação de <br />Credenciados</a></li>
 
-                                                        </ul>
-                                                    </li>
+                                    </ul>
+                                </li>
 
-                                                </ul>
-                                            </li>
+                            </ul>
+                        </li>
 
-                                            <!-- Início do menu Faturamento -->
-                                            <li>
-                                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                                    <i class="bx bx-money"></i>
-                                                    <span key="t-layouts">Faturamento</span>
-                                                </a>
+                        <!-- Início do menu Faturamento -->
+                        <li>
+                            <a href="javascript:void(0);" class="has-arrow waves-effect">
+                                <i class="bx bx-money"></i>
+                                <span key="t-layouts">Faturamento</span>
+                            </a>
 
-                                                <ul class="sub-menu" aria-expanded="false">
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px;  color: #FFF7E6">*Contratos</a></li>
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Fechamento</a></li>
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Contas a Receber</a></li>
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Gerar Arquivo de <br />Remessa</a></li>
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Impostos e Taxas</a></li>
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Reajuste de Valores <br />de Contratos</a></li>
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Reajuste de Exames <br />Complementares</a></li>
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Reajuste de Exames <br />Complementares de <br />Credenciados</a></li>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px;  color: #FFF7E6">*Contratos</a></li>
+                                <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Fechamento</a></li>
+                                <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Contas a Receber</a></li>
+                                <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Gerar Arquivo de <br />Remessa</a></li>
+                                <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Impostos e Taxas</a></li>
+                                <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Reajuste de Valores <br />de Contratos</a></li>
+                                <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Reajuste de Exames <br />Complementares</a></li>
+                                <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Reajuste de Exames <br />Complementares de <br />Credenciados</a></li>
 
-                                                </ul>
-                                            </li>
+                            </ul>
+                        </li>
 
-                                            <!-- Início do menu Relatórios -->
-                                            <li>
-                                                <a href=key ="t-blog">
-                                                    <i class="bx bx-archive-out"></i>
-                                                    <span key="t-dashboards">*Relatórios</span>
-                                                </a>
-                                            </li>
+                        <!-- Início do menu Relatórios -->
+                        <li>
+                            <a href="javascript:void(0);">
+                                <i class="bx bx-archive-out"></i>
+                                <span key="t-dashboards">*Relatórios</span>
+                            </a>
+                        </li>
 
-                                            @* 
+                        @* 
                                             <!-- Início do menu Indicadores -->
                                             <li>
-                                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                                <a href="javascript:void(0);" class="has-arrow waves-effect">
                                                     <i class="bx bx-bar-chart"></i>
                                                     <span key="t-layouts">Indicadores</span>
                                                 </a>
 
                                                 <ul class="sub-menu" aria-expanded="false">
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Estatísticas</a></li>
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Avaliações por Empresa</a></li>
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Comparativo Estatístico</a></li>
-                                                    <li><a href=Key ="t-blog" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Indicadores de Saúde</a></li>
+                                                    <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Estatísticas</a></li>
+                                                    <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Avaliações por Empresa</a></li>
+                                                    <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Comparativo Estatístico</a></li>
+                                                    <li><a href="javascript:void(0);" style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6">*Indicadores de Saúde</a></li>
 
                                                 </ul>
                                             </li> *@
 
-                                            <!-- Início do menu Cadastros Básicos -->
+                        <!-- Início do menu Cadastros Básicos -->
+                        <li>
+                            <a href="javascript:void(0);" class="has-arrow waves-effect">
+                                <i class="bx bx-layout"></i>
+                                <span key="t-layouts">Cadastros</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow waves-effect">
+                                        <i class="bx bx-shield"></i>
+                                        <span key="t-layouts">Gerais</span>
+                                    </a>
+
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        @if (usuarioMaster)
+                                        {
+                                            <li><a href="/Nichos/Consulta" key="t-blog" style="margin-left: 5px;">Nichos<i class="bx bx-crown"></i></a></li>
+                                        }
+                                    </ul>
+
+
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow waves-effect">
+                                        <i class="bx bx-shield"></i>
+                                        <span key="t-layouts">Empresas</span>
+                                    </a>
+
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a href="/Grupo/Consulta" key="t-blog">Grupos</a></li>
+                                        <li><a href="/Regiao/Consulta" key="t-blog">Regiões</a></li>
+                                        <li><a href="/Empresa/Consulta" key="empresa">Empresas</a></li>
+                                        @*  <li><a href="/Empresa/Central" key="empresa">Central da Empresa</a></li>
+                                                            <li><a href="/Empresa/Central" key="empresa">Trocar Empresa</a></li> *@
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow waves-effect">
+                                        <i class="bx bx-shield"></i>
+                                        <span key="t-layouts">Tabelas Básicas</span>
+                                    </a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Profissional/Consulta" key="t-blog">*Profissionais</a></li>
+                                        <li><a href="/Credenciado/Consulta" key="t-blog">Credenciados</a></li>
+                                        <li><a href="/Servico/Consulta" key="t-blog">Serviços</a></li>
+                                        <li><a href="/AgenteRisco/Consulta" key="t-blog">Agentes de Risco</a></li>
+                                        <li><a href="/TipoAfastamento/Consulta" key="t-blog">Tipos de Afastamento</a></li>
+                                        <li><a href="/Especialidade/Consulta" key="t-blog">Especialidades</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Procedimento/Consulta" key="t-blog">*Procedimentos</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Queixa/Consulta" key="t-blog">*Queixas</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Documento/Consulta" key="t-blog">*Documentos</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Agenda/Consulta" key="t-blog">Agenda</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/UnAtendimento/Consulta" key="t-blog">*Unidade de Atendimento</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Deficiencia/Consulta" key="t-blog">*Tipo de Deficiência</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Classificacao/Consulta" key="t-blog">*Classificações</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Avaliacao/Consulta" key="t-blog">*Avaliações</a></li>
+                                        <li><a href="/AlertaEmpresa/Consulta" key="t-blog">Alerta de Empresa</a></li>
+
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">PPP</a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Turno/Consulta" key="t-blog">*Turnos</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="javascript:void(0);">*Domicílio Tributário</a></li>
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Exames</a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="javascript:void(0);">*Classe de Grupo <br />de Exame</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="javascript:void(0);">*Grupos de Exames</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="javascript:void(0);">*Exame</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Preparatorio/Consulta" key="t-blog">*Preparatório</a></li>
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Audiometria</a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Audiometro/Consulta" key="t-blog">*Audiômetro</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="javascript:void(0);">*Pergunta da Anamnese</a></li>
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Medicamentos</a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="/Laboratorio/Consulta" key="t-blog">*Laboratórios</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="/Medicamento/Consulta" key="t-blog">*Medicamentos</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Kit de Medicamentos</a></li>
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Vacinação</a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Vacinas</a></li>
+                                        <li><a href="/CampanhaVacinacao/Consulta" key="t-blog">Campanha de <br />Vacinação</a></li>
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">PGR</a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a href="/FonteGeradora/Consulta" key="t-blog">Fontes Geradoras</a></li>
+                                        <li><a href="/Trajetoria/Consulta" key="t-blog">Trajetórias</a></li>
+                                        <li><a href="/MeioPropagacao/Consulta" key="t-blog">Meios de Propagação</a></li>
+                                        <li><a href="/RiscoSaude/Consulta" key="t-blog">Risco Saúde</a></li>
+                                        <li><a href="/ExposicaoRisco/Consulta" key="t-blog">Tempo de Exposição</a></li>
+                                        <li><a href="/MedidaControle/Consulta" key="t-blog">Medidas de Controle</a></li>
+                                        <li><a href="/TecnicaMedicao/Consulta" key="t-blog">Técnicas de Medição</a></li>
+                                        <li><a href="/Instrumento/Consulta" key="t-blog">Instrumentos de Medição</a></li>
+                                        <li><a href="/acao/Consulta" key="t-blog">Ações</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px;color: #FFF7E6" href="javascript:void(0);">*Roteiro de Inspeção</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px;color: #FFF7E6" href="javascript:void(0);">*Ficha de Inspeção</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px;color: #FFF7E6" href="javascript:void(0);">*Metodologias</a></li>
+
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">LTCAT</a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px;color: #FFF7E6" href="javascript:void(0);">*Característica Ambiental</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px;color: #FFF7E6" href="javascript:void(0);">*Conclusão de Agente</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">EPI</a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Fabricante de EPI</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Fornecedor de EPI</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Empresa de Manutenção <br />de EPI</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*EPI</a></li>
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Treinamento</a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Treinamento</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Avaliação de <br />Treinamento</a></li>
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Qualidade de Vida</a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Faixa de Pontuação</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Orientações</a></li>
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Prot. contra incêndio</a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Equipamento</a></li>
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Empresa de Manutenção <br />de EPI/EPC</a></li>
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Ergonomia</a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Posto de Trabalho</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        @*    <!-- Início do menu Biometria -->
                                             <li>
-                                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                                    <i class="bx bx-layout"></i>
-                                                    <span key="t-layouts">Cadastros</span>
-                                                </a>
-                                                <ul class="sub-menu" aria-expanded="true">
-                                                   
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow waves-effect" @* class="has-arrow" *@
-                                                            <i class="bx bx-shield"></i>
-                                                            <span key="t-layouts">Gerais</span>
-                                                        </a>
-
-                                                        <ul class="sub-menu" aria-expanded="false">
-                                                            @if (usuarioMaster)
-                                                            {
-                                                                <li><a href="/Nichos/Consulta" key="t-blog" style="margin-left: 5px;">Nichos<i class="bx bx-crown"></i></a></li>
-                                                            }
-                                                        </ul>
-
-
-                                                    </li>
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow waves-effect" @* class="has-arrow" *@
-                                                            <i class="bx bx-shield"></i>
-                                                            <span key="t-layouts">Empresas</span>
-                                                        </a>
-
-                                                        <ul class="sub-menu" aria-expanded="false">
-                                                            <li><a href=/Grupo/Consulta key="t-blog">Grupos</a></li>
-                                                            <li><a href=/Regiao/Consulta key="t-blog">Regiões</a></li>
-                                                            <li><a href=/Empresa/Consulta key="empresa">Empresas</a></li>
-                                                            @*  <li><a href="/Empresa/Central" key="empresa">Central da Empresa</a></li>
-                                                            <li><a href=/Empresa/Central key="empresa">Trocar Empresa</a></li> *@
-                                                        </ul>
-                                                    </li>
-
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow waves-effect" @* class="has-arrow" *@
-                                                            <i class="bx bx-shield"></i>
-                                                            <span key="t-layouts">Tabelas Básicas</span>
-                                                        </a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Profissional/Consulta" key="t-blog">*Profissionais</a></li>
-                                                            <li><a href="/Credenciado/Consulta" key="t-blog">Credenciados</a></li>
-                                                            <li><a href="/Servico/Consulta" key="t-blog">Serviços</a></li>
-                                                            <li><a href="/AgenteRisco/Consulta" key="t-blog">Agentes de Risco</a></li>
-                                                            <li><a href="/TipoAfastamento/Consulta" key="t-blog">Tipos de Afastamento</a></li>
-                                                            <li><a href="/Especialidade/Consulta" key="t-blog">Especialidades</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Procedimento/Consulta" key="t-blog">*Procedimentos</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Queixa/Consulta" key="t-blog">*Queixas</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Documento/Consulta" key="t-blog">*Documentos</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Agenda/Consulta" key="t-blog">Agenda</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/UnAtendimento/Consulta" key="t-blog">*Unidade de Atendimento</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Deficiencia/Consulta" key="t-blog">*Tipo de Deficiência</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Classificacao/Consulta" key="t-blog">*Classificações</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href="/Avaliacao/Consulta" key="t-blog">*Avaliações</a></li>
-                                                            <li><a href="/AlertaEmpresa/Consulta" key="t-blog">Alerta de Empresa</a></li>
-
-                                                        </ul>
-                                                    </li>
-
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">PPP</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href=/Turno/Consulta key="t-blog">*Turnos</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href=key ="t-blog">*Domicílio Tributário</a></li>
-                                                        </ul>
-                                                    </li>
-
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Exames</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href=key ="t-blog">*Classe de Grupo <br />de Exame</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href=key ="t-blog">*Grupos de Exames</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href=key ="t-blog">*Exame</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href=/Preparatorio/Consulta key="t-blog">*Preparatório</a></li>
-                                                        </ul>
-                                                    </li>
-
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Audiometria</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href=/Audiometro/Consulta key="t-blog">*Audiômetro</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6;" href=key ="t-blog">*Pergunta da Anamnese</a></li>
-                                                        </ul>
-                                                    </li>
-
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Medicamentos</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=/Laboratorio/Consulta key="t-blog">*Laboratórios</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=/Medicamento/Consulta key="t-blog">*Medicamentos</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Kit de Medicamentos</a></li>
-                                                        </ul>
-                                                    </li>
-
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Vacinação</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Vacinas</a></li>
-                                                            <li><a href=/CampanhaVacinacao/Consulta key="t-blog">Campanha de <br />Vacinação</a></li>
-                                                        </ul>
-                                                    </li>
-
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">PGR</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a href=/FonteGeradora/Consulta key="t-blog">Fontes Geradoras</a></li>
-                                                            <li><a href=/Trajetoria/Consulta key="t-blog">Trajetórias</a></li>
-                                                            <li><a href=/MeioPropagacao/Consulta key="t-blog">Meios de Propagação</a></li>
-                                                            <li><a href=/RiscoSaude/Consulta key="t-blog">Risco Saúde</a></li>
-                                                            <li><a href=/ExposicaoRisco/Consulta key="t-blog">Tempo de Exposição</a></li>
-                                                            <li><a href=/MedidaControle/Consulta key="t-blog">Medidas de Controle</a></li>
-                                                            <li><a href=/TecnicaMedicao/Consulta key="t-blog">Técnicas de Medição</a></li>
-                                                            <li><a href=/Instrumento/Consulta key="t-blog">Instrumentos de Medição</a></li>
-                                                            <li><a href=/acao/Consulta key="t-blog">Ações</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px;color: #FFF7E6" href=key ="t-blog">*Roteiro de Inspeção</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px;color: #FFF7E6" href=key ="t-blog">*Ficha de Inspeção</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px;color: #FFF7E6" href=key ="t-blog">*Metodologias</a></li>
-
-                                                        </ul>
-                                                    </li>
-
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">LTCAT</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px;color: #FFF7E6" href=key ="t-blog">*Característica Ambiental</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px;color: #FFF7E6" href=key ="t-blog">*Conclusão de Agente</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">EPI</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Fabricante de EPI</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Fornecedor de EPI</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Empresa de Manutenção <br />de EPI</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*EPI</a></li>
-                                                        </ul>
-                                                    </li>
-
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Treinamento</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Treinamento</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Avaliação de <br />Treinamento</a></li>
-                                                        </ul>
-                                                    </li>
-
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Qualidade de Vida</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Faixa de Pontuação</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Orientações</a></li>
-                                                        </ul>
-                                                    </li>
-
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Prot. contra incêndio</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Equipamento</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Empresa de Manutenção <br />de EPI/EPC</a></li>
-                                                        </ul>
-                                                    </li>
-
-                                                    <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Ergonomia</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Posto de Trabalho</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-
-                                            @*    <!-- Início do menu Biometria -->
-                                            <li>
-                                                <a href=key ="t-blog">
+                                                <a href="javascript:void(0);">
                                                     <i class="bx bx-fingerprint"></i>
                                                     <span key="t-dashboards">Biometria</span>
                                                 </a>
                                             </li>
  *@
-                                           
 
-                                            <!-- Início do menu Central de notificações -->
-                                            <li>
-                                                <a href=key ="t-blog">
-                                                    <i class="bx bx-bell"></i>
-                                                    <span key="t-dashboards">Central de Notificações</span>
-                                                </a>
-                                            </li>
 
-                                            <!-- Início do menu Suporte -->
-                                            <li>
-                                                <a href=key ="t-blog">
-                                                    <i class="bx bx-support"></i>
-                                                    <span key="t-dashboards">Suporte</span>
-                                                </a>
-                                            </li>
-                                            <!-- Início do menu Configurações -->
-                                            <li>
-                                                
-                                                <a href="/Configuracoes/Configuracoes" class="has-arrow waves-effect">
-                                                    <i class="bx bx-cog"></i>
-                                                    <span key="t-layouts">Configurações</span>
-                                                </a>
-                                                <ul class="sub-menu" aria-expanded="true">
+                        <!-- Início do menu Central de notificações -->
+                        <li>
+                            <a href="javascript:void(0);" class="menu-disabled" aria-disabled="true">
+                                <i class="bx bx-bell"></i>
+                                <span key="t-dashboards">Central de Notificações</span>
+                            </a>
+                        </li>
 
-                                                    @*               <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Opções</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Posto de Trabalho</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Personalização da <br />Ficha Médica</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Personalização do ASO</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Cadastro de Perguntas</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Preferências</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Eventos</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Dados do Cliente</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Logotipos / Rodapés</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Cadastro de Feriados</a></li>
+                        <!-- Início do menu Suporte -->
+                        <li>
+                            <a href="javascript:void(0);" class="menu-disabled" aria-disabled="true">
+                                <i class="bx bx-support"></i>
+                                <span key="t-dashboards">Suporte</span>
+                            </a>
+                        </li>
+                        <!-- Início do menu Configurações -->
+                        <li>
+
+                            <a href="/Configuracoes/Configuracoes" class="waves-effect">
+                                <i class="bx bx-cog"></i>
+                                <span key="t-layouts">Configurações</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+
+                                @*               <li>
+                                                        <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Opções</a>
+                                                        <ul class="sub-menu" aria-expanded="false">
+                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Posto de Trabalho</a></li>
+                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Personalização da <br />Ficha Médica</a></li>
+                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Personalização do ASO</a></li>
+                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Cadastro de Perguntas</a></li>
+                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Preferências</a></li>
+                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Eventos</a></li>
+                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Dados do Cliente</a></li>
+                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Logotipos / Rodapés</a></li>
+                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Cadastro de Feriados</a></li>
 
                                                         </ul>
                                                     </li>
 
                                                     <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">eSocial</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Motivos de Afastamento <br />(Tabela 18)</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Mapeamento de Motivos <br />de Afastamento</a></li>
+                                                        <a href="javascript:void(0);" class="has-arrow" key="t-vertical">eSocial</a>
+                                                        <ul class="sub-menu" aria-expanded="false">
+                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Motivos de Afastamento <br />(Tabela 18)</a></li>
+                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Mapeamento de Motivos <br />de Afastamento</a></li>
                                                         </ul>
                                                     </li> *@
 
-                                                   
-                                                    @* 
+
+                                @* 
                                                     <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Importação de Dados</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Consulta e Agendamento</a></li>
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Manual</a></li>
+                                                        <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Importação de Dados</a>
+                                                        <ul class="sub-menu" aria-expanded="false">
+                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Consulta e Agendamento</a></li>
+                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Manual</a></li>
                                                         </ul>
                                                     </li>
 
                                                     <li>
-                                                        <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Utilitários</a>
-                                                        <ul class="sub-menu" aria-expanded="true">
-                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href=key ="t-blog">*Importação de Exames <br />Laboratoriais</a></li>
+                                                        <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Utilitários</a>
+                                                        <ul class="sub-menu" aria-expanded="false">
+                                                            <li><a style="pointer-events: none; font-style: italic; font-size: 10px; color: #FFF7E6" href="javascript:void(0);">*Importação de Exames <br />Laboratoriais</a></li>
                                                         </ul>
                                                     </li>
  *@
-                                                </ul>
-                                            </li>
-                                            <!-- Início do menu Usuario -->
-                                            @*  <li>
+                            </ul>
+                        </li>
+                        <!-- Início do menu Usuario -->
+                        @*  <li>
                                            <div class="d-flex">
                                                 <div class="dropdown d-inline-block">
                                                     <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -787,198 +600,157 @@
                                             </li>*@
 
 
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div><div class="simplebar-placeholder" style="width: auto; height: 1321px;"></div>
-                </div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="transform: translate3d(0px, 0px, 0px); display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="height: 246px; transform: translate3d(0px, 0px, 0px); display: block;"></div></div>
-            </div>
-        </div>
-
-        <div class="main-content">
-            <div class="page-content">
-                <div class="main-content"  style="padding-top: 70px;margin-left: 10px;" >
-                    <div class="container-fluid">
-
-                        <!-- start page title -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="page-title-box d-flex align-items-center justify-content-between">
-                                    <div class="titulo-com-icone">
-                                        <i class="bx bx-layer me-2 icone-titulo"></i>
-                                        @ViewBag.Titulo
-                                    </div>
-
-
-
-
-                                    <div class="page-title-right">
-                                        <ol class="breadcrumb m-0">
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">TSSmartClinic</a></li>
-                                            <li class="breadcrumb-item">Cadastros Básicos</li>
-                                            <li class="breadcrumb-item active">Setores</li>
-                                        </ol>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        @if (TempData["MensagemSucesso"] != null)
-                        {
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <strong>@TempData["MensagemSucesso"]</strong>
-                            </div>
-                        }
-                        else if (TempData["MensagemErro"] != null)
-                        {
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <strong>@TempData["MensagemErro"]</strong>
-                            </div>
-                        }
-                        else if (TempData["MensagemAlerta"] != null)
-                        {
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <strong>@TempData["MensagemAlerta"]</strong>
-                            </div>
-                        }
-
-                        @{
-                            string paginador = "CLIENTE";
-
-                            if (ViewBag?.Paginador != null) { paginador = ViewBag.Paginador; }
-
-                            <input type='hidden' id="Paginador" value="@paginador" />
-
-                        }
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                @*             <div class="card">
-                            <div class="card-body"> *@
-                                @RenderBody()
-                                @*  </<div>
-                            </div> *@
-                            </div>
-                        </div>
-                    </div> <!-- container-fluid -->
-                </div>
-                <!-- End Page-content -->
-
-                <footer class="footer">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <script>document.write(new Date().getFullYear())</script> © TSmartClinic.
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="text-sm-right d-none d-sm-block">
-                                    TsmartClinic | Versão 1.0
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
-
-            </div>
-            <!-- end main content-->
-            <div id="modalTrocarEmpresa" class="modal fade modal-trocar-empresa" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Seleção de Empresa</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <span id="mensagemSemEmpresaAtiva">Você não possui nenhuma empresa ativa,  favor selecione.</span>
-                            <input id="autocompleteempresamodal" class="form-control" autocomplete="on" placeholder="Informe parte do nome da empresa" />
-                            <div id="sugestaoEmpresasModal" class="autocomplete-empresas"></div>
-                        </div>
-                    </div>
+                    </ul>
                 </div>
             </div>
-        </div>
+        </aside>
+
+        <main class="main-content tsmart-main">
+            <div class="page-content tsmart-page-content">
+                <div class="container-fluid">
+                    <div class="tsmart-page-heading">
+                        <div>
+                            <span class="tsmart-page-kicker">TSmartClinic</span>
+                            <h1 class="tsmart-page-title">@titulo</h1>
+                        </div>
+                        <a href="/Home/Index" class="tsmart-home-link" title="Página inicial">
+                            <i class="bx bx-home-alt"></i>
+                        </a>
+                    </div>
+
+                    @if (TempData["MensagemSucesso"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>@TempData["MensagemSucesso"]</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                        </div>
+                    }
+                    else if (TempData["MensagemErro"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>@TempData["MensagemErro"]</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                        </div>
+                    }
+                    else if (TempData["MensagemAlerta"] != null)
+                    {
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>@TempData["MensagemAlerta"]</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                        </div>
+                    }
+
+                    @{
+                        string paginador = "CLIENTE";
+                        if (ViewBag?.Paginador != null) { paginador = ViewBag.Paginador; }
+                    }
+                    <input type="hidden" id="Paginador" value="@paginador" />
+
+                    @RenderBody()
+                </div>
+            </div>
+
+            <footer class="footer tsmart-footer">
+                <div class="container-fluid d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <span><script>document.write(new Date().getFullYear())</script> © TSmartClinic</span>
+                    <span>Versão 1.0</span>
+                </div>
+            </footer>
+        </main>
     </div>
 
-    <div class="modal fade" id="minhaContaModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+    <div class="modal fade" id="minhaContaModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content" id="minhaContaContent">
-                <!-- aqui entra o miolo carregado via AJAX -->
+                <!-- conteúdo carregado via AJAX -->
             </div>
         </div>
     </div>
 
+    <div id="modalTrocarEmpresa" class="modal fade modal-trocar-empresa" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Seleção de Empresa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <span id="mensagemSemEmpresaAtiva">Você não possui nenhuma empresa ativa, favor selecione.</span>
+                    <input id="autocompleteempresamodal" class="form-control" autocomplete="on" placeholder="Informe parte do nome da empresa" />
+                    <div id="sugestaoEmpresasModal" class="autocomplete-empresas"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <environment include="Development">
         <script src="~/_framework/aspnetcore-browser-refresh.js"></script>
     </environment>
-
-    <!-- JAVASCRIPT -->
     <script src="~/assets/libs/jquery/jquery.min.js"></script>
     <script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
     <script src="~/assets/libs/node-waves/waves.min.js"></script>
-
-    <!-- Required datatable js -->
     <script src="~/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="~/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
-
-    <!-- Buttons examples -->
     <script src="~/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
     <script src="~/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
-
-    <!-- Datatable init js -->
     <script src="~/assets/js/pages/datatables.init.js"></script>
-
-    <!-- AXIOS -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-
-
-    <!-- App js -->
     <script src="~/assets/js/app.js"></script>
     <script src="~/js/site.js"></script>
 
     <script>
         $(function () {
-            $("#vertical-menu-btn").on("click", function () {
-                // lê o estado atual
-                var expanded = $(this).attr("aria-expanded") === "true";
+            $('#vertical-menu-btn').on('click', function () {
+                window.setTimeout(function () {
+                    var collapsed = $('body').hasClass('vertical-collpsed');
+                    $('#vertical-menu-btn').attr('aria-expanded', (!collapsed).toString());
+                }, 0);
+            });
 
-                // inverte o estado
-                $(this).attr("aria-expanded", !expanded);
+            const currentPath = (window.location.pathname || '/').replace(/\/$/, '').toLowerCase() || '/';
 
-                // troca ícones conforme o estado
-                if (expanded) {
-                    // estava expandido → vai recolher → mostra seta p/ direita
-                    $("#icon-right").removeClass("d-none");
-                    $("#icon-left").addClass("d-none");
-                } else {
-                    // estava recolhido → vai expandir → mostra seta p/ esquerda
-                    $("#icon-left").removeClass("d-none");
-                    $("#icon-right").addClass("d-none");
+            $('#side-menu a[href]').each(function () {
+                const rawHref = ($(this).attr('href') || '').trim();
+                if (!rawHref || rawHref === '#' || rawHref.toLowerCase().startsWith('javascript:')) return;
+
+                let linkPath;
+                try {
+                    linkPath = new URL(rawHref, window.location.origin).pathname.replace(/\/$/, '').toLowerCase() || '/';
+                } catch {
+                    return;
                 }
+
+                const isActive = currentPath === linkPath ||
+                    (linkPath !== '/' && currentPath.startsWith(linkPath + '/'));
+
+                if (!isActive) return;
+
+                $(this).addClass('active').attr('aria-current', 'page');
+                $(this).parents('ul.sub-menu').addClass('mm-show').attr('aria-expanded', 'true');
+                $(this).parents('li').addClass('mm-active');
+                $(this).parents('li').children('a.has-arrow').attr('aria-expanded', 'true');
             });
         });
-
-
     </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const btnMinhaConta = document.getElementById("btnMinhaConta");
             const modalEl = document.getElementById("minhaContaModal");
+
+            if (!btnMinhaConta || !modalEl) return;
+
             const modal = new bootstrap.Modal(modalEl);
 
             btnMinhaConta.addEventListener("click", function (e) {
                 e.preventDefault();
-
-                let userId = this.getAttribute("data-id");
+                const userId = this.getAttribute("data-id");
 
                 fetch(`/MinhaConta/DetalhesMinhaConta/${userId}`)
                     .then(response => {
-                        if (!response.ok) throw new Error("Erro ao carregar modal");
+                        if (!response.ok) throw new Error("Erro ao carregar Minha Conta");
                         return response.text();
                     })
                     .then(html => {
@@ -990,10 +762,6 @@
         });
     </script>
 
-
-
-
     @RenderSection("Scripts", required: false)
 </body>
-
 </html>

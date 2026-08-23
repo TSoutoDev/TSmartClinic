@@ -133,7 +133,6 @@ namespace TSmartClinic.Presentation.Controllers.Usuarios
             ViewBag.Perfis = lista;
         }
 
-
         private async Task CriarViewClientes()
         {
             var resultado = await _clienteService.ListarClientes();

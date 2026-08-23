@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TSmartClinic.API.Repositories;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;

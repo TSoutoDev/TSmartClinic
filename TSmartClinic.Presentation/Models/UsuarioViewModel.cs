@@ -7,12 +7,12 @@ namespace TSmartClinic.Presentation.Models
         public string? Senha { get; set; }
         public string? Nome { get; set; }
         public string? LoginInclusao { get; set; }
-        public DateTime? DataInclusao { get; set; }
+        public DateTimeOffset? DataInclusao { get; set; }
         public string? LoginAlteracao { get; set; }
-        public DateTime? DataAlteracao { get; set; } 
-        public DateTime? DataBloqueio { get; set; } 
-        public DateTime? DataUltimoAcesso { get; set; } = DateTime.UtcNow;
-        public DateTime? DataExpiracaoSenha { get; set; } = DateTime.UtcNow.AddDays(365);
+        public DateTimeOffset? DataAlteracao { get; set; } 
+        public DateTimeOffset? DataBloqueio { get; set; } 
+        public DateTimeOffset? DataUltimoAcesso { get; set; } = DateTimeOffset.UtcNow;
+        public DateTimeOffset DataExpiracaoSenha { get; set; } = DateTimeOffset.UtcNow.AddDays(365);
         public string? Email { get; set; }
         public string? Celular { get; set; }
         public char? TipoUsuario { get; set; } = 'C';

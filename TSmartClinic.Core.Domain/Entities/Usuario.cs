@@ -12,7 +12,7 @@ namespace TSmartClinic.Core.Domain.Entities
         public DateTime? DataAlteracao{ get; set; }
         public DateTime? DataBloqueio { get; set; } 
         public DateTime? DataUltimoAcesso { get; set; } = null;
-        public DateTime? DataExpiracaoSenha { get; set; } = DateTime.UtcNow.AddDays(365);
+        public DateTime? DataExpiracaoSenha { get; set; } 
         public string? Email { get; set; }
         public string? Celular { get; set; }
         public char? TipoUsuario { get; set; }

@@ -14,26 +14,30 @@ namespace TSmartClinic.Core.Domain.Entities
         public DateTime? DataCadastro { get; set; }
         public int? ConvenioId { get; set; }
         public byte[]? Foto { get; set; }
-
+        public int ClienteId { get; set; }
 
         #region Relacionamentos
         public Convenio? Convenio { get; set; }
+        public Cliente? Cliente { get; set; }
         #endregion
 
-
-        public override void Atualizar(Object obj)
+        public override void Atualizar(object obj)
         {
-            Paciente paciente = obj as Paciente;
+            var paciente = obj as Paciente;
 
-            this.NomePaciente = paciente.NomePaciente;
-            this.DataNascimento = paciente.DataNascimento;
-            this.CPF = paciente.CPF;
-            this.Telefone = paciente.Telefone;
-            this.Email = paciente.Email;
-            this.Observacoes = paciente.Observacoes;         
-            this.Ativo = paciente.Ativo;
-            this.ConvenioId = paciente.ConvenioId;
-             
+            if (paciente == null)
+                return;
+
+            NomePaciente = paciente.NomePaciente;
+            DataNascimento = paciente.DataNascimento;
+            CPF = paciente.CPF;
+            Telefone = paciente.Telefone;
+            Email = paciente.Email;
+            Observacoes = paciente.Observacoes;
+            Ativo = paciente.Ativo;
+            ConvenioId = paciente.ConvenioId;
+            Foto = paciente.Foto;
+
             this.RemoverEspacosEmBranco();
         }
     }

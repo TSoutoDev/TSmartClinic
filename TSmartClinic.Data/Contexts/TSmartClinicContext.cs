@@ -35,6 +35,13 @@ namespace TSmartClinic.Data.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasDefaultSchema("dbo"); // <- importante
+            foreach (var e in modelBuilder.Model.GetEntityTypes())
+                foreach (var p in e.GetProperties())
+                {
+                    if (p.ClrType == typeof(DateTime) || p.ClrType == typeof(DateTime?))
+                        p.SetColumnType("timestamp without time zone");
+                }
             modelBuilder.ApplyConfiguration(new CategoriaConfiguration());
             modelBuilder.ApplyConfiguration(new ClienteConfiguration());
             modelBuilder.ApplyConfiguration(new ConvenioConfiguration());

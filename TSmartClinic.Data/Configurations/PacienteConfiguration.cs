@@ -9,11 +9,14 @@ namespace TSmartClinic.Data.Configurations
         public void Configure(EntityTypeBuilder<Paciente> builder)
         {
             //nome da tabela
-            builder.ToTable("Paciente");
+            builder.ToTable("Paciente", "dbo");
 
             //definindo o campo 'chave primária'
             builder.HasKey(c => c.Id);
-            builder.Property(c => c.Id).HasColumnName("Id");
+            builder.Property(u => u.Id)
+            .HasColumnName("Id")
+            .ValueGeneratedOnAdd() // diga ao EF que o valor é gerado;
+            .UseIdentityByDefaultColumn(); // mapeia identity do Postgres;
             builder.Property(c => c.NomePaciente).HasColumnName("NomePaciente").HasMaxLength(300).IsRequired();
             builder.Property(c => c.DataNascimento).HasColumnName("DataNascimento").HasColumnType("date");
             builder.Property(c => c.CPF).HasColumnName("CPF").HasMaxLength(14);
@@ -24,11 +27,19 @@ namespace TSmartClinic.Data.Configurations
             builder.Property(c => c.DataCadastro).HasColumnName("DataCadastro").HasColumnType("date");
             builder.Property(c => c.ConvenioId).HasColumnName("ConvenioId");
             builder.Property(c => c.Foto).HasColumnName("Foto");
+            builder.Property(c => c.ClienteId).HasColumnName("ClienteId").IsRequired(); ;
 
             //mapeamento do relacionamento (1pN)
+            // Paciente -> Convênio
             builder.HasOne(p => p.Convenio)
-            .WithMany(c => c.Pacientes)
-            .HasForeignKey(p => p.ConvenioId);
+                .WithMany(c => c.Pacientes)
+                .HasForeignKey(p => p.ConvenioId);
+
+            // Paciente -> Cliente/Clínica
+            builder.HasOne(p => p.Cliente)
+                .WithMany()
+                .HasForeignKey(p => p.ClienteId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.Identity.Client;
-using TSmartClinic.Core.Domain.Entities;
+﻿using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Data.Contexts;
 using TSmartClinic.Data.Repositories;

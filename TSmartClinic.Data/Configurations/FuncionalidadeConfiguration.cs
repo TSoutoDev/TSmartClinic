@@ -9,11 +9,14 @@ namespace TSmartClinic.Data.Configurations
         public void Configure(EntityTypeBuilder<Funcionalidade> builder)
         {
             //nome da tabela
-            builder.ToTable("Funcionalidade");
+            builder.ToTable("Funcionalidade","dbo");
 
             //definindo o campo 'chave primária'
             builder.HasKey(c => c.Id);
-            builder.Property(c => c.Id).HasColumnName("Id");
+            builder.Property(u => u.Id)
+                   .HasColumnName("Id")
+                   .ValueGeneratedOnAdd() // diga ao EF que o valor é gerado;
+                   .UseIdentityByDefaultColumn(); // mapeia identity do Postgres;
             builder.Property(c => c.NomeFuncionalidade).HasColumnName("NomeFuncionalidade").HasMaxLength(100).IsRequired();
             builder.Property(c => c.Descricao).HasColumnName("Descricao").HasMaxLength(250);
             builder.Property(c => c.ModuloId).HasColumnName("ModuloId").IsRequired();

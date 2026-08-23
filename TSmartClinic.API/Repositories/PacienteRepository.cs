@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 using TSmartClinic.Core.Domain.Entities;
+using TSmartClinic.Core.Domain.Helpers.FilterHelper;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Data.Contexts;
 using TSmartClinic.Data.Repositories;
@@ -14,16 +15,25 @@ namespace TSmartClinic.API.Repositories
         {
         }
 
-        public override Paciente ObterPorId(int id, params Expression<Func<Paciente, object>>[] properties)
+        public Paciente ObterPorIdCliente(int idPaciente, int clienteId)
         {
-            var query = _dbSet as IQueryable<Paciente>;
-            query = query?.Where(x => (int)x.Id == id);
-            query = query?
+            var query = _dbSet?
+                .AsNoTracking()
+                .Include(c => c.Convenio)
+                .FirstOrDefault(x =>
+                    x.Id == idPaciente && x.ClienteId == clienteId);
+
+            return query;
+        }
+
+        public List<Paciente> ListarPorCliente(BaseFiltro filtro, int clienteId, params Expression<Func<Paciente, object>>[] properties)
+        {
+            var query = MontarFiltro(filtro, properties);
+            query = query
+                .Where(x => x.ClienteId == clienteId)//proteção: retorna apenas o paciente da clinica
                 .Include(x => x.Convenio);
 
-            var paciente = query?.FirstOrDefault();
-
-            return paciente;
+            return query.ToList();
         }
     }
 }

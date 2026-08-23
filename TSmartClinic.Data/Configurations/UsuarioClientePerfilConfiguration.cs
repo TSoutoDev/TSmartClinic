@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 using TSmartClinic.Core.Domain.Entities;
 
 namespace TSmartClinic.Data.Configurations
@@ -8,10 +9,14 @@ namespace TSmartClinic.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<UsuarioClientePerfil> builder)
         {
-            builder.ToTable("UsuarioClientePerfil");
-
+            builder.ToTable("UsuarioClientePerfil", "dbo");
+      
             // Chave primária composta
             builder.HasKey(x => new { x.UsuarioId, x.ClienteId, x.PerfilId });
+            // As PKs de join NUNCA são geradas no banco
+            builder.Property(x => x.UsuarioId).ValueGeneratedNever();
+            builder.Property(x => x.ClienteId).ValueGeneratedNever();
+            builder.Property(x => x.PerfilId).ValueGeneratedNever();
 
             // Relacionamentos
             builder.HasOne(x => x.Usuario)
@@ -32,6 +37,11 @@ namespace TSmartClinic.Data.Configurations
 
             // Default para ClientePadrao
             builder.Property(x => x.ClientePadrao).HasDefaultValue(false);
+
+            // Único "cliente padrão" por usuário (parcial)
+            //builder.HasIndex(x => new { x.UsuarioId })
+            // .HasFilter("\"ClientePadrao\" = true")
+            // .IsUnique();
         }
     }
 }

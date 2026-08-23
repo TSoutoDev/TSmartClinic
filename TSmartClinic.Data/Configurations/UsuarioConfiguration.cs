@@ -10,20 +10,23 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
     public void Configure(EntityTypeBuilder<Usuario> builder)
     {
         // Nome da tabela
-        builder.ToTable("Usuario");
+        builder.ToTable("Usuario","dbo");
 
         // Supondo que a entidade tenha um campo de chave primária chamado "Id"
         builder.HasKey(u => u.Id);
-        builder.Property(u => u.Id).HasColumnName("Id");
+        builder.Property(u => u.Id)
+            .HasColumnName("Id")
+            .ValueGeneratedOnAdd() // diga ao EF que o valor é gerado;
+            .UseIdentityByDefaultColumn(); // mapeia identity do Postgres;
         builder.Property(u => u.Senha).HasColumnName("Senha").HasMaxLength(510);
         builder.Property(u => u.Nome).HasColumnName("Nome").HasMaxLength(150);
         builder.Property(u => u.LoginInclusao).HasColumnName("LoginInclusao").HasMaxLength(100);
-        builder.Property(u => u.DataInclusao).HasColumnName("DataInclusao").HasColumnType("datetime");
+        builder.Property(u => u.DataInclusao).HasColumnName("DataInclusao").HasColumnType("timestamp with time zone");
         builder.Property(u => u.LoginAlteracao).HasColumnName("LoginAlteracao").HasMaxLength(100);
-        builder.Property(u => u.DataAlteracao).HasColumnName("DataAlteracao").HasColumnType("datetime");
-        builder.Property(u => u.DataBloqueio).HasColumnName("DataBloqueio").HasColumnType("datetime");
-        builder.Property(u => u.DataUltimoAcesso).HasColumnName("DataUltimoAcesso").HasColumnType("datetime");
-        builder.Property(u => u.DataExpiracaoSenha).HasColumnName("DataExpiracaoSenha").HasColumnType("datetime");
+        builder.Property(u => u.DataAlteracao).HasColumnName("DataAlteracao").HasColumnType("timestamp with time zone");
+        builder.Property(u => u.DataBloqueio).HasColumnName("DataBloqueio").HasColumnType("timestamp with time zone");
+        builder.Property(u => u.DataUltimoAcesso).HasColumnName("DataUltimoAcesso").HasColumnType("timestamp with time zone");
+        builder.Property(u => u.DataExpiracaoSenha).HasColumnName("DataExpiracaoSenha").HasColumnType("timestamp with time zone"); 
         builder.Property(u => u.Email).HasColumnName("Email").HasMaxLength(255);
         builder.Property(u => u.Celular).HasColumnName("Celular").HasMaxLength(20);
         builder.Property(u => u.TipoUsuario).HasColumnName("TipoUsuario").HasColumnType("char").HasMaxLength(1);

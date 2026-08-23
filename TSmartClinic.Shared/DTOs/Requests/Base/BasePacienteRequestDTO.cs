@@ -11,6 +11,7 @@
         public bool? Ativo { get; set; }
         public int? ConvenioId { get; set; }
         public byte[]? Foto { get; set; }
+        public int ClienteId { get; set; }
 
     }
 }

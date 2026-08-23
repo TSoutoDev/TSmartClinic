@@ -12,6 +12,7 @@
         public bool? Ativo { get; set; }
         public DateTime? DataCadastro { get; set; }
         public int? ConvenioId { get; set; }
+        public int ClienteId { get; set; }
         public ConvenioResponseDTO? Convenio { get; set; }
     }
 }

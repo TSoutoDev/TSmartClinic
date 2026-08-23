@@ -3,9 +3,10 @@ using TSmartClinic.Core.Domain.Exceptions;
 using TSmartClinic.Core.Domain.Helpers.FilterHelper;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Data.Contexts;
-using Microsoft.Data.SqlClient;
+using Npgsql; // PostgresException, PostgresErrorCodes
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using static TSmartClinic.Core.Domain.Exceptions.GravacaoChaveInexistenteException;
 
 namespace TSmartClinic.Data.Repositories
 {
@@ -16,7 +17,7 @@ namespace TSmartClinic.Data.Repositories
         protected readonly DbSet<TEntity>? _dbSet;
 
         // No BaseRepository
-      
+
         public BaseRepository(TSmartClinicContext dbContext)
         {
             _dbContext = dbContext;
@@ -33,13 +34,52 @@ namespace TSmartClinic.Data.Repositories
 
                 return entity;
             }
-            catch (Exception e) 
-            {
 
-                if (e.InnerException is SqlException)
-                    if (((SqlException)e.InnerException).Number == 547)
-                        throw new GravacaoChaveInexistenteException();
-                throw e;
+            // PostgreSQL
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException is PostgresException pg)
+                {
+                    switch (pg.SqlState)
+                    {
+                        case PostgresErrorCodes.ForeignKeyViolation:    // 23503 - FK inválida
+                            throw new GravacaoChaveInexistenteException();
+
+                        case PostgresErrorCodes.UniqueViolation:        // 23505 - UNIQUE duplicada
+                            throw new RegistroDuplicadoException();
+
+                        case PostgresErrorCodes.NotNullViolation:       // 23502 - Campo obrigatório nulo
+                            throw new CampoObrigatorioException();
+
+                        case PostgresErrorCodes.CheckViolation:         // 23514 - Violou regra CHECK
+                            throw new ExclusaoRegistroAssociadoException();
+                    }
+                }
+
+
+
+                // (Opcional) Se ainda houver caminhos usando SQL Server, mantenha este bloco:
+                // if (ex.InnerException is SqlException sqlEx)
+                // {
+                //     if (sqlEx.Number == 547)   // FK
+                //         throw new GravacaoChaveInexistenteException();
+                //     if (sqlEx.Number == 2627 || sqlEx.Number == 2601) // unique
+                //         throw new RegistroDuplicadoException();
+                // }
+
+                throw; // preserva stack trace para outros erros
+            }
+
+            catch (PostgresException pg) // caso alguma operação lance direto (sem DbUpdateException)
+            {
+                if (pg.SqlState == PostgresErrorCodes.ForeignKeyViolation)
+                    throw new GravacaoChaveInexistenteException();
+                if (pg.SqlState == PostgresErrorCodes.UniqueViolation)
+                    throw new RegistroDuplicadoException();
+                if (pg.SqlState == PostgresErrorCodes.NotNullViolation)
+                    throw new CampoObrigatorioException();
+
+                throw;
             }
         }
 
@@ -51,13 +91,45 @@ namespace TSmartClinic.Data.Repositories
                 _dbSet?.Remove(entity);
                 _dbContext?.SaveChanges();
             }
-            catch (Exception e)
+            catch (DbUpdateException ex)
             {
-                if (e.InnerException is SqlException)
-                    if (((SqlException)e.InnerException).Number == 547)
-                        throw new ExclusaoRegistroAssociadoException();
+                // PostgreSQL
+                if (ex.InnerException is PostgresException pg)
+                {
+                    switch (pg.SqlState)
+                    {
+                        case PostgresErrorCodes.ForeignKeyViolation:    // 23503
+                            throw new GravacaoChaveInexistenteException();
 
-                throw e;
+                        case PostgresErrorCodes.UniqueViolation:        // 23505
+                            throw new RegistroDuplicadoException();     // se você tiver essa exception
+
+                        case PostgresErrorCodes.NotNullViolation:       // 23502
+                            throw new CampoObrigatorioException();      // se você tiver essa exception
+                    }
+                }
+
+                // (Opcional) Se ainda houver caminhos usando SQL Server, mantenha este bloco:
+                // if (ex.InnerException is SqlException sqlEx)
+                // {
+                //     if (sqlEx.Number == 547)   // FK
+                //         throw new GravacaoChaveInexistenteException();
+                //     if (sqlEx.Number == 2627 || sqlEx.Number == 2601) // unique
+                //         throw new RegistroDuplicadoException();
+                // }
+
+                throw; // preserva stack trace original
+            }
+            catch (PostgresException pg) // caso alguma operação lance direto (sem DbUpdateException)
+            {
+                if (pg.SqlState == PostgresErrorCodes.ForeignKeyViolation)
+                    throw new GravacaoChaveInexistenteException();
+                if (pg.SqlState == PostgresErrorCodes.UniqueViolation)
+                    throw new RegistroDuplicadoException();
+                if (pg.SqlState == PostgresErrorCodes.NotNullViolation)
+                    throw new CampoObrigatorioException();
+
+                throw;
             }
         }
 
@@ -104,11 +176,43 @@ namespace TSmartClinic.Data.Repositories
                 _dbSet.Remove(entity);
                 _dbContext.SaveChanges();
             }
-            catch (Exception e)
+            catch (DbUpdateException ex)
             {
-                // Mantém seu tratamento original para FK constraints
-                if (e.InnerException is SqlException sqlEx && sqlEx.Number == 547)
-                    throw new ExclusaoRegistroAssociadoException();
+                // PostgreSQL
+                if (ex.InnerException is PostgresException pg)
+                {
+                    switch (pg.SqlState)
+                    {
+                        case PostgresErrorCodes.ForeignKeyViolation:    // 23503
+                            throw new GravacaoChaveInexistenteException();
+
+                        case PostgresErrorCodes.UniqueViolation:        // 23505
+                            throw new RegistroDuplicadoException();     // se você tiver essa exception
+
+                        case PostgresErrorCodes.NotNullViolation:       // 23502
+                            throw new CampoObrigatorioException();      // se você tiver essa exception
+                    }
+                }
+
+                // (Opcional) Se ainda houver caminhos usando SQL Server, mantenha este bloco:
+                // if (ex.InnerException is SqlException sqlEx)
+                // {
+                //     if (sqlEx.Number == 547)   // FK
+                //         throw new GravacaoChaveInexistenteException();
+                //     if (sqlEx.Number == 2627 || sqlEx.Number == 2601) // unique
+                //         throw new RegistroDuplicadoException();
+                // }
+
+                throw; // preserva stack trace original
+            }
+            catch (PostgresException pg) // caso alguma operação lance direto (sem DbUpdateException)
+            {
+                if (pg.SqlState == PostgresErrorCodes.ForeignKeyViolation)
+                    throw new GravacaoChaveInexistenteException();
+                if (pg.SqlState == PostgresErrorCodes.UniqueViolation)
+                    throw new RegistroDuplicadoException();
+                if (pg.SqlState == PostgresErrorCodes.NotNullViolation)
+                    throw new CampoObrigatorioException();
 
                 throw;
             }
@@ -120,17 +224,51 @@ namespace TSmartClinic.Data.Repositories
             try
             {
                 _dbSet?.Add(entity);
+
+
                 _dbContext?.SaveChanges();
 
                 return entity;
             }
-            catch (Exception e)
+            catch (DbUpdateException ex)
             {
+                // PostgreSQL
+                if (ex.InnerException is PostgresException pg)
+                {
+                    switch (pg.SqlState)
+                    {
+                        case PostgresErrorCodes.ForeignKeyViolation:    // 23503
+                            throw new GravacaoChaveInexistenteException();
 
-                if (e.InnerException is SqlException)
-                    if (((SqlException)e.InnerException).Number == 547)
-                        throw new GravacaoChaveInexistenteException();
-                throw e;
+                        case PostgresErrorCodes.UniqueViolation:        // 23505
+                            throw new RegistroDuplicadoException();     // se você tiver essa exception
+
+                        case PostgresErrorCodes.NotNullViolation:       // 23502
+                            throw new CampoObrigatorioException();      // se você tiver essa exception
+                    }
+                }
+
+                // (Opcional) Se ainda houver caminhos usando SQL Server, mantenha este bloco:
+                // if (ex.InnerException is SqlException sqlEx)
+                // {
+                //     if (sqlEx.Number == 547)   // FK
+                //         throw new GravacaoChaveInexistenteException();
+                //     if (sqlEx.Number == 2627 || sqlEx.Number == 2601) // unique
+                //         throw new RegistroDuplicadoException();
+                // }
+
+                throw; // preserva stack trace original
+            }
+            catch (PostgresException pg) // caso alguma operação lance direto (sem DbUpdateException)
+            {
+                if (pg.SqlState == PostgresErrorCodes.ForeignKeyViolation)
+                    throw new GravacaoChaveInexistenteException();
+                if (pg.SqlState == PostgresErrorCodes.UniqueViolation)
+                    throw new RegistroDuplicadoException();
+                if (pg.SqlState == PostgresErrorCodes.NotNullViolation)
+                    throw new CampoObrigatorioException();
+
+                throw;
             }
         }
 
@@ -138,7 +276,7 @@ namespace TSmartClinic.Data.Repositories
         {
             var query = MontarFiltro(filtro, properties);
 
-            if(filtro.PaginaAtual > 0 && filtro.ItensPorPagina > 0)
+            if (filtro.PaginaAtual > 0 && filtro.ItensPorPagina > 0)
             {
                 var pagina = filtro.PaginaAtual - 1;
                 query = query.Skip(pagina * filtro.ItensPorPagina).Take(filtro.ItensPorPagina);

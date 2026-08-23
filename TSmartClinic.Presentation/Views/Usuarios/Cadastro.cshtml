@@ -112,7 +112,7 @@
                 <!-- Data Expiração Senha -->
                 <div class="col-md-3">
                     <label asp-for="DataExpiracaoSenha" class="form-label">Data de Expiração Senha *</label>
-                    <input asp-for="DataExpiracaoSenha" class="form-control" type="date" />
+                    <input asp-for="DataExpiracaoSenha" class="form-control" type="datetime-local" />
                     <span class="text-danger">
                         @Html.ValidationMessageFor(model => model.DataExpiracaoSenha)
                     </span>

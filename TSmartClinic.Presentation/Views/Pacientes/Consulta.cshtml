@@ -1,0 +1,209 @@
+﻿@using TSmartClinic.Presentation.Models
+@model TSmartClinic.Presentation.Models.ResponseViewModel<PacienteViewModel>
+
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewBag.Titulo = "Consulta de Pacientes";
+}
+
+<div class="card">
+    <div class="card-body">
+
+        <ul class="nav nav-tabs" role="tablist" id="tabBusca">
+
+            <li class="nav-item">
+                <a class="nav-link active"
+                   data-bs-toggle="tab"
+                   href="#busca_padrao"
+                   role="tab">
+
+                    <span class="d-block d-sm-none">
+                        <i class="fas fa-search"></i>
+                    </span>
+
+                    <span class="d-none d-sm-block">
+                        Busca padrão
+                    </span>
+
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link"
+                   data-bs-toggle="tab"
+                   href="#busca_avancada"
+                   role="tab">
+
+                    <span class="d-block d-sm-none">
+                        <i class="fas fa-filter"></i>
+                    </span>
+
+                    <span class="d-none d-sm-block">
+                        Busca avançada
+                    </span>
+
+                </a>
+            </li>
+
+        </ul>
+
+
+        <div class="tab-content pt-3 text-muted">
+
+            <!-- BUSCA PADRÃO -->
+            <div class="tab-pane active"
+                 id="busca_padrao"
+                 role="tabpanel">
+
+                @using (Html.BeginForm("BuscaPadrao", "Pacientes", FormMethod.Post))
+                {
+                    <div class="row">
+
+                        <div class="col-md-5">
+
+                            <input type="text"
+                                   name="nome"
+                                   placeholder="Nome ou CPF do paciente"
+                                   class="form-control"
+                                   autocomplete="off"
+                                   value="@(ViewBag.Filtro?.Nome ?? "")" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <select class="form-select" name="ativo" autocomplete="off">
+                                <!option value="true"> Ativo</!option>
+                                <!option value="false" @(ViewBag.Filtro != null && !ViewBag.Filtro.Ativo ? "selected" : "")>Inativo</!option>
+                            </select>
+                        </div>
+
+
+                        <div class="col-md-2">
+
+                            <button type="submit"
+                                    asp-permissao="Pacientes_Acessar"
+                                    class="btn btn-success"
+                                    onclick="loading()"
+                                    style="height: 38px;">
+
+                                <i class="fa fa-search"></i> &nbsp;Pesquisar
+
+                            </button>
+
+                        </div>
+
+
+                        <div class="col-md-3 text-end">
+
+                            <a href="@Url.Action("Cadastro", "Pacientes")"
+                               asp-permissao="Pacientes_Incluir"
+                               class="btn btn-primary"
+                               onclick="loading()"
+                               style="height: 38px;">
+
+                                <i class="fa fa-plus"></i>
+                                &nbsp;Novo Paciente
+
+                            </a>
+
+                        </div>
+
+                    </div>
+                                }
+
+            </div>
+
+
+            <!-- BUSCA AVANÇADA -->
+            <div class="tab-pane"
+                 id="busca_avancada"
+                 role="tabpanel">
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <label>CPF</label>
+
+                        <input type="text" name="cpf" class="form-control" placeholder="CPF do paciente" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Telefone</label>
+                        <input type="text"
+                               name="telefone"
+                               class="form-control"
+                               placeholder="Telefone" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Data de nascimento</label>
+                        <input type="date"
+                               name="dataNascimento"
+                               class="form-control" />
+                    </div>
+
+                </div>
+
+                <div class="mt-3">
+
+                    <button type="button" class="btn btn-success">
+                        <i class="fa fa-search"></i>
+                        &nbsp;Pesquisar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+@if (Model != null &&
+     Model.Itens != null &&
+     Model.Itens.Count > 0)
+{
+    <div class="card">
+        <div class="card-body">
+            <table id="gridResultados"
+                   class="table table-hover table-striped">
+                <thead class="table-header">
+                    <tr>
+                        <th>Paciente</th>
+                        <th>CPF</th>
+                        <th>Telefone</th>
+                        <th>Data de nascimento</th>
+                        <th>Convênio</th>
+                    </tr>
+                </thead>
+
+
+                <tbody>
+                    @foreach (var item in Model.Itens)
+                    {
+                        <tr class="clickable"
+                            style="cursor:pointer"
+                            onclick="location.href='@Url.Action("CentralPaciente", "Pacientes", new { id = item.Id })'">
+
+                            <td> @item.NomePaciente?.ToUpper() </td>
+                            <td> @(string.IsNullOrWhiteSpace(item.CPF) ? "-" : item.CPF) </td>
+                            <td> @(string.IsNullOrWhiteSpace(item.Telefone) ? "-" : item.Telefone)</td>
+                            <td> @(item.DataNascimento?.ToString("dd/MM/yyyy") ?? "-")</td>
+                            <td> @(item.Convenio?.NomeConvenio ?? "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else if (Model != null)
+{
+    <div class="alert alert-info">
+
+        <i class="fa fa-info-circle"></i>
+        Nenhum paciente encontrado.
+    </div>
+}

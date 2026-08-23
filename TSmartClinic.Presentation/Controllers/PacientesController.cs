@@ -1,22 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Presentation.Models;
+using TSmartClinic.Presentation.Services.Interfaces;
+using TSmartClinic.Presentation.ViewModels.Filters;
 
 namespace TSmartClinic.Presentation.Controllers
 {
-    public class PacientesController : Controller
+    public class PacientesController : BaseController<IPacienteService,BaseFilterViewModel, PacienteViewModel>
     {
-        //public IActionResult PacientesCards()
+        public PacientesController(IPacienteService service) : base(service)
+        {
+        }
+
+        public override async Task<IActionResult> Consulta()
+        {
+            return await base.Consulta();
+        }
+
+        public override async Task<IActionResult> BuscaAvancada(BaseFilterViewModel filtro)
+        {
+            return await base.BuscaAvancada(filtro);
+        }
+
+        //[HttpGet]
+        //public IActionResult CardsPacientes()
         //{
         //    return View();
+        //   // return View(); // View de busca limpa e central
         //}
-
-        [HttpGet]
-        public IActionResult CardsPacientes()
-        {
-            return View();
-           // return View(); // View de busca limpa e central
-        }
 
         [HttpGet]
         public IActionResult CentralPaciente()

@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
 using TSmartClinic.Api.Auth.Extensions;
 using TSmartClinic.API.Extensions;
-using TSmartClinic.Core.Infra.CrossCutting.Criptografia;
 using TSmartClinic.Core.Infra.CrossCutting.Extensions;
 using TSmartClinic.Core.Infra.CrossCutting.Providers;
 
@@ -12,7 +11,9 @@ builder.Services.AddControllers()
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddJwtBearer(builder.Configuration);
 builder.Services.AddAutoMapperConfig();
-builder.Services.AddSqlServerConfig(builder.Configuration);
+//builder.Services.AddSqlServerConfig(builder.Configuration);
+builder.Services.AddPostgresConfig(builder.Configuration);
+
 
 builder.Services.AddSwaggerDoc();
 builder.Services.AddEndpointsApiExplorer();
@@ -22,6 +23,8 @@ builder.Services.AddDependencyInjection(builder.Configuration);
 builder.Services.Configure<CryptoSettings>(builder.Configuration.GetSection("CryptoSettings"));
 
 var app = builder.Build();
+
+
 
 if (app.Environment.IsDevelopment())
 {

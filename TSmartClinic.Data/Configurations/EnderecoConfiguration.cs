@@ -9,10 +9,14 @@ namespace TSmartClinic.Data.Configurations
         public void Configure(EntityTypeBuilder<Endereco> builder)
         {
             //nome da tabela
-            builder.ToTable("Endereco");
+            builder.ToTable("Endereco", "dbo");
 
             builder.HasKey(e => e.Id);
-            builder.Property(e => e.Id).HasColumnName("Id").IsRequired();
+            builder.Property(u => u.Id)
+                   .IsRequired()
+                  .HasColumnName("Id")
+                  .ValueGeneratedOnAdd() // diga ao EF que o valor é gerado;
+                  .UseIdentityByDefaultColumn(); // mapeia identity do Postgres;
             builder.Property(e => e.Logradouro).HasColumnName("Logradouro").HasMaxLength(300).IsRequired();
             builder.Property(e => e.Numero).HasColumnName("Numero").HasMaxLength(40);
             builder.Property(e => e.Complemento).HasColumnName("Complemento").HasMaxLength(200);

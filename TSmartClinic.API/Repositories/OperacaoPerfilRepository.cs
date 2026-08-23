@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Data.Contexts;
@@ -27,10 +26,16 @@ namespace TSmartClinic.API.Repositories
             return query?.ToList();
         }
 
+        //public void RemoverPorPerfilId(int perfilId)
+        //{
+        //    var sql = "DELETE FROM OperacaoPerfil WHERE PerfilId = @perfilId";
+        //    _dbContext.Database.ExecuteSqlRaw(sql, new PostgrePar("@perfilId", perfilId));
+        //}
         public void RemoverPorPerfilId(int perfilId)
         {
-            var sql = "DELETE FROM OperacaoPerfil WHERE PerfilId = @perfilId";
-            _dbContext.Database.ExecuteSqlRaw(sql, new SqlParameter("@perfilId", perfilId));
+            _dbContext.Set<OperacaoPerfil>()
+                .Where(op => op.PerfilId == perfilId)
+                .ExecuteDelete(); // traduz para DELETE ... WHERE ...
         }
     }
 }

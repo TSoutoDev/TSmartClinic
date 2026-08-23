@@ -23,7 +23,6 @@ namespace TSmartClinic.API.Controllers
         }
 
         [AuthorizePermission("Perfis_Acessar")]
-        [Authorize(Roles = "Master")]
         [HttpGet("dropdown-perfil/{idCliente}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(204)]
