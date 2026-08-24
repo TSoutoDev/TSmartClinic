@@ -1,0 +1,99 @@
+﻿@model TSmartClinic.Presentation.Models.PacienteViewModel
+
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewBag.Titulo = "Cadastro de Pacientes";
+}
+
+@using (Html.BeginForm())
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-small">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Nome</label>
+                            @Html.TextBoxFor(model => model.NomePaciente, new { @class = "form-control", @autocomplete = "off" })
+                            <span class="text-danger">@Html.ValidationMessageFor(model => model.NomePaciente)</span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>CPF</label>
+                            @Html.TextBoxFor(model => model.CPF, new { @class = "form-control", @autocomplete = "off" })
+                            <span class="text-danger">@Html.ValidationMessageFor(model => model.CPF)</span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>Data de Nascimento</label>
+                            @Html.TextBoxFor(model => model.DataNascimento, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
+                            <span class="text-danger">@Html.ValidationMessageFor(model => model.DataNascimento)</span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label>Telefone</label>
+                            @Html.TextBoxFor(model => model.Telefone, new { @class = "form-control", @autocomplete = "off" })
+                            <span class="text-danger">@Html.ValidationMessageFor(model => model.Telefone)</span>
+                        </div>
+
+                        <div class="col-md-5">
+                            <label>Email</label>
+                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control", @autocomplete = "off", @type = "email" })
+                            <span class="text-danger">@Html.ValidationMessageFor(model => model.Email)</span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Convênio</label>
+                            <select asp-for="ConvenioId" class="form-select" asp-items="ViewBag.Convenios">
+                                <option value="">- Selecione o Convênio -</option>
+                            </select>
+                            <span class="text-danger">@Html.ValidationMessageFor(model => model.ConvenioId)</span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label>Observações</label>
+                            @Html.TextAreaFor(model => model.Observacoes, new { @class = "form-control", @rows = "4", @autocomplete = "off" })
+                            <span class="text-danger">@Html.ValidationMessageFor(model => model.Observacoes)</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-body">
+                    <div class="mt-1 row">
+                        <div class="col-md-2">
+                            <label>Situação</label>
+                            <select asp-for="Ativo" class="form-select" disabled="@(!Model.Id.HasValue ? "disabled" : null)">
+                                <option value="true">Ativo</option>
+                                <option value="false">Inativo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-success" onclick="loading()">Gravar</button>
+
+                        @if (Model.Id.HasValue)
+                        {
+                            <button type="submit"
+                                    class="btn btn-danger"
+                                    formaction="@Url.Action("Excluir", "Pacientes", new { id = Model.Id })"
+                                    formmethod="post"
+                                    onclick="loading()">
+                                Excluir
+                            </button>
+                        }
+
+                        <a href="/Pacientes/Consulta" class="btn btn-secondary">Voltar</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}

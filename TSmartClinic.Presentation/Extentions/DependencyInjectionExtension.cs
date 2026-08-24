@@ -1,6 +1,4 @@
-﻿using TSmartClinic.API.Repositories;
-using TSmartClinic.Core.Domain.Interfaces.Providers;
-using TSmartClinic.Core.Domain.Interfaces.Repositories;
+﻿using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Core.Infra.CrossCutting.Providers;
 using TSmartClinic.Presentation.Services;
 using TSmartClinic.Presentation.Services.Interfaces;
@@ -25,6 +23,7 @@ namespace TSmartClinic.Presentation.Extentions
             services.AddTransient<IClienteService, ClienteService>();
             services.AddTransient<IPerfilPermissaoService, PerfilPermissaoService>();
             services.AddTransient<IPacienteService, PacienteService>();
+            services.AddTransient<IConvenioService, ConvenioService>();
 
             return services;
         }

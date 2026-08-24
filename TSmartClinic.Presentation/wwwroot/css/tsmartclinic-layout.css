@@ -1,3 +1,7 @@
+/* =========================================================
+   TSMARTCLINIC - LAYOUT PRINCIPAL
+   ========================================================= */
+
 :root {
     --ts-navy: #0b1f4b;
     --ts-navy-2: #10285e;
@@ -12,18 +16,52 @@
     --ts-topbar-height: 72px;
 }
 
-html, body { min-height: 100%; }
-body.tsmart-app { background: var(--ts-bg); color: var(--ts-text); }
+
+/* =========================================================
+   ESTRUTURA GLOBAL
+   ========================================================= */
+
+html,
+body {
+    min-height: 100%;
+}
+
+    body.tsmart-app {
+        min-height: 100vh;
+        margin: 0;
+        background: var(--ts-bg);
+        color: var(--ts-text);
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+#layout-wrapper {
+    min-height: 100vh;
+}
+
+
+/* =========================================================
+   TOPBAR
+   ========================================================= */
 
 #page-topbar.tsmart-topbar {
     height: var(--ts-topbar-height);
-    background: rgba(255,255,255,.96);
+    background: rgba(255, 255, 255, .96);
     border-bottom: 1px solid var(--ts-border);
-    box-shadow: 0 5px 22px rgba(21,35,70,.05);
+    box-shadow: 0 5px 22px rgba(21, 35, 70, .05);
     backdrop-filter: blur(12px);
 }
 
-.tsmart-navbar-header { height: var(--ts-topbar-height); padding: 0 20px 0 0; }
+.tsmart-navbar-header {
+    height: var(--ts-topbar-height);
+    padding: 0 20px 0 0;
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
 .tsmart-brand-box {
     width: var(--ts-sidebar-width);
     height: var(--ts-topbar-height);
@@ -32,94 +70,189 @@ body.tsmart-app { background: var(--ts-bg); color: var(--ts-text); }
     display: flex;
     align-items: center;
 }
-.tsmart-brand-box .logo { width: 100%; line-height: 1; }
-.tsmart-brand-box .logo-lg img { height: 38px; width: auto; max-width: 182px; }
-.tsmart-brand-box .logo-sm img { height: 38px; width: 38px; }
+
+    .tsmart-brand-box .logo {
+        width: 100%;
+        line-height: 1;
+    }
+
+    .tsmart-brand-box .logo-lg img {
+        height: 38px;
+        width: auto;
+        max-width: 182px;
+    }
+
+    .tsmart-brand-box .logo-sm img {
+        height: 38px;
+        width: 38px;
+    }
+
+
+/* =========================================================
+   BOTÃO MENU
+   ========================================================= */
 
 .tsmart-menu-toggle {
-    width: 46px; height: 46px; margin-left: 12px;
-    border-radius: 12px; color: #506078; font-size: 24px;
-    display: inline-flex; align-items: center; justify-content: center;
+    width: 46px;
+    height: 46px;
+    margin-left: 12px;
+    border-radius: 12px;
+    color: #506078;
+    font-size: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
-.tsmart-menu-toggle:hover { background: #f0f3fa; color: var(--ts-indigo); }
 
-.tsmart-search-area { flex: 1; min-width: 0; display: flex; align-items: center; }
-.tsmart-search-area .quick-patient-search { width: min(520px, 100%); margin-left: 12px; }
-.tsmart-search-area .quick-patient-input { border-radius: 12px; overflow: hidden; border: 1px solid var(--ts-border); background: #f8f9fc; }
-.tsmart-search-area .quick-patient-input .input-group-text,
-.tsmart-search-area .quick-patient-input .form-control { border: 0 !important; background: transparent; min-height: 42px; }
-.tsmart-search-area .quick-patient-input:focus-within { border-color: rgba(49,88,245,.45); box-shadow: 0 0 0 3px rgba(49,88,245,.08); }
+    .tsmart-menu-toggle:hover {
+        background: #f0f3fa;
+        color: var(--ts-indigo);
+    }
 
-.tsmart-user-area { display: flex; align-items: center; gap: 18px; margin-left: auto; }
-.tsmart-clinic-context { flex-direction: column; max-width: 235px; text-align: right; padding-right: 18px; border-right: 1px solid var(--ts-border); }
-.context-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #9aa3b5; }
-.context-name { font-size: 13px; font-weight: 700; color: #26334d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tsmart-user-button { display: flex; align-items: center; gap: 10px; border-radius: 12px; padding: 7px 9px; }
-.tsmart-user-button:hover { background: #f5f7fb; }
-.tsmart-avatar { width: 36px; height: 36px; border-radius: 11px; display: inline-flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--ts-purple), var(--ts-indigo)); color: #fff; font-weight: 800; font-size: 12px; box-shadow: 0 5px 14px rgba(66,74,220,.2); }
-.tsmart-user-name { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; color: #344059; }
-.tsmart-user-menu { border: 1px solid var(--ts-border); border-radius: 14px; padding: 8px; box-shadow: 0 14px 40px rgba(31,43,70,.12); }
-.tsmart-user-menu .dropdown-item { border-radius: 9px; padding: 10px 12px; }
+
+/* =========================================================
+   BUSCA RÁPIDA
+   ========================================================= */
+
+.tsmart-search-area {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+}
+
+    .tsmart-search-area .quick-patient-search {
+        width: min(520px, 100%);
+        margin-left: 12px;
+    }
+
+    .tsmart-search-area .quick-patient-input {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--ts-border);
+        background: #f8f9fc;
+    }
+
+        .tsmart-search-area .quick-patient-input .input-group-text,
+        .tsmart-search-area .quick-patient-input .form-control {
+            border: 0 !important;
+            background: transparent;
+            min-height: 42px;
+        }
+
+        .tsmart-search-area .quick-patient-input:focus-within {
+            border-color: rgba(49, 88, 245, .45);
+            box-shadow: 0 0 0 3px rgba(49, 88, 245, .08);
+        }
+
+
+/* =========================================================
+   USUÁRIO / CLÍNICA
+   ========================================================= */
+
+.tsmart-user-area {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-left: auto;
+}
+
+.tsmart-clinic-context {
+    flex-direction: column;
+    max-width: 235px;
+    text-align: right;
+    padding-right: 18px;
+    border-right: 1px solid var(--ts-border);
+}
+
+.context-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #9aa3b5;
+}
+
+.context-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #26334d;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tsmart-user-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 12px;
+    padding: 7px 9px;
+}
+
+    .tsmart-user-button:hover {
+        background: #f5f7fb;
+    }
+
+.tsmart-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--ts-purple), var(--ts-indigo));
+    color: #fff;
+    font-weight: 800;
+    font-size: 12px;
+    box-shadow: 0 5px 14px rgba(66, 74, 220, .2);
+}
+
+.tsmart-user-name {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+    color: #344059;
+}
+
+.tsmart-user-menu {
+    border: 1px solid var(--ts-border);
+    border-radius: 14px;
+    padding: 8px;
+    box-shadow: 0 14px 40px rgba(31, 43, 70, .12);
+}
+
+    .tsmart-user-menu .dropdown-item {
+        border-radius: 9px;
+        padding: 10px 12px;
+    }
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
 
 .vertical-menu.tsmart-sidebar {
     top: var(--ts-topbar-height);
+    bottom: 0;
     width: var(--ts-sidebar-width);
     background: linear-gradient(180deg, var(--ts-navy) 0%, #0d2455 58%, #132d66 100%);
     border-right: 0;
-    box-shadow: 12px 0 30px rgba(9,25,62,.08);
-}
-.tsmart-sidebar #sidebar-menu { padding: 18px 12px 24px; }
-.tsmart-sidebar #sidebar-menu .menu-title { color: rgba(255,255,255,.4); font-size: 10px; letter-spacing: .12em; padding: 10px 13px 8px; }
-.tsmart-sidebar #sidebar-menu ul li a { color: rgba(238,243,255,.76); border-radius: 11px; margin: 3px 0; padding: 11px 13px; transition: .18s ease; }
-.tsmart-sidebar #sidebar-menu ul li a i { color: rgba(184,201,255,.72); font-size: 20px; }
-.tsmart-sidebar #sidebar-menu ul li a:hover { color: #fff; background: rgba(255,255,255,.075); transform: translateX(2px); }
-.tsmart-sidebar #sidebar-menu ul li a:hover i { color: #fff; }
-.tsmart-sidebar #sidebar-menu ul li a.active,
-.tsmart-sidebar #sidebar-menu ul li.mm-active > a { color: #fff; background: linear-gradient(90deg, rgba(122,63,242,.32), rgba(49,88,245,.24)); box-shadow: inset 3px 0 0 #8b5cf6; }
-.tsmart-sidebar #sidebar-menu ul li a.active i,
-.tsmart-sidebar #sidebar-menu ul li.mm-active > a i { color: #fff; }
-.tsmart-sidebar #sidebar-menu ul li ul.sub-menu li a { margin: 1px 0; padding: 8px 12px 8px 45px; font-size: 13px; color: rgba(226,234,255,.66); }
-.tsmart-sidebar #sidebar-menu ul li ul.sub-menu li a:hover { color: #fff; background: rgba(255,255,255,.05); }
-.tsmart-sidebar .menu-disabled { opacity: .45; cursor: default; pointer-events: none; }
-
-.main-content.tsmart-main { margin-left: var(--ts-sidebar-width); min-height: 100vh; background: var(--ts-bg); }
-.tsmart-page-content { padding: calc(var(--ts-topbar-height) + 28px) 26px 26px; min-height: calc(100vh - 60px); }
-.tsmart-page-heading { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-bottom: 22px; }
-.tsmart-page-kicker { display: block; margin-bottom: 4px; color: var(--ts-indigo); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; }
-.tsmart-page-title { margin: 0; color: #18233b; font-size: 26px; line-height: 1.15; font-weight: 700; }
-.tsmart-home-link { width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--ts-border); border-radius: 12px; background: #fff; color: #7d8799; font-size: 20px; box-shadow: 0 4px 15px rgba(30,40,70,.04); }
-.tsmart-home-link:hover { color: var(--ts-indigo); border-color: rgba(49,88,245,.25); }
-.tsmart-footer { position: static; height: auto; min-height: 54px; padding: 17px 26px; margin: 0; background: #fff; color: #8a94a7; border-top: 1px solid var(--ts-border); font-size: 12px; }
-
-body.vertical-collpsed .vertical-menu.tsmart-sidebar { width: var(--ts-sidebar-mini); }
-body.vertical-collpsed .main-content.tsmart-main { margin-left: var(--ts-sidebar-mini); }
-body.vertical-collpsed .tsmart-brand-box { width: var(--ts-sidebar-mini); padding: 0 16px; }
-body.vertical-collpsed .tsmart-brand-box .logo-lg { display: none !important; }
-body.vertical-collpsed .tsmart-brand-box .logo-sm { display: block !important; }
-
-@media (max-width: 991.98px) {
-    .tsmart-navbar-header { padding-right: 10px; }
-    .tsmart-search-area { display: none; }
-    .tsmart-page-content { padding-left: 16px; padding-right: 16px; }
-}
-@media (max-width: 767.98px) {
-    .tsmart-brand-box { width: 70px; padding: 0 16px; }
-    .tsmart-brand-box .logo-lg { display: none !important; }
-    .tsmart-brand-box .logo-sm { display: block !important; }
-    .tsmart-user-area { gap: 4px; }
-    .tsmart-page-title { font-size: 22px; }
-}
-
-/* ==========================================================
-   SIDEBAR V2 - alinhamento e comportamento do menu
-   ========================================================== */
-.tsmart-sidebar {
-    bottom: 0;
+    box-shadow: 12px 0 30px rgba(9, 25, 62, .08);
 }
 
 .tsmart-sidebar #sidebar-menu {
     padding: 20px 12px 28px;
 }
+
+    .tsmart-sidebar #sidebar-menu .menu-title {
+        color: rgba(255, 255, 255, .4);
+        font-size: 10px;
+        letter-spacing: .12em;
+        padding: 10px 13px 8px;
+    }
 
 .tsmart-sidebar #side-menu > li {
     margin: 2px 0;
@@ -132,66 +265,223 @@ body.vertical-collpsed .tsmart-brand-box .logo-sm { display: block !important; }
     gap: 12px;
     line-height: 1.25;
     position: relative;
+    color: rgba(238, 243, 255, .76);
+    border-radius: 11px;
+    margin: 3px 0;
+    padding: 11px 13px;
+    transition: .18s ease;
 }
 
-.tsmart-sidebar #sidebar-menu ul li > a > i:first-child {
-    width: 22px;
-    min-width: 22px;
-    margin: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-}
+    .tsmart-sidebar #sidebar-menu ul li > a > i:first-child {
+        width: 22px;
+        min-width: 22px;
+        margin: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        color: rgba(184, 201, 255, .72);
+        font-size: 20px;
+    }
 
-.tsmart-sidebar #sidebar-menu ul li > a > span {
-    flex: 1 1 auto;
-    min-width: 0;
-}
+    .tsmart-sidebar #sidebar-menu ul li > a > span {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
 
-.tsmart-sidebar #sidebar-menu ul li > a.has-arrow::after {
-    right: 14px;
-    top: 50%;
-    margin-top: -3px;
-}
+    .tsmart-sidebar #sidebar-menu ul li > a:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, .075);
+        transform: translateX(2px);
+    }
 
-/* Submenus: um recuo consistente, sem desalinhamento entre níveis */
+        .tsmart-sidebar #sidebar-menu ul li > a:hover i {
+            color: #fff;
+        }
+
+    .tsmart-sidebar #sidebar-menu ul li > a.active,
+    .tsmart-sidebar #sidebar-menu ul li.mm-active > a {
+        color: #fff;
+        background: linear-gradient(90deg, rgba(122, 63, 242, .32), rgba(49, 88, 245, .24));
+        box-shadow: inset 3px 0 0 #8b5cf6;
+    }
+
+        .tsmart-sidebar #sidebar-menu ul li > a.active i,
+        .tsmart-sidebar #sidebar-menu ul li.mm-active > a i {
+            color: #fff;
+        }
+
+    .tsmart-sidebar #sidebar-menu ul li > a.has-arrow::after {
+        right: 14px;
+        top: 50%;
+        margin-top: -3px;
+    }
+
+
+/* =========================================================
+   SUBMENUS
+   ========================================================= */
+
 .tsmart-sidebar #sidebar-menu ul li ul.sub-menu {
     padding: 4px 0 6px;
 }
 
-.tsmart-sidebar #sidebar-menu ul li ul.sub-menu li a {
-    min-height: 38px;
-    padding: 8px 14px 8px 47px;
-    margin: 1px 0;
-    line-height: 1.35;
-}
+    .tsmart-sidebar #sidebar-menu ul li ul.sub-menu li a {
+        min-height: 38px;
+        padding: 8px 14px 8px 47px;
+        margin: 1px 0;
+        line-height: 1.35;
+        font-size: 13px;
+        color: rgba(226, 234, 255, .66);
+    }
 
-.tsmart-sidebar #sidebar-menu ul li ul.sub-menu li ul.sub-menu li a {
-    padding-left: 58px;
-    font-size: 12.5px;
-}
+        .tsmart-sidebar #sidebar-menu ul li ul.sub-menu li a:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, .05);
+        }
 
-/* Itens ainda não implementados: visual uniforme sem depender do style inline */
+    .tsmart-sidebar #sidebar-menu ul li ul.sub-menu li ul.sub-menu li a {
+        padding-left: 58px;
+        font-size: 12.5px;
+    }
+
+
+/* =========================================================
+   ITENS DESABILITADOS
+   ========================================================= */
+
 .tsmart-sidebar #sidebar-menu a[style*="pointer-events: none"],
 .tsmart-sidebar #sidebar-menu .menu-disabled {
     opacity: .42;
+    cursor: default;
+    pointer-events: none;
     font-style: normal !important;
-    color: rgba(226,234,255,.58) !important;
+    color: rgba(226, 234, 255, .58) !important;
 }
 
-/* Menu recolhido: ícones realmente centralizados */
+
+/* =========================================================
+   CONTEÚDO PRINCIPAL
+   ========================================================= */
+
+.main-content.tsmart-main {
+    margin-left: var(--ts-sidebar-width);
+    min-height: 100vh;
+    background: var(--ts-bg);
+    display: flex;
+    flex-direction: column;
+}
+
+.tsmart-page-content {
+    flex: 1 0 auto;
+    padding: calc(var(--ts-topbar-height) + 28px) 26px 30px;
+    overflow: visible;
+}
+
+.tsmart-page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.tsmart-page-kicker {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--ts-indigo);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+}
+
+.tsmart-page-title {
+    margin: 0;
+    color: #18233b;
+    font-size: 26px;
+    line-height: 1.15;
+    font-weight: 700;
+}
+
+.tsmart-home-link {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--ts-border);
+    border-radius: 12px;
+    background: #fff;
+    color: #7d8799;
+    font-size: 20px;
+    box-shadow: 0 4px 15px rgba(30, 40, 70, .04);
+}
+
+    .tsmart-home-link:hover {
+        color: var(--ts-indigo);
+        border-color: rgba(49, 88, 245, .25);
+    }
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.tsmart-footer {
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100%;
+    height: auto !important;
+    min-height: 54px;
+    margin: 0;
+    padding: 17px 26px;
+    flex-shrink: 0;
+    background: #fff;
+    color: #8a94a7;
+    border-top: 1px solid var(--ts-border);
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   SIDEBAR RECOLHIDA
+   ========================================================= */
+
+body.vertical-collpsed .vertical-menu.tsmart-sidebar {
+    width: var(--ts-sidebar-mini);
+}
+
+body.vertical-collpsed .main-content.tsmart-main {
+    margin-left: var(--ts-sidebar-mini);
+}
+
+body.vertical-collpsed .tsmart-brand-box {
+    width: var(--ts-sidebar-mini);
+    padding: 0 16px;
+}
+
+    body.vertical-collpsed .tsmart-brand-box .logo-lg {
+        display: none !important;
+    }
+
+    body.vertical-collpsed .tsmart-brand-box .logo-sm {
+        display: block !important;
+    }
+
 body.vertical-collpsed .tsmart-sidebar #sidebar-menu {
     padding-left: 8px;
     padding-right: 8px;
 }
 
-body.vertical-collpsed .tsmart-sidebar #sidebar-menu .menu-title,
-body.vertical-collpsed .tsmart-sidebar #side-menu > li > a > span,
-body.vertical-collpsed .tsmart-sidebar #side-menu > li > a.has-arrow::after,
-body.vertical-collpsed .tsmart-sidebar #side-menu > li > ul.sub-menu {
-    display: none !important;
-}
+    body.vertical-collpsed .tsmart-sidebar #sidebar-menu .menu-title,
+    body.vertical-collpsed .tsmart-sidebar #side-menu > li > a > span,
+    body.vertical-collpsed .tsmart-sidebar #side-menu > li > a.has-arrow::after,
+    body.vertical-collpsed .tsmart-sidebar #side-menu > li > ul.sub-menu {
+        display: none !important;
+    }
 
 body.vertical-collpsed .tsmart-sidebar #side-menu > li > a {
     width: 48px;
@@ -203,28 +493,74 @@ body.vertical-collpsed .tsmart-sidebar #side-menu > li > a {
     border-radius: 13px;
 }
 
-body.vertical-collpsed .tsmart-sidebar #side-menu > li > a > i:first-child {
-    width: auto;
-    min-width: 0;
-    font-size: 22px;
-}
+    body.vertical-collpsed .tsmart-sidebar #side-menu > li > a > i:first-child {
+        width: auto;
+        min-width: 0;
+        font-size: 22px;
+    }
 
-body.vertical-collpsed .tsmart-sidebar #side-menu > li > a.active,
-body.vertical-collpsed .tsmart-sidebar #side-menu > li.mm-active > a {
-    box-shadow: none;
-    background: linear-gradient(135deg, rgba(122,63,242,.44), rgba(49,88,245,.34));
-}
+    body.vertical-collpsed .tsmart-sidebar #side-menu > li > a.active,
+    body.vertical-collpsed .tsmart-sidebar #side-menu > li.mm-active > a {
+        box-shadow: none;
+        background: linear-gradient(135deg, rgba(122, 63, 242, .44), rgba(49, 88, 245, .34));
+    }
 
-/* Evita que o conteúdo pule ao alternar a sidebar */
+
+/* =========================================================
+   TRANSIÇÕES
+   ========================================================= */
+
 .tsmart-brand-box,
 .vertical-menu.tsmart-sidebar,
 .main-content.tsmart-main {
     transition: width .22s ease, margin-left .22s ease;
 }
 
-/* Header mais estável em resoluções intermediárias */
+
+/* =========================================================
+   RESPONSIVIDADE
+   ========================================================= */
+
 @media (max-width: 1199.98px) {
     .tsmart-search-area .quick-patient-search {
         max-width: 390px;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .tsmart-navbar-header {
+        padding-right: 10px;
+    }
+
+    .tsmart-search-area {
+        display: none;
+    }
+
+    .tsmart-page-content {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .tsmart-brand-box {
+        width: 70px;
+        padding: 0 16px;
+    }
+
+        .tsmart-brand-box .logo-lg {
+            display: none !important;
+        }
+
+        .tsmart-brand-box .logo-sm {
+            display: block !important;
+        }
+
+    .tsmart-user-area {
+        gap: 4px;
+    }
+
+    .tsmart-page-title {
+        font-size: 22px;
     }
 }

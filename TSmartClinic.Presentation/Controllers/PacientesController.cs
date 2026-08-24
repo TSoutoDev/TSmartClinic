@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Services.Interfaces;
@@ -6,10 +8,14 @@ using TSmartClinic.Presentation.ViewModels.Filters;
 
 namespace TSmartClinic.Presentation.Controllers
 {
-    public class PacientesController : BaseController<IPacienteService,BaseFilterViewModel, PacienteViewModel>
+    public class PacientesController : BaseController<IPacienteService, BaseFilterViewModel, PacienteViewModel>
     {
-        public PacientesController(IPacienteService service) : base(service)
+        private readonly IPacienteService _pacienteService;
+        private readonly IConvenioService _convenioService;
+        public PacientesController(IPacienteService pacienteService, IConvenioService convenioService) : base(pacienteService)
         {
+            _pacienteService = pacienteService;
+            _convenioService = convenioService;
         }
 
         public override async Task<IActionResult> Consulta()
@@ -17,39 +23,46 @@ namespace TSmartClinic.Presentation.Controllers
             return await base.Consulta();
         }
 
+        public override async Task<IActionResult> Cadastro(int? id)
+        {
+            await CriarViewBags();
+
+            var result = await base.Cadastro(id) as ViewResult;
+
+            if (result?.Model is PacienteViewModel model)
+            {
+                // CADASTRO NOVO
+                // Obtem cliente do claim
+                var clienteIdClaim = User.FindFirst("Cliente_Id")?.Value;
+
+                if (int.TryParse(clienteIdClaim, out var clienteId))
+                {
+                    model.ClienteId = clienteId;
+                }
+
+                if (!id.HasValue)
+                {
+                    model.Ativo = true;
+                    model.DataCadastro = DateTime.Today;
+                }
+            }
+            return result;
+        }
+
         public override async Task<IActionResult> BuscaAvancada(BaseFilterViewModel filtro)
         {
             return await base.BuscaAvancada(filtro);
         }
 
-        //[HttpGet]
-        //public IActionResult CardsPacientes()
-        //{
-        //    return View();
-        //   // return View(); // View de busca limpa e central
-        //}
-
         [HttpGet]
-        public IActionResult CentralPaciente()
+        public async Task<IActionResult> CentralPaciente(int id)
         {
+            var paciente = await _pacienteService.ObterPorId(id);
 
-            //MOC de DADOS
-            // Simulação de um paciente vindo do banco
-            var paciente = new PacienteViewModel
-            {
-                NomePaciente = "João da Silva",
-                CPF = "123.456.789-00",
-                DataNascimento = new DateTime(1990, 5, 12),
-                Convenio = new Convenio
-                {
-                    NomeConvenio = "Unimed",
-                },
-                Telefone = "(11) 98765-4321",
-                Email = "joao@email.com"
-            };
+            if (paciente == null)
+                return NotFound();
 
-            // Envolvendo no ResponseViewModel
-            ResponseViewModel<PacienteViewModel> response = new ResponseViewModel<PacienteViewModel>
+            var response = new ResponseViewModel<PacienteViewModel>
             {
                 Sucesso = true,
                 StatusCode = 200,
@@ -58,18 +71,30 @@ namespace TSmartClinic.Presentation.Controllers
             };
 
             return View(response);
-         //   return View();
-            // return View(); // View de busca limpa e central
         }
 
-        [HttpPost]
-        public IActionResult ResultadoBusca(string filtro)
+
+        #region Métodos auxiliares
+        private async Task CriarViewBags()
         {
-            // Aqui você faria a busca real no banco usando o filtro
-            // Por enquanto, vamos redirecionar para a Central de Pacientes com filtro
-
-            return RedirectToAction("Consulta", new { filtro });
+            await CriarViewConvenios();
         }
+
+        private async Task CriarViewConvenios()
+        {
+            var resultado = await _convenioService.ListarConvenios();
+
+            ViewBag.Convenios = resultado
+                .Select(x => new SelectListItem
+                {
+                    Text = x.NomeConvenio,
+                    Value = x.Id.ToString()
+                })
+                .OrderBy(x => x.Text)
+                .ToList();
+        }
+
+        #endregion
 
 
     }

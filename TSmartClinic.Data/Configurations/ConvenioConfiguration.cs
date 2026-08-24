@@ -23,6 +23,16 @@ namespace TSmartClinic.Data.Configurations
             builder.Property(c => c.Email).HasColumnName("Email").HasMaxLength(200);
             builder.Property(c => c.Ativo).HasColumnName("Ativo");
             builder.Property(c => c.DataCadastro).HasColumnName("DataCadastro").HasColumnType("date");
+            builder.Property(c => c.ClienteId).HasColumnName("ClienteId").IsRequired();
+
+            builder.Property(c => c.ClienteId)
+                .HasColumnName("ClienteId")
+                .IsRequired();
+
+            builder.HasOne(c => c.Cliente)
+                .WithMany()
+                .HasForeignKey(c => c.ClienteId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -1,15 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using TSmartClinic.API.Repositories;
+﻿using TSmartClinic.API.Repositories;
 using TSmartClinic.API.Services;
 using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Core.Domain.Service;
-using TSmartClinic.Core.Infra.CrossCutting.Email;
 using TSmartClinic.Core.Infra.CrossCutting.Providers;
-using TSmartClinic.Core.Infra.Security.Services;   // 👈 namespace do TokenService
-using TSmartClinic.Core.Infra.Security.Settings;  // 👈 namespace do TokenSettings
+using TSmartClinic.Core.Infra.Security.Services;   //  namespace do TokenService
+using TSmartClinic.Core.Infra.Security.Settings;  //  namespace do TokenSettings
 using TSmartClinic.Data.Repositories;
 
 namespace TSmartClinic.API.Extensions
@@ -31,7 +28,7 @@ namespace TSmartClinic.API.Extensions
             services.AddTransient<IPacienteService, PacienteService>();
             services.AddTransient<IPerfilService, PerfilService>();
             services.AddTransient<IUsuarioLogadoService, UsuarioLogadoService>();
-            services.AddTransient<IUsuarioClientePerfilRepository, UsuarioClientePerfilRepository>();
+            services.AddTransient<IConvenioService, ConvenioService>();
 
             //Repositorios
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
@@ -46,6 +43,8 @@ namespace TSmartClinic.API.Extensions
             services.AddTransient<IOperacaoPerfilRepository, OperacaoPerfilRepository>();
             services.AddTransient<IPacienteRepository, PacienteRepository>();
             services.AddTransient<IPerfilRepository, PerfilRepository>();
+            services.AddTransient<IUsuarioClientePerfilRepository, UsuarioClientePerfilRepository>();
+            services.AddTransient<IConvenioRepository, ConvenioRepository>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ICriptografiaProvider, CriptografiaProvider>();

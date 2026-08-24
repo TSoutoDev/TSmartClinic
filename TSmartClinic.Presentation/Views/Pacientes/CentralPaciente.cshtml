@@ -1,163 +1,179 @@
-﻿@{
-    Layout = "~/Views/Shared/_HomeLayout.cshtml";
-    ViewBag.Titulo = "Central do Paciente";
-}
-@using TSmartClinic.Presentation.Models
+﻿@using TSmartClinic.Presentation.Models
 @model TSmartClinic.Presentation.Models.ResponseViewModel<PacienteViewModel>
 
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewBag.Titulo = "Central do Paciente";
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    var paciente = Model?.Itens?.FirstOrDefault();
+}
 
-<style>
-    /* CARD PRINCIPAL */
-    .card-principal {
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        padding: 1.5rem;
-        margin: 1.5rem auto;
-        max-width: 1200px;
-        min-height: calc(100vh - 150px); /* ocupa altura total menos header/footer */
-        overflow-y: auto; /* habilita rolagem se passar do limite */
-    }
+@section Styles {
+    <link rel="stylesheet" href="~/css/central-paciente.css" asp-append-version="true" />
+}
 
-    /* CARDS DOS MÓDULOS */
-    .module-card {
-        background: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        padding: 10px;
-        text-align: center;
-        transition: 0.3s ease-in-out;
-        cursor: pointer;
-    }
+<div class="central-wrapper">
 
-        .module-card:hover {
-            background: #e9ecef;
-            transform: translateY(-2px);
-        }
+    <div class="central-page-header">
+        <div class="central-page-title">
+            <a href="@Url.Action("Consulta", "Pacientes")" class="central-back" title="Voltar para consulta">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
 
-    .module-icon {
-        font-size: 18px;
-        margin-bottom: 8px;
-        color: #0d6efd;
-    }
-
-    .module-card div {
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    /* AVATAR E INFORMAÇÕES DO PACIENTE */
-    .avatar-wrapper {
-        width: 120px;
-        height: 120px;
-    }
-
-    .avatar {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .status-badge {
-        font-size: 0.9rem;
-        color: #28a745;
-        font-weight: 600;
-    }
-
-    .info-label {
-        font-weight: 600;
-        color: #6c757d;
-        margin-right: 5px;
-    }
-
-    .info-value {
-        font-size: 0.95rem;
-    }
-</style>
-
-<!-- MAIN CARD -->
-<div class="card card-principal">
-    <div class="container">
-        <!-- DADOS DO PACIENTE -->
-        @await Html.PartialAsync("_PacientesDados", Model)
-
-        <!-- CARDS DOS MÓDULOS -->
-        <div class="row mt-4 g-2">
-            @{
-                var modulos = new[] {
-                        new { Icon = "fa-list", Label = "Histórico" },
-                        new { Icon = "fa-user-shield", Label = "SST" },
-                        new { Icon = "fa-star", Label = "Avaliações" },
-                        new { Icon = "fa-folder", Label = "Arquivos" },
-                        new { Icon = "fa-chalkboard-teacher", Label = "Treinamentos" },
-                        new { Icon = "fa-pen", Label = "Anotações" },
-                        new { Icon = "fa-clock", Label = "Linha do Tempo" },
-                        new { Icon = "fa-users", Label = "Gestão" },
-                        new { Icon = "fa-user-tag", Label = "Competências" },
-                        new { Icon = "fa-briefcase", Label = "Cargos e Salários" },
-                        new { Icon = "fa-file-signature", Label = "Solicitações" },
-
-                          new { Icon = "fa-list", Label = "Histórico" },
-                        new { Icon = "fa-user-shield", Label = "SST" },
-                        new { Icon = "fa-star", Label = "Avaliações" },
-                        new { Icon = "fa-folder", Label = "Arquivos" },
-                        new { Icon = "fa-chalkboard-teacher", Label = "Treinamentos" },
-                        new { Icon = "fa-pen", Label = "Anotações" },
-                        new { Icon = "fa-clock", Label = "Linha do Tempo" },
-                        new { Icon = "fa-users", Label = "Gestão" },
-                        new { Icon = "fa-user-tag", Label = "Competências" },
-                        new { Icon = "fa-briefcase", Label = "Cargos e Salários" },
-                        new { Icon = "fa-file-signature", Label = "Solicitações" },
-            new { Icon = "fa-list", Label = "Histórico" },
-            new { Icon = "fa-user-shield", Label = "SST" },
-            new { Icon = "fa-star", Label = "Avaliações" },
-            new { Icon = "fa-folder", Label = "Arquivos" },
-            new { Icon = "fa-chalkboard-teacher", Label = "Treinamentos" },
-            new { Icon = "fa-pen", Label = "Anotações" },
-            new { Icon = "fa-clock", Label = "Linha do Tempo" },
-            new { Icon = "fa-users", Label = "Gestão" },
-            new { Icon = "fa-user-tag", Label = "Competências" },
-            new { Icon = "fa-briefcase", Label = "Cargos e Salários" },
-            new { Icon = "fa-file-signature", Label = "Solicitações" },
-            new { Icon = "fa-list", Label = "Histórico" },
-            new { Icon = "fa-user-shield", Label = "SST" },
-            new { Icon = "fa-star", Label = "Avaliações" },
-            new { Icon = "fa-folder", Label = "Arquivos" },
-            new { Icon = "fa-chalkboard-teacher", Label = "Treinamentos" },
-            new { Icon = "fa-pen", Label = "Anotações" },
-            new { Icon = "fa-clock", Label = "Linha do Tempo" },
-            new { Icon = "fa-users", Label = "Gestão" },
-            new { Icon = "fa-user-tag", Label = "Competências" },
-            new { Icon = "fa-briefcase", Label = "Cargos e Salários" },
-            new { Icon = "fa-file-signature", Label = "Solicitações" },
-            new { Icon = "fa-list", Label = "Histórico" },
-            new { Icon = "fa-user-shield", Label = "SST" },
-            new { Icon = "fa-star", Label = "Avaliações" },
-            new { Icon = "fa-folder", Label = "Arquivos" },
-            new { Icon = "fa-chalkboard-teacher", Label = "Treinamentos" },
-            new { Icon = "fa-pen", Label = "Anotações" },
-            new { Icon = "fa-clock", Label = "Linha do Tempo" },
-            new { Icon = "fa-users", Label = "Gestão" },
-            new { Icon = "fa-user-tag", Label = "Competências" },
-            new { Icon = "fa-briefcase", Label = "Cargos e Salários" },
-            new { Icon = "fa-file-signature", Label = "Solicitações" },
-                        // duplicados apenas de exemplo...
-                      
-         
-                        };
-
-                foreach (var m in modulos)
-                {
-                    <div class="col-6 col-md-3 col-lg-2">
-                        <div class="module-card">
-                            <div class="module-icon"><i class="fa @m.Icon"></i></div>
-                            <div>@m.Label</div>
-                        </div>
-                    </div>
-                }
-            }
+            <h4>Central do Paciente</h4>
         </div>
+
+        @if (paciente != null)
+        {
+            <div class="central-header-actions">
+                <a href="@Url.Action("Cadastro", "Pacientes", new { id = paciente.Id })" class="btn btn-outline-secondary">
+                    <i class="fa-solid fa-pen me-1"></i>Editar Paciente
+                </a>
+
+                <a href="#" class="btn central-btn-primary">
+                    <i class="fa-regular fa-calendar-plus me-1"></i>Novo Agendamento
+                </a>
+            </div>
+        }
     </div>
+
+    <div class="central-container-card">
+
+        <section class="central-paciente-section">
+            @await Html.PartialAsync("_PacientesDados", Model)
+        </section>
+
+        <div class="central-divider"></div>
+
+        <section class="central-acessos-section">
+
+            <div class="acessos-header">
+                <div>
+                    <h5>Acessos Rápidos</h5>
+                    <p>Acesse rapidamente as principais informações e rotinas do paciente.</p>
+                </div>
+            </div>
+
+            <div class="row g-3">
+
+                <div class="col-md-6 col-xl-3">
+                    <a href="#" class="acesso-card">
+                        <div class="acesso-icon icon-blue"><i class="fa-regular fa-calendar-check"></i></div>
+                        <div class="acesso-info">
+                            <strong>Agendamentos</strong>
+                            <span>Consultas, retornos e próximos atendimentos.</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right acesso-arrow"></i>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <a href="#" class="acesso-card">
+                        <div class="acesso-icon icon-purple"><i class="fa-solid fa-notes-medical"></i></div>
+                        <div class="acesso-info">
+                            <strong>Prontuário</strong>
+                            <span>Histórico clínico, evoluções e atendimentos.</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right acesso-arrow"></i>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <a href="#" class="acesso-card">
+                        <div class="acesso-icon icon-green"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                        <div class="acesso-info">
+                            <strong>Orçamentos</strong>
+                            <span>Planos de tratamento, valores e propostas.</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right acesso-arrow"></i>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <a href="#" class="acesso-card">
+                        <div class="acesso-icon icon-orange"><i class="fa-solid fa-wallet"></i></div>
+                        <div class="acesso-info">
+                            <strong>Financeiro</strong>
+                            <span>Pagamentos, cobranças e situação financeira.</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right acesso-arrow"></i>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <a href="#" class="acesso-card">
+                        <div class="acesso-icon icon-cyan"><i class="fa-solid fa-flask-vial"></i></div>
+                        <div class="acesso-info">
+                            <strong>Exames</strong>
+                            <span>Solicitações, anexos e resultados disponíveis.</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right acesso-arrow"></i>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <a href="#" class="acesso-card">
+                        <div class="acesso-icon icon-red"><i class="fa-solid fa-prescription"></i></div>
+                        <div class="acesso-info">
+                            <strong>Receitas</strong>
+                            <span>Receitas, medicamentos e prescrições.</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right acesso-arrow"></i>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <a href="#" class="acesso-card">
+                        <div class="acesso-icon icon-blue"><i class="fa-regular fa-folder-open"></i></div>
+                        <div class="acesso-info">
+                            <strong>Documentos</strong>
+                            <span>Arquivos, termos, anexos e documentos.</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right acesso-arrow"></i>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <a href="#" class="acesso-card">
+                        <div class="acesso-icon icon-purple"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <div class="acesso-info">
+                            <strong>Histórico</strong>
+                            <span>Linha do tempo de eventos do paciente.</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right acesso-arrow"></i>
+                    </a>
+                </div>
+
+            </div>
+
+            <div class="resumo-card">
+                <div class="resumo-grid">
+
+                    <div class="resumo-item">
+                        <span>Próxima consulta</span>
+                        <strong>-</strong>
+                    </div>
+
+                    <div class="resumo-item">
+                        <span>Último atendimento</span>
+                        <strong>-</strong>
+                    </div>
+
+                    <div class="resumo-item">
+                        <span>Total de atendimentos</span>
+                        <strong>0</strong>
+                    </div>
+
+                    <div class="resumo-item">
+                        <span>Pendências financeiras</span>
+                        <strong>R$ 0,00</strong>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
 </div>

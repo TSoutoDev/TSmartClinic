@@ -23,7 +23,7 @@ namespace TSmartClinic.Presentation.Services
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
 
-                var result = await client.GetAsync($"{_baseUrlController}/obter");
+                var result = await client.GetAsync($"{_baseUrlController}/listar");
 
                 if (result.IsSuccessStatusCode)
                 {
@@ -41,6 +41,28 @@ namespace TSmartClinic.Presentation.Services
                 {
                     return new List<PacienteViewModel>();
                 }
+            }
+        }
+
+        public async Task<PacienteViewModel?> ObterPorId(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization =  new AuthenticationHeaderValue("Bearer", this.AccessToken);
+
+                var result = await client.GetAsync($"{_baseUrlController}/{id}");
+
+                if (!result.IsSuccessStatusCode)
+                    return null;
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                var content = await result.Content.ReadAsStringAsync();
+
+                return JsonSerializer.Deserialize<PacienteViewModel>(content, options);
             }
         }
     }

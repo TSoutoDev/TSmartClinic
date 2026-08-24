@@ -1,6 +1,6 @@
-﻿namespace TSmartClinic.Shared.DTOs.Requests.Base
+﻿namespace TSmartClinic.Presentation.Models
 {
-    public class BaseConvenioRequestDTO : BaseRequestDTO
+    public class ConvenioViewModel : BaseViewModel
     {
         public string? NomeConvenio { get; set; }
         public string? CNPJ { get; set; }
@@ -8,6 +8,5 @@
         public string? Email { get; set; }
         public bool? Ativo { get; set; }
         public DateTime? DataCadastro { get; set; }
-        public int ClienteId { get; set; }
     }
 }

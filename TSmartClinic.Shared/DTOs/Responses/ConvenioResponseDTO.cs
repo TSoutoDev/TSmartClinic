@@ -8,6 +8,7 @@
         public string? Telefone { get; set; }
         public string? Email { get; set; }
         public bool? Ativo { get; set; }
+        public int ClienteId { get; set; }
         public DateTime? DataCadastro { get; set; }
     }
 }

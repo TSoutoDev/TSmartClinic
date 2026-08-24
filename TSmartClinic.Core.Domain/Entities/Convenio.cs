@@ -1,4 +1,6 @@
-﻿namespace TSmartClinic.Core.Domain.Entities
+﻿using TSmartClinic.Core.Domain.Helpers;
+
+namespace TSmartClinic.Core.Domain.Entities
 {
     public class Convenio : Base
     {
@@ -8,9 +10,24 @@
         public string? Email { get; set; }
         public bool? Ativo { get; set; }
         public DateTime? DataCadastro { get; set; }
+        public int ClienteId { get; set; }
+
+
 
         #region Relacionamentos
+        public Cliente? Cliente { get; set; }
         public ICollection<Paciente>? Pacientes { get; set; }
         #endregion
+
+        public override void Atualizar(object obj)
+        {
+            Convenio convenio = obj as Convenio;
+
+            this.NomeConvenio = convenio.NomeConvenio;
+            this.Ativo = convenio.Ativo;
+            this.ClienteId = convenio.ClienteId;
+
+            this.RemoverEspacosEmBranco();
+        }
     }
 }

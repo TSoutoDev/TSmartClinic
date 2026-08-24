@@ -28,10 +28,28 @@ namespace TSmartClinic.API.Repositories
 
         public List<Paciente> ListarPorCliente(BaseFiltro filtro, int clienteId, params Expression<Func<Paciente, object>>[] properties)
         {
+            var filtroPaciente = filtro as BaseFiltro;
+
             var query = MontarFiltro(filtro, properties);
+
             query = query
                 .Where(x => x.ClienteId == clienteId)//proteção: retorna apenas o paciente da clinica
                 .Include(x => x.Convenio);
+
+
+            //Filtrar pelo nome se estiver presente no filtro
+            if (!string.IsNullOrWhiteSpace(filtroPaciente?.Nome))
+            {
+                var nome = filtroPaciente.Nome.Trim().ToUpper();
+                query = query.Where(c => EF.Functions.ILike(c.NomePaciente, $"%{filtroPaciente.Nome.Trim()}%"));
+            }
+
+            if (filtro.PaginaAtual > 0 && filtro.ItensPorPagina > 0)
+            {
+                var pagina = filtro.PaginaAtual - 1;
+                query = query.Skip(pagina * filtro.ItensPorPagina)
+                             .Take(filtro.ItensPorPagina);
+            }
 
             return query.ToList();
         }

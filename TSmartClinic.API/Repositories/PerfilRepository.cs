@@ -42,25 +42,30 @@ namespace TSmartClinic.API.Repositories
 
         public override List<Perfil> Listar(BaseFiltro filtro, params Expression<Func<Perfil, object>>[] properties)
         {
-            var query = _dbSet as IQueryable<Perfil>;
+           // var query = _dbSet as IQueryable<Perfil>;
 
             var filtroPerfil = filtro as BaseFiltro;
 
-            query = MontarFiltro(filtro, properties);
+            var query = MontarFiltro(filtro, properties);
 
             query = query
                 .Include(x => x.Nicho)
                 .Include(x => x.Cliente);
 
-            // Não mostrar usuário master (exceto se o próprio estiver logado)
+            // Não mostrar perfil master para usuários que não são master
             if (!_usuarioLogadoService.UsuarioMaster)
             {
                 query = query.Where(u => !u.UsuarioClientePerfil.Any(p => p.PerfilId == 1));
             }
 
             //Filtrar pelo nome se estiver presente no filtro
-            if (!string.IsNullOrWhiteSpace(filtroPerfil.Nome))
-                query = query.Where(c => c.NomePerfil.ToUpper().Contains(filtroPerfil.Nome));
+            if (!string.IsNullOrWhiteSpace(filtroPerfil?.Nome))
+            {
+                var nome = filtroPerfil.Nome.Trim().ToUpper();
+                //query = query.Where(c => c.NomePerfil.ToUpper().Contains(filtroPerfil.Nome));
+                query = query.Where(c => EF.Functions.ILike(c.NomePerfil, $"%{filtroPerfil.Nome.Trim()}%"));
+            }
+
 
             if (filtro.PaginaAtual > 0 && filtro.ItensPorPagina > 0)
             {
