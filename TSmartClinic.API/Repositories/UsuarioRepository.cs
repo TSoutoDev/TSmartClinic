@@ -28,7 +28,7 @@ namespace TSmartClinic.API.Repositories
             IMapper mapper,
             TSmartClinicContext tSmartClinicContext,
             ICriptografiaProvider criptografiaProvider = null
-        ) : base(tSmartClinicContext)
+        ) : base(tSmartClinicContext, usuarioLogadoService)
         {
             _mapper = mapper;
             _dbContext = tSmartClinicContext;

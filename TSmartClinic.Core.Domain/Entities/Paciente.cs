@@ -1,8 +1,9 @@
 ﻿using TSmartClinic.Core.Domain.Helpers;
+using TSmartClinic.Core.Domain.Interfaces.Entities;
 
 namespace TSmartClinic.Core.Domain.Entities
 {
-    public class Paciente : Base
+    public class Paciente : Base, IEntidadePorCliente
     {
         public string? NomePaciente { get; set; }
         public DateTime? DataNascimento { get; set; }

@@ -15,7 +15,7 @@ namespace TSmartClinic.API.Repositories
         private readonly TSmartClinicContext _dbContext;
         private readonly IOperacaoPerfilRepository _operacaoPerfilRepository;
         private readonly IUsuarioLogadoService _usuarioLogadoService;
-        public PerfilRepository(IUsuarioLogadoService usuarioLogadoService, IOperacaoPerfilRepository operacaoPerfilRepository, TSmartClinicContext dbContext, TSmartClinicContext context) : base(dbContext)
+        public PerfilRepository(IUsuarioLogadoService usuarioLogadoService, IOperacaoPerfilRepository operacaoPerfilRepository, TSmartClinicContext dbContext, TSmartClinicContext context) : base(dbContext, usuarioLogadoService)
         {
             _dbContext = context;
             _operacaoPerfilRepository = operacaoPerfilRepository;

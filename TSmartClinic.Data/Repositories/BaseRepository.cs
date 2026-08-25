@@ -7,6 +7,8 @@ using Npgsql; // PostgresException, PostgresErrorCodes
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using static TSmartClinic.Core.Domain.Exceptions.GravacaoChaveInexistenteException;
+using TSmartClinic.Core.Domain.Interfaces.Entities;
+using TSmartClinic.Core.Domain.Interfaces.Services;
 
 namespace TSmartClinic.Data.Repositories
 {
@@ -15,20 +17,22 @@ namespace TSmartClinic.Data.Repositories
     {
         protected readonly DbContext? _dbContext;
         protected readonly DbSet<TEntity>? _dbSet;
+        protected readonly IUsuarioLogadoService? _usuarioLogadoService;
 
         // No BaseRepository
-
-        public BaseRepository(TSmartClinicContext dbContext)
+        public BaseRepository(TSmartClinicContext dbContext, IUsuarioLogadoService? usuarioLogadoService = null)
         {
             _dbContext = dbContext;
-            _dbSet = dbContext.Set<TEntity>(); // aqui que estoura
-        }
-
-
+            _dbSet = dbContext.Set<TEntity>();
+            _usuarioLogadoService = usuarioLogadoService;
+        } 
+    
         public virtual TEntity Atualizar(TEntity entity)
         {
             try
             {
+                AplicarClienteNaEntidade(entity);
+
                 _dbSet?.Update(entity);
                 _dbContext?.SaveChanges();
 
@@ -223,9 +227,9 @@ namespace TSmartClinic.Data.Repositories
         {
             try
             {
+                AplicarClienteNaEntidade(entity);
+
                 _dbSet?.Add(entity);
-
-
                 _dbContext?.SaveChanges();
 
                 return entity;
@@ -276,11 +280,14 @@ namespace TSmartClinic.Data.Repositories
         {
             var query = MontarFiltro(filtro, properties);
 
+            query = AplicarFiltroCliente(query);
+
             if (filtro.PaginaAtual > 0 && filtro.ItensPorPagina > 0)
             {
                 var pagina = filtro.PaginaAtual - 1;
                 query = query.Skip(pagina * filtro.ItensPorPagina).Take(filtro.ItensPorPagina);
             }
+
             return query.ToList();
         }
 
@@ -294,8 +301,38 @@ namespace TSmartClinic.Data.Repositories
             //Carrega tabelas relacionadas
             query = properties.Aggregate(query, (current, property) => current?.Include(property));
 
+            // Aplica filtro automático por clínica
+            query = AplicarFiltroCliente(query);
+
             return query?.FirstOrDefault(x => x.Id == id);
 
+        }
+
+        //aplicar filto por CLienteId(Clinica)
+        protected IQueryable<TEntity> AplicarFiltroCliente(IQueryable<TEntity> query)
+        {
+            if (!typeof(IEntidadePorCliente).IsAssignableFrom(typeof(TEntity)))
+                return query;
+
+            var clienteId = _usuarioLogadoService?.ClienteId;
+
+            if (!clienteId.HasValue || clienteId.Value <= 0)
+                return query;
+
+            return query.Where(x => EF.Property<int>(x, "ClienteId") == clienteId.Value);
+        }
+
+        protected void AplicarClienteNaEntidade(TEntity entity)
+        {
+            if (entity is not IEntidadePorCliente entidadePorCliente)
+                return;
+
+            var clienteId = _usuarioLogadoService?.ClienteId;
+
+            if (!clienteId.HasValue || clienteId.Value <= 0)
+                throw new UnauthorizedAccessException("Clínica do usuário não identificada.");
+
+            entidadePorCliente.ClienteId = clienteId.Value;
         }
 
         protected IQueryable<TEntity> MontarFiltro(BaseFiltro filtro, params Expression<Func<TEntity, object>>[] properties)

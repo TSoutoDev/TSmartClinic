@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
+using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Data.Contexts;
 using TSmartClinic.Data.Repositories;
 
@@ -8,7 +9,7 @@ namespace TSmartClinic.API.Repositories
 {
     public class OperacaoPerfilRepository : BaseRepository<OperacaoPerfil>, IOperacaoPerfilRepository
     {
-        public OperacaoPerfilRepository(TSmartClinicContext dbContext) : base(dbContext)
+        public OperacaoPerfilRepository(TSmartClinicContext dbContext, IUsuarioLogadoService usuarioLogadoService) : base(dbContext, usuarioLogadoService  )
         {
         }
 

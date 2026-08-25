@@ -11,25 +11,23 @@ namespace TSmartClinic.API.Repositories
 {
     public class ConvenioRepository : BaseRepository<Convenio>, IConvenioRepository
     {
-        private readonly IUsuarioLogadoService _usuarioLogadoService;
-        public ConvenioRepository(TSmartClinicContext context, IUsuarioLogadoService usuarioLogadoService) : base(context)
+        public ConvenioRepository(TSmartClinicContext context, IUsuarioLogadoService usuarioLogadoService) : base(context, usuarioLogadoService)
         {
-            _usuarioLogadoService = usuarioLogadoService;
         }
 
         public override List<Convenio> Listar( BaseFiltro filtro,  params Expression<Func<Convenio, object>>[] properties)
         {
             var query = MontarFiltro(filtro, properties);
 
-            var clienteId = _usuarioLogadoService.ClienteId;
-
-            query = query.Where(x => x.ClienteId == clienteId);
+            query = AplicarFiltroCliente(query);
 
             if (!string.IsNullOrWhiteSpace(filtro.Nome))
             {
                 var nome = filtro.Nome.Trim();
 
-                query = query.Where(x => x.NomeConvenio != null && EF.Functions.ILike(x.NomeConvenio, $"%{nome}%"));
+                query = query.Where(x => 
+                    x.NomeConvenio != null && 
+                    EF.Functions.ILike(x.NomeConvenio, $"%{nome}%"));
             }
 
             if (filtro.PaginaAtual > 0 && filtro.ItensPorPagina > 0)

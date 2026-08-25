@@ -9,7 +9,7 @@ namespace TSmartClinic.Api.Auth.Repositories
     public class UsuarioRepository : BaseRepository<Usuario>, IUsuarioRepository
     {
         private readonly TSmartClinicContext _context;
-        public UsuarioRepository(TSmartClinicContext? TSmartClinicContext) : base(TSmartClinicContext)
+        public UsuarioRepository(TSmartClinicContext TSmartClinicContext) : base(TSmartClinicContext)
         {
             _context = TSmartClinicContext;
         }

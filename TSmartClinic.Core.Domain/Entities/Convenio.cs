@@ -1,8 +1,9 @@
 ﻿using TSmartClinic.Core.Domain.Helpers;
+using TSmartClinic.Core.Domain.Interfaces.Entities;
 
 namespace TSmartClinic.Core.Domain.Entities
 {
-    public class Convenio : Base
+    public class Convenio : Base, IEntidadePorCliente
     {
         public string? NomeConvenio { get; set; }
         public string? CNPJ { get; set; }

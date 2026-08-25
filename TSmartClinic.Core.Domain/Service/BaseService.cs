@@ -31,7 +31,7 @@ namespace TSmartClinic.Core.Domain.Service
             //Atualiza o registro NO banco
             _baseRepository?.Atualizar(entityBanco);
 
-            return entity;
+            return entityBanco;
         }
 
         public virtual void Excluir(int id)

@@ -1,5 +1,6 @@
 ﻿using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
+using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Data.Contexts;
 using TSmartClinic.Data.Repositories;
 
@@ -7,7 +8,7 @@ namespace TSmartClinic.Api.Auth.Repositories
 {
     public class OperacaoRepository : BaseRepository<Operacao>, IOperacaoRepository
     {
-        public OperacaoRepository(TSmartClinicContext TSmartClinicContext) : base(TSmartClinicContext)
+        public OperacaoRepository(TSmartClinicContext TSmartClinicContext, IUsuarioLogadoService usuarioLogadoService) : base(TSmartClinicContext, usuarioLogadoService)
         { 
         }
 

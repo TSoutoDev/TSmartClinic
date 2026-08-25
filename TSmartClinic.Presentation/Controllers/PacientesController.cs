@@ -85,12 +85,12 @@ namespace TSmartClinic.Presentation.Controllers
             var resultado = await _convenioService.ListarConvenios();
 
             ViewBag.Convenios = resultado
+                .OrderBy(x => x.NomeConvenio)
                 .Select(x => new SelectListItem
                 {
                     Text = x.NomeConvenio,
                     Value = x.Id.ToString()
                 })
-                .OrderBy(x => x.Text)
                 .ToList();
         }
 

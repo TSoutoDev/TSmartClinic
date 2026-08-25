@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Helpers.FilterHelper;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
+using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Data.Contexts;
 using TSmartClinic.Data.Repositories;
 
@@ -11,7 +12,7 @@ namespace TSmartClinic.API.Repositories
 {
     public class PacienteRepository : BaseRepository<Paciente>, IPacienteRepository
     {
-        public PacienteRepository(TSmartClinicContext TSmartClinicContext) : base(TSmartClinicContext)
+        public PacienteRepository(TSmartClinicContext TSmartClinicContext, IUsuarioLogadoService usuarioLogadoService) : base(TSmartClinicContext, usuarioLogadoService)
         {
         }
 

@@ -1,15 +1,16 @@
-﻿using TSmartClinic.Core.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
+using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Data.Contexts;
 using TSmartClinic.Data.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace TSmartClinic.API.Repositories
 {
     public class FuncionalidadeRepository : BaseRepository<Funcionalidade>, IFuncionalidadeRepository
     {
 
-        public FuncionalidadeRepository(TSmartClinicContext dbContext) : base(dbContext)
+        public FuncionalidadeRepository(TSmartClinicContext dbContext, IUsuarioLogadoService usuarioLogadoService) : base(dbContext, usuarioLogadoService)
         {
         }
 

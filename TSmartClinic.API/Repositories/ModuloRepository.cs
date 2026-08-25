@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
+using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Data.Contexts;
 using TSmartClinic.Data.Repositories;
 
@@ -10,7 +11,7 @@ namespace TSmartClinic.API.Repositories
     public class ModuloRepository : BaseRepository<Modulo>, IModuloRepository
     {
         private readonly TSmartClinicContext _dbContext;
-        public ModuloRepository(TSmartClinicContext dbContext) : base(dbContext)
+        public ModuloRepository(TSmartClinicContext dbContext, IUsuarioLogadoService usuarioLogadoService) : base(dbContext, usuarioLogadoService)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext)); ;
         }
