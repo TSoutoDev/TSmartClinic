@@ -7,7 +7,7 @@ namespace TSmartClinic.API.Services
 {
     public class ConvenioService : BaseService<Convenio>, IConvenioService
     {
-        public ConvenioService(IBaseRepository<Convenio> baseRepository) : base(baseRepository)
+        public ConvenioService(IConvenioRepository convenioRepository) : base(convenioRepository)
         {
         }
     }
