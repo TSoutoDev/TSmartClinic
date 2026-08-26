@@ -8,10 +8,10 @@
         public string? Telefone { get; set; }
         public string? Email { get; set; }
         public string? Observacoes { get; set; }
-        public bool? Ativo { get; set; }
+        public bool? Ativo { get; set; } = true;
         public int? ConvenioId { get; set; }
         public byte[]? Foto { get; set; }
-        public int ClienteId { get; set; }
+        public int? ClienteId { get; set; }
 
     }
 }

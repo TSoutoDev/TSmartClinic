@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.Elfie.Serialization;
-using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Services.Interfaces;
 using TSmartClinic.Presentation.ViewModels.Filters;
@@ -18,11 +16,23 @@ namespace TSmartClinic.Presentation.Controllers
             _convenioService = convenioService;
         }
 
+        [HttpGet]
         public override async Task<IActionResult> Consulta()
         {
             return await base.Consulta();
         }
 
+        [HttpPost]
+        public override async Task<IActionResult> Cadastro(PacienteViewModel model)
+        {
+            var result = await base.Cadastro(model);
+
+            await CriarViewBags();
+
+            return result;
+        }
+
+        [HttpGet]
         public override async Task<IActionResult> Cadastro(int? id)
         {
             await CriarViewBags();
@@ -49,6 +59,7 @@ namespace TSmartClinic.Presentation.Controllers
             return result;
         }
 
+        [HttpGet]
         public override async Task<IActionResult> BuscaAvancada(BaseFilterViewModel filtro)
         {
             return await base.BuscaAvancada(filtro);

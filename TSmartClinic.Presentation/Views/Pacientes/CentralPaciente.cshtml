@@ -10,6 +10,22 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/central-paciente.css" asp-append-version="true" />
+
+    <style>
+                .paciente-status-inativo {
+            background: #fff1f2;
+            color: #dc2626;
+        }
+
+        .paciente-extra-observacoes {
+            grid-column: span 3;
+        }
+
+        .paciente-extra-observacoes strong {
+            white-space: normal;
+            line-height: 1.45;
+        }
+    </style>
 }
 
 <div class="central-wrapper">
@@ -40,7 +56,7 @@
     <div class="central-container-card">
 
         <section class="central-paciente-section">
-            @await Html.PartialAsync("_PacientesDados", Model)
+            @await Html.PartialAsync("_PacientesDados", Model.Itens.FirstOrDefault())
         </section>
 
         <div class="central-divider"></div>

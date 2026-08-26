@@ -19,7 +19,7 @@ namespace TSmartClinic.Core.Domain.Entities
         public ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
         //  public ICollection<Clinica> Clinicas { get; set; } = new List<Clinica>();  
         public List<UsuarioClientePerfil> UsuarioClientePerfil { get; set; } = new();
-
+        public ICollection<ClienteEndereco>? ClienteEndereco { get; set; }
 
         #endregion
     }

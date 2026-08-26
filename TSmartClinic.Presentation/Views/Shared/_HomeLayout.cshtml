@@ -33,11 +33,12 @@
     <link href="~/assets/css/icons.min.css" rel="stylesheet" />
     <link href="~/assets/css/app.min.css" id="app-style" rel="stylesheet" />
 
-    <link href="~/css/card-estilo.css" rel="stylesheet" />
-    <link href="~/css/DadosPacientes-estilo.css" rel="stylesheet" />
-    <link href="~/css/busca-rapida-paciente.css" rel="stylesheet" />
-    <link href="~/css/site.css" rel="stylesheet" />
-    <link href="~/css/tsmartclinic-layout.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/card-estilo.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/DadosPacientes-estilo.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/busca-rapida-paciente.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/tsmartclinic-layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/forms.css" asp-append-version="true" />
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 
@@ -62,9 +63,7 @@
                     </a>
                 </div>
 
-                <button type="button" class="btn tsmart-menu-toggle" id="vertical-menu-btn" aria-label="Expandir ou recolher menu" aria-expanded="false">
-                    <i class="bx bx-menu-alt-left"></i>
-                </button>
+                <button type="button" class="btn tsmart-menu-toggle" id="vertical-menu-btn" aria-label="Expandir ou recolher menu" aria-expanded="false"><i class="bx bx-menu-alt-left"></i></button>
 
                 <div class="tsmart-search-area">
                     <div class="quick-patient-search" id="quickPatientSearch">
@@ -72,6 +71,7 @@
                             <span class="input-group-text"><span class="qp-avatar" aria-hidden="true"><i class="bx bx-user"></i></span></span>
                             <input id="pacienteSearch" class="form-control" type="text" placeholder="Buscar paciente por nome, CPF ou código..." autocomplete="off" aria-label="Buscar paciente" />
                         </div>
+
                         <div id="pacienteSugestoes" class="dropdown-menu quick-patient-dropdown shadow-lg" style="display:none;"></div>
                     </div>
                 </div>
@@ -176,6 +176,7 @@
                                 <!-- GERAIS -->
                                 <li>
                                     <a href="javascript:void(0);" class="has-arrow waves-effect"><i class="bx bx-slider-alt"></i><span key="t-layouts">Gerais</span></a>
+
                                     <ul class="sub-menu" aria-expanded="false">
                                         @if (usuarioMaster)
                                         {
@@ -187,6 +188,7 @@
                                 <!-- EMPRESAS -->
                                 <li>
                                     <a href="javascript:void(0);" class="has-arrow waves-effect"><i class="bx bx-building"></i><span key="t-layouts">Empresas</span></a>
+
                                     <ul class="sub-menu" aria-expanded="false">
                                         <li><a href="/Grupo/Consulta" key="t-blog">Grupos</a></li>
                                         <li><a href="/Regiao/Consulta" key="t-blog">Regiões</a></li>
@@ -197,6 +199,7 @@
                                 <!-- TABELAS BÁSICAS -->
                                 <li>
                                     <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Tabelas Básicas</a>
+
                                     <ul class="sub-menu" aria-expanded="false">
                                         <li><a href="/Credenciado/Consulta" key="t-blog">Credenciados</a></li>
                                         <li><a href="/Servico/Consulta" key="t-blog">Serviços</a></li>
@@ -238,9 +241,7 @@
                             <h1 class="tsmart-page-title">@titulo</h1>
                         </div>
 
-                        <a href="/Home/Index" class="tsmart-home-link" title="Página inicial">
-                            <i class="bx bx-home-alt"></i>
-                        </a>
+                        <a href="/Home/Index" class="tsmart-home-link" title="Página inicial"><i class="bx bx-home-alt"></i></a>
                     </div>
 
                     @if (TempData["MensagemSucesso"] != null)
@@ -298,15 +299,18 @@
     <div id="modalTrocarEmpresa" class="modal fade modal-trocar-empresa" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
+
                 <div class="modal-header">
                     <h5 class="modal-title">Seleção de Empresa</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
+
                 <div class="modal-body">
                     <span id="mensagemSemEmpresaAtiva">Você não possui nenhuma empresa ativa, favor selecione.</span>
                     <input id="autocompleteempresamodal" class="form-control" autocomplete="on" placeholder="Informe parte do nome da empresa" />
                     <div id="sugestaoEmpresasModal" class="autocomplete-empresas"></div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -316,19 +320,28 @@
         <script src="~/_framework/aspnetcore-browser-refresh.js"></script>
     </environment>
 
+    <!-- BIBLIOTECAS PRINCIPAIS -->
     <script src="~/assets/libs/jquery/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
     <script src="~/assets/libs/node-waves/waves.min.js"></script>
+
+    <!-- DATATABLES -->
     <script src="~/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="~/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
     <script src="~/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
     <script src="~/assets/js/pages/datatables.init.js"></script>
+
+    <!-- BIBLIOTECAS EXTERNAS -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+    <!-- SCRIPTS DA APLICAÇÃO -->
     <script src="~/assets/js/app.js"></script>
-    <script src="~/js/site.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/validacoes.js" asp-append-version="true"></script>
 
     <script>
         $(function () {
@@ -343,17 +356,19 @@
 
             $('#side-menu a[href]').each(function () {
                 const rawHref = ($(this).attr('href') || '').trim();
+
                 if (!rawHref || rawHref === '#' || rawHref.toLowerCase().startsWith('javascript:')) return;
 
                 let linkPath;
+
                 try {
                     linkPath = new URL(rawHref, window.location.origin).pathname.replace(/\/$/, '').toLowerCase() || '/';
-                } catch {
+                }
+                catch {
                     return;
                 }
 
-                const isActive = currentPath === linkPath ||
-                    (linkPath !== '/' && currentPath.startsWith(linkPath + '/'));
+                const isActive = currentPath === linkPath || (linkPath !== '/' && currentPath.startsWith(linkPath + '/'));
 
                 if (!isActive) return;
 
@@ -376,6 +391,7 @@
 
             btnMinhaConta.addEventListener("click", function (e) {
                 e.preventDefault();
+
                 const userId = this.getAttribute("data-id");
 
                 fetch(`/MinhaConta/DetalhesMinhaConta/${userId}`)

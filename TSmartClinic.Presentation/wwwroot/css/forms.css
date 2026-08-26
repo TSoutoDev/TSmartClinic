@@ -1,0 +1,67 @@
+﻿/* =========================================================
+   TSmartClinic - Padrão global de formulários
+   ========================================================= */
+
+.campo-com-icone {
+    position: relative;
+}
+
+    .campo-com-icone > i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 14px;
+        color: #8c9bb5;
+        z-index: 5;
+        pointer-events: none;
+    }
+
+    .campo-com-icone .form-control,
+    .campo-com-icone .form-select {
+        padding-left: 40px;
+        min-height: 40px;
+    }
+
+        .campo-com-icone .form-control:focus,
+        .campo-com-icone .form-select:focus {
+            border-color: #8eabff;
+            box-shadow: 0 0 0 0.15rem rgba(49, 88, 245, 0.08);
+        }
+
+    .campo-com-icone:focus-within > i {
+        color: #3158f5;
+    }
+
+/* Labels */
+
+.form-label-tsmart {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+/* Título das seções */
+
+.form-secao-titulo {
+    font-size: 16px;
+    font-weight: 600;
+    color: #344059;
+    margin-bottom: 16px;
+}
+
+    .form-secao-titulo > i {
+        color: #3158f5;
+        margin-right: 7px;
+    }
+
+/* Textarea */
+
+.campo-com-icone textarea {
+    padding-top: 10px;
+}
+
+.campo-com-icone.textarea-icone > i {
+    top: 18px;
+    transform: none;
+}

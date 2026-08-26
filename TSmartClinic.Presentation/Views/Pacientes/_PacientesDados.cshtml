@@ -1,8 +1,8 @@
 ﻿@using TSmartClinic.Presentation.Models
-@model TSmartClinic.Presentation.Models.ResponseViewModel<PacienteViewModel>
+@model PacienteViewModel
 
 @{
-    var paciente = Model?.Itens?.FirstOrDefault();
+    var paciente = Model;
 }
 
 @if (paciente != null)
@@ -21,216 +21,177 @@
 
     var temFoto = paciente.Foto != null && paciente.Foto.Length > 0;
     var fotoBase64 = temFoto ? Convert.ToBase64String(paciente.Foto!) : null;
+    var enderecoPaciente = paciente.PacienteEnderecos?.FirstOrDefault(x => x.Tipo == "Residencial") ?? paciente.PacienteEnderecos?.FirstOrDefault();
+    var endereco = enderecoPaciente?.Endereco;
 
     <div class="paciente-header-card">
 
         <div class="paciente-avatar-area">
-
             @if (temFoto)
             {
-                <img src="data:image/jpeg;base64,@fotoBase64"
-                     alt="@nomePaciente"
-                     class="paciente-avatar-img" />
+                <img src="data:image/jpeg;base64,@fotoBase64" alt="@nomePaciente" class="paciente-avatar-img" />
             }
             else
             {
-                <div class="paciente-avatar-placeholder">
-                    @iniciais
-                </div>
+                <div class="paciente-avatar-placeholder">@iniciais</div>
             }
 
-            <button type="button"
-                    class="paciente-avatar-edit"
-                    title="Alterar foto">
-
+            <button type="button" class="paciente-avatar-edit" title="Alterar foto">
                 <i class="fa-solid fa-camera"></i>
-
             </button>
-
         </div>
 
         <div class="paciente-header-content">
 
             <div class="paciente-header-top">
-
                 <div>
-
                     <h3>@nomePaciente</h3>
 
                     <div class="paciente-meta">
-
                         @if (paciente.Ativo == true)
                         {
-                            <span class="paciente-status">
-                                <i class="fa-solid fa-circle-check"></i>
-                                Ativo
-                            </span>
+                            <span class="paciente-status"><i class="fa-solid fa-circle-check"></i> Ativo</span>
                         }
                         else
                         {
-                            <span class="paciente-status">
-                                Inativo
-                            </span>
+                            <span class="paciente-status paciente-status-inativo"><i class="fa-solid fa-circle-xmark"></i> Inativo</span>
                         }
 
                         @if (paciente.DataCadastro.HasValue)
                         {
-                            <span>
-                                Paciente desde @paciente.DataCadastro.Value.ToString("dd/MM/yyyy")
-                            </span>
+                            <span>Paciente desde @paciente.DataCadastro.Value.ToString("dd/MM/yyyy")</span>
                         }
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="paciente-info-grid">
-
-            <div class="paciente-info-item">
-
-                <div class="paciente-info-icon">
-                    <i class="fa-regular fa-id-card"></i>
-                </div>
-
-                <div>
-                    <span>CPF</span>
-                    <strong>
-                        @(string.IsNullOrWhiteSpace(paciente.CPF)
-                                                ? "-"
-                                                : paciente.CPF)
-                                                           </strong>
-                                                       </div>
-
-            </div>
-
-            <div class="paciente-info-item">
-
-                <div class="paciente-info-icon">
-                    <i class="fa-regular fa-calendar"></i>
-                </div>
-
-                <div>
-                    <span>Nascimento</span>
-                    <strong>
-                        @(paciente.DataNascimento?.ToString("dd/MM/yyyy") ?? "-")
-                    </strong>
-                </div>
-
-            </div>
-
-            <div class="paciente-info-item">
-
-                <div class="paciente-info-icon">
-                    <i class="fa-solid fa-phone"></i>
-                </div>
-
-                <div>
-                    <span>Telefone</span>
-                    <strong>
-                        @(string.IsNullOrWhiteSpace(paciente.Telefone)
-                                                ? "-"
-                                                : paciente.Telefone)
-                                                                </strong>
-                                                            </div>
-
-            </div>
-
-            <div class="paciente-info-item">
-
-                <div class="paciente-info-icon">
-                    <i class="fa-regular fa-envelope"></i>
-                </div>
-
-                <div>
-                    <span>E-mail</span>
-                    <strong>
-                        @(string.IsNullOrWhiteSpace(paciente.Email)
-                                                ? "-"
-                                                : paciente.Email)
-                                                             </strong>
-                                                         </div>
-
-            </div>
-
-            <div class="paciente-info-item">
-
-                <div class="paciente-info-icon">
-                    <i class="fa-solid fa-shield-heart"></i>
-                </div>
-
-                <div>
-                    <span>Convênio</span>
-                    <strong>
-                        @(paciente.Convenio?.NomeConvenio ?? "-")
-                    </strong>
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="paciente-more-line">
-
-            <button class="btn paciente-more-button"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#maisDadosPaciente"
-                    aria-expanded="false"
-                    aria-controls="maisDadosPaciente">
-
-                Ver Mais Dados
-                <i class="fa-solid fa-chevron-down ms-2"></i>
-
-            </button>
-
-        </div>
-
-        <div class="collapse"
-             id="maisDadosPaciente">
-
-            <div class="paciente-extra">
-
-                <div class="paciente-extra-item">
-
-                    <span>
-                        <i class="fa-regular fa-note-sticky"></i>
-                        Observações
-                    </span>
-
-                    <strong>
-                        @(string.IsNullOrWhiteSpace(paciente.Observacoes)
-                                                ? "-"
-                                                : paciente.Observacoes)
-                    </strong>
-
                     </div>
+                </div>
+            </div>
+
+            <div class="paciente-info-grid">
+
+                <div class="paciente-info-item">
+                    <div class="paciente-info-icon"><i class="fa-regular fa-id-card"></i></div>
+                    <div>
+                        <span>CPF</span>
+                        <strong>@(string.IsNullOrWhiteSpace(paciente.CPF) ? "-" : paciente.CPF)</strong>
+                    </div>
+                </div>
+
+                <div class="paciente-info-item">
+                    <div class="paciente-info-icon"><i class="fa-regular fa-calendar"></i></div>
+                    <div>
+                        <span>Nascimento</span>
+                        <strong>@(paciente.DataNascimento?.ToString("dd/MM/yyyy") ?? "-")</strong>
+                    </div>
+                </div>
+
+                <div class="paciente-info-item">
+                    <div class="paciente-info-icon"><i class="fa-solid fa-phone"></i></div>
+                    <div>
+                        <span>Telefone</span>
+                        <strong>@(string.IsNullOrWhiteSpace(paciente.Telefone) ? "-" : paciente.Telefone)</strong>
+                    </div>
+                </div>
+
+                <div class="paciente-info-item">
+                    <div class="paciente-info-icon"><i class="fa-regular fa-envelope"></i></div>
+                    <div>
+                        <span>E-mail</span>
+                        <strong>@(string.IsNullOrWhiteSpace(paciente.Email) ? "-" : paciente.Email)</strong>
+                    </div>
+                </div>
+
+                <div class="paciente-info-item">
+                    <div class="paciente-info-icon"><i class="fa-solid fa-shield-heart"></i></div>
+                    <div>
+                        <span>Convênio</span>
+                        <strong>@(paciente.Convenio?.NomeConvenio ?? "-")</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="paciente-more-line">
+                <button class="btn paciente-more-button"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#maisDadosPaciente"
+                        aria-expanded="false"
+                        aria-controls="maisDadosPaciente">
+
+                    Ver Mais Dados
+                    <i class="fa-solid fa-chevron-down ms-2"></i>
+                </button>
+            </div>
+
+            <div class="collapse" id="maisDadosPaciente">
+
+                <div class="paciente-extra">
 
                     <div class="paciente-extra-item">
-
-                        <span>
-                            <i class="fa-regular fa-calendar-plus"></i>
-                            Data de Cadastro
-                        </span>
-
-                        <strong>
-                            @(paciente.DataCadastro?.ToString("dd/MM/yyyy") ?? "-")
-                        </strong>
-
+                        <span><i class="fa-regular fa-calendar-plus"></i> Data de Cadastro</span>
+                        <strong>@(paciente.DataCadastro?.ToString("dd/MM/yyyy") ?? "-")</strong>
                     </div>
 
+                    <div class="paciente-extra-item paciente-extra-observacoes">
+                        <span><i class="fa-regular fa-note-sticky"></i> Observações</span>
+                        <strong>@(string.IsNullOrWhiteSpace(paciente.Observacoes) ? "-" : paciente.Observacoes)</strong>
+                    </div>
+
+                    @if (endereco != null)
+                    {
+                        <div class="paciente-extra-item paciente-extra-endereco">
+
+                            <span> <i class="fa-solid fa-location-dot"></i> Endereço </span>
+
+                            <strong>
+                                @endereco.Logradouro,
+                                @(string.IsNullOrWhiteSpace(endereco.Numero) ? "s/n" : endereco.Numero)
+
+                                @if (!string.IsNullOrWhiteSpace(endereco.Complemento))
+                                {
+                                    <text> - @endereco.Complemento</text>
+                                }
+                            </strong>
+
+                        </div>
+
+                        <div class="paciente-extra-item">
+                            <span> <i class="fa-solid fa-map-location-dot"></i> Bairro</span>
+                             <strong>
+                                @(string.IsNullOrWhiteSpace(endereco.Bairro) ? "-" : endereco.Bairro)
+                             </strong>
+                        </div>
+
+                        <div class="paciente-extra-item">
+                            <span><i class="fa-solid fa-city"></i>Cidade / Estado</span>
+                            <strong>
+                                @(string.IsNullOrWhiteSpace(endereco.Cidade) ? "-" : endereco.Cidade)
+                                @if (!string.IsNullOrWhiteSpace(endereco.Estado))
+                                {
+                                    <text> / @endereco.Estado</text>
+                                }
+                            </strong>
+                        </div>
+
+                        <div class="paciente-extra-item">
+                            <span><i class="fa-solid fa-location-crosshairs"></i>CEP</span>
+                            <strong>
+                                @(string.IsNullOrWhiteSpace(endereco.Cep) ? "-" : endereco.Cep)
+                            </strong>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="paciente-extra-item paciente-extra-endereco">
+                            <span> <i class="fa-solid fa-location-dot"></i> Endereço
+                            </span> <strong>-</strong>
+                        </div>
+                    }
                 </div>
-
             </div>
-
         </div>
-
     </div>
 }
 else
 {
-    <div class="alert alert-warning">
-        Nenhum paciente encontrado.
-    </div>
+    <div class="alert alert-warning">Nenhum paciente encontrado.</div>
 }

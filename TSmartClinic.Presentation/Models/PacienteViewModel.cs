@@ -1,6 +1,4 @@
-﻿using TSmartClinic.Core.Domain.Entities;
-
-namespace TSmartClinic.Presentation.Models
+﻿namespace TSmartClinic.Presentation.Models
 {
     public class PacienteViewModel : BaseViewModel
     {
@@ -10,15 +8,17 @@ namespace TSmartClinic.Presentation.Models
         public string? Telefone { get; set; }
         public string? Email { get; set; }
         public string? Observacoes { get; set; }
-        public bool? Ativo { get; set; }
+        public bool? Ativo { get; set; } 
         public DateTime? DataCadastro { get; set; }
         public int? ConvenioId { get; set; }
         public int ClienteId { get; set; }
         public byte[]? Foto { get; set; }
 
 
+
         #region Relacionamentos
-        public Convenio? Convenio { get; set; }
+        public ConvenioViewModel? Convenio { get; set; }
+        public List<PacienteEnderecoViewModel>? PacienteEnderecos { get; set; }
         #endregion
     }
 }

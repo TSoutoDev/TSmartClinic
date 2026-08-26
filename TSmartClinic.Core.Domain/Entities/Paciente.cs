@@ -12,7 +12,7 @@ namespace TSmartClinic.Core.Domain.Entities
         public string? Email { get; set; }
         public string? Observacoes { get; set; }
         public bool? Ativo { get; set; }
-        public DateTime? DataCadastro { get; set; }
+        public DateTime? DataCadastro { get; set; } = DateTime.UtcNow;
         public int? ConvenioId { get; set; }
         public byte[]? Foto { get; set; }
         public int ClienteId { get; set; }
@@ -20,6 +20,7 @@ namespace TSmartClinic.Core.Domain.Entities
         #region Relacionamentos
         public Convenio? Convenio { get; set; }
         public Cliente? Cliente { get; set; }
+        public ICollection<PacienteEndereco>? PacienteEnderecos { get; set; }
         #endregion
 
         public override void Atualizar(object obj)

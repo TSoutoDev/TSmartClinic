@@ -14,5 +14,6 @@
         public int? ConvenioId { get; set; }
         public int ClienteId { get; set; }
         public ConvenioResponseDTO? Convenio { get; set; }
+        public List<PacienteEnderecoResponseDTO>? PacienteEnderecos { get; set; }
     }
 }

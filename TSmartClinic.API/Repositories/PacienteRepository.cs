@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Helpers.FilterHelper;
@@ -12,44 +11,47 @@ namespace TSmartClinic.API.Repositories
 {
     public class PacienteRepository : BaseRepository<Paciente>, IPacienteRepository
     {
-        public PacienteRepository(TSmartClinicContext TSmartClinicContext, IUsuarioLogadoService usuarioLogadoService) : base(TSmartClinicContext, usuarioLogadoService)
+        public PacienteRepository(TSmartClinicContext context, IUsuarioLogadoService usuarioLogadoService) : base(context, usuarioLogadoService)
         {
         }
 
-        public Paciente ObterPorIdCliente(int idPaciente, int clienteId)
+        public override Paciente ObterPorId(int id, params Expression<Func<Paciente, object>>[] properties)
         {
-            var query = _dbSet?
-                .AsNoTracking()
-                .Include(c => c.Convenio)
-                .FirstOrDefault(x =>
-                    x.Id == idPaciente && x.ClienteId == clienteId);
+            var query = _dbSet
+                .Include(x => x.Convenio)
+                .Include(x => x.PacienteEnderecos)
+                    .ThenInclude(x => x.Endereco)
+                .AsQueryable();
 
-            return query;
+            query = AplicarFiltroCliente(query);
+
+            return query.FirstOrDefault(x => x.Id == id);
         }
 
-        public List<Paciente> ListarPorCliente(BaseFiltro filtro, int clienteId, params Expression<Func<Paciente, object>>[] properties)
+        public override List<Paciente> Listar( BaseFiltro filtro, params Expression<Func<Paciente, object>>[] properties)
         {
-            var filtroPaciente = filtro as BaseFiltro;
-
             var query = MontarFiltro(filtro, properties);
 
+            query = AplicarFiltroCliente(query);
+
             query = query
-                .Where(x => x.ClienteId == clienteId)//proteção: retorna apenas o paciente da clinica
-                .Include(x => x.Convenio);
+                .Include(x => x.Convenio)
+                .Include(x => x.PacienteEnderecos)
+                    .ThenInclude(x => x.Endereco);
 
-
-            //Filtrar pelo nome se estiver presente no filtro
-            if (!string.IsNullOrWhiteSpace(filtroPaciente?.Nome))
+            if (!string.IsNullOrWhiteSpace(filtro.Nome))
             {
-                var nome = filtroPaciente.Nome.Trim().ToUpper();
-                query = query.Where(c => EF.Functions.ILike(c.NomePaciente, $"%{filtroPaciente.Nome.Trim()}%"));
+                var nome = filtro.Nome.Trim();
+                query = query.Where(x => x.NomePaciente != null && EF.Functions.ILike(x.NomePaciente, $"%{nome}%"));
             }
 
             if (filtro.PaginaAtual > 0 && filtro.ItensPorPagina > 0)
             {
                 var pagina = filtro.PaginaAtual - 1;
-                query = query.Skip(pagina * filtro.ItensPorPagina)
-                             .Take(filtro.ItensPorPagina);
+
+                query = query
+                    .Skip(pagina * filtro.ItensPorPagina)
+                    .Take(filtro.ItensPorPagina);
             }
 
             return query.ToList();

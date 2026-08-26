@@ -31,6 +31,7 @@ namespace AgendaApp.API.Mapper
             CreateMap<Perfil, BasePerfilRequestDTO>().ReverseMap();
             CreateMap<UsuarioClientePerfil, BaseUsuarioClientePerfilRequestDto>().ReverseMap();
             CreateMap<Convenio, BaseConvenioRequestDTO>().ReverseMap();
+            CreateMap<BaseEnderecoRequestDTO, Endereco>().ReverseMap();
 
             //insert
             CreateMap<Categoria, CategoriaInsertRequestDTO>().ReverseMap();
@@ -40,6 +41,7 @@ namespace AgendaApp.API.Mapper
               .ForMember(d => d.DataInclusao,
                   opt => opt.MapFrom(src => src.DataInclusao ?? DateTime.UtcNow)).ReverseMap();
             CreateMap<UsuarioClientePerfil, UsuarioClientePerfilInsertRequestDto>().ReverseMap();
+            CreateMap<PacienteEnderecoRequestDTO, PacienteEndereco>().ReverseMap();
 
             //Update
             CreateMap<Categoria, CategoriaUpdateRequestDTO>().ReverseMap();
@@ -52,7 +54,7 @@ namespace AgendaApp.API.Mapper
             CreateMap<Usuario, UsuarioUpdateRequestDTO>()
                 .ForMember(dest => dest.UsuarioClientePerfil, opt => opt.MapFrom(src => src.UsuarioClientePerfil)).ReverseMap();
             CreateMap<OperacaoPerfil, UsuarioUpdateRequestDTO>().ReverseMap();
-           
+            CreateMap<PacienteUpdateRequestDTO, Paciente>().ReverseMap();
 
             //Response
             CreateMap<Cliente, ClienteResponseDTO>();
@@ -77,7 +79,9 @@ namespace AgendaApp.API.Mapper
             CreateMap<UsuarioClientePerfil, UsuarioClientePerfilResponseDto>()
                 .ForMember(dest => dest.Perfil, opt => opt.MapFrom(src => src.Perfil))
                  .ReverseMap();
-           
+            CreateMap<Endereco, EnderecoResponseDTO>().ReverseMap();
+            CreateMap<PacienteEndereco, PacienteEnderecoResponseDTO>().ReverseMap();
+            CreateMap<Paciente, PacienteResponseDTO>().ReverseMap(); ;
         }
     }
 }
