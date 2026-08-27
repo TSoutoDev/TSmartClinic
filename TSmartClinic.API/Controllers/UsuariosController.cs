@@ -1,11 +1,7 @@
-﻿//using TSmartClinic.API.DTOs.Requests.Insert;
-//using TSmartClinic.API.DTOs.Requests.Update;
-//using TSmartClinic.API.DTOs.Responses;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using TSmartClinic.API.Handles;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Exceptions;
@@ -20,38 +16,43 @@ namespace TSmartClinic.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuariosController : BaseController<Usuario, IUsuarioService, UsuarioFiltro, UsuarioInsertRequestDTO, UsuarioUpdateRequestDTO, UsuarioResponseDTO>
+    [PermissionModule("Usuarios")]
+    public class UsuariosController : BaseController<Usuario,IUsuarioService, UsuarioFiltro, UsuarioInsertRequestDTO, UsuarioUpdateRequestDTO, UsuarioResponseDTO>
     {
         private readonly IUsuarioService _usuarioService;
         private readonly ITokenService _tokenService;
+
         public UsuariosController(ITokenService tokenService, IUsuarioService usuarioService, IMapper mapper) : base(usuarioService, mapper)
         {
             _usuarioService = usuarioService;
             _tokenService = tokenService;
         }
 
-        [AuthorizePermission("Usuarios_Acessar")]
+        [AuthorizePermission("Acessar")]
         [HttpGet("obter-por-email/{email}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(204)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(500)]
-        public virtual ActionResult<UsuarioResponseDTO> ObterPorEmail(string email)
+        public ActionResult<UsuarioResponseDTO> ObterPorEmail(string email)
         {
-            var obj = _usuarioService?.ObterPorEmail(email);
+            var obj = _usuarioService.ObterPorEmail(email);
 
-            if (obj == null) throw new NotFoundException();
+            if (obj == null)
+                throw new NotFoundException();
 
             return StatusCode(200, Mapper.Map<UsuarioResponseDTO>(obj));
         }
 
-        [AuthorizePermission("Usuarios_Editar")]
+        [AuthorizePermission("Editar")]
         [HttpPatch("{id}/bloquear")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(500)]
-        public virtual ActionResult<UsuarioResponseDTO> Bloquear(int id)
+        public ActionResult<UsuarioResponseDTO> Bloquear(int id)
         {
-            _usuarioService?.Bloquear(id);
+            _usuarioService.Bloquear(id);
 
             return StatusCode(200);
         }
@@ -66,14 +67,18 @@ namespace TSmartClinic.API.Controllers
             try
             {
                 _usuarioService.DefinirSenha(req.Token, req.NovaSenha);
-                return Ok(new { message = "Senha definida com sucesso." });
+
+                return Ok(new
+                {
+                    message = "Senha definida com sucesso."
+                });
             }
             catch (SecurityTokenException ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-       
+
         [HttpPost("reset-senha")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -84,42 +89,13 @@ namespace TSmartClinic.API.Controllers
             try
             {
                 _usuarioService.GerarTokenResetSenha(req.Email);
-                return Ok(new { message = "Senha definida com sucesso." });
+
+                return Ok(new {message = "Solicitação de redefinição de senha realizada com sucesso."});
             }
             catch (SecurityTokenException ex)
             {
                 return BadRequest(ex.Message);
             }
-        }
-
-        [AuthorizePermission("Usuarios_Acessar")]
-        public override ActionResult<ResponseDTO<UsuarioResponseDTO>> Listar(UsuarioFiltro filtro)
-        {
-            return base.Listar(filtro);
-        }
-
-        [AuthorizePermission("Usuarios_Acessar")]
-        public override ActionResult<UsuarioResponseDTO> ObterPorId(int id)
-        {
-            return base.ObterPorId(id);
-        }
-
-        [AuthorizePermission("Usuarios_Incluir")]
-        public override ActionResult<UsuarioResponseDTO> Inserir(UsuarioInsertRequestDTO objRequest)
-        {
-            return base.Inserir(objRequest);
-        }
-
-        [AuthorizePermission("Usuarios_Editar")]
-        public override ActionResult<UsuarioResponseDTO> Atualizar(Guid publicId, UsuarioUpdateRequestDTO objRequest)
-        {
-            return base.Atualizar(publicId, objRequest);
-        }
-
-        [AuthorizePermission("Usuarios_Excluir")]
-        public override ActionResult Excluir(Guid publicId)
-        {
-            return base.Excluir(publicId);
         }
     }
 }

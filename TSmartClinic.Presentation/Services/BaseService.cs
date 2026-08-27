@@ -139,7 +139,7 @@ namespace TSmartClinic.Presentation.Services
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
                 HttpResponseMessage response = await client.PostAsJsonAsync($"{_baseUrlController}", entity);
-                var conteudoErro = await response.Content.ReadAsStringAsync();
+                //var conteudoErro = await response.Content.ReadAsStringAsync();
 
                 retorno.StatusCode = response.StatusCode.GetHashCode();
                 if (response.StatusCode == System.Net.HttpStatusCode.Created)
