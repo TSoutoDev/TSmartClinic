@@ -1416,7 +1416,7 @@
       ],
       "DownstreamHttpMethod": null,
       "DownstreamHttpVersion": null,
-      "DownstreamPathTemplate": "/api/pacientes/{id}",
+      "DownstreamPathTemplate": "/api/pacientes/{publicId}",
       "DownstreamScheme": "http",
       "FileCacheOptions": {
         "TtlSeconds": 0,
@@ -1468,7 +1468,7 @@
         "PATCH",
         "DELETE"
       ],
-      "UpstreamPathTemplate": "/pacientes/{id}"
+      "UpstreamPathTemplate": "/pacientes/{publicId}"
     },
     {
       "AddClaimsToRequest": {},

@@ -28,6 +28,19 @@ namespace TSmartClinic.API.Repositories
             return query.FirstOrDefault(x => x.Id == id);
         }
 
+        public override Paciente ObterPorPublicId(Guid publicId, params Expression<Func<Paciente, object>>[] properties)
+        {
+            var query = _dbSet
+                .Include(x => x.Convenio)
+                .Include(x => x.PacienteEnderecos)
+                    .ThenInclude(x => x.Endereco)
+                .AsQueryable();
+
+            query = AplicarFiltroCliente(query);
+
+            return query.FirstOrDefault(x => x.PublicId == publicId);
+        }
+
         public override List<Paciente> Listar( BaseFiltro filtro, params Expression<Func<Paciente, object>>[] properties)
         {
             var query = MontarFiltro(filtro, properties);
@@ -55,6 +68,23 @@ namespace TSmartClinic.API.Repositories
             }
 
             return query.ToList();
+        }
+
+        public void ExcluirComEnderecos(Paciente paciente)
+        {
+            var enderecos = paciente.PacienteEnderecos?
+                .Where(x => x.Endereco != null)
+                .Select(x => x.Endereco!)
+                .ToList();
+
+            _dbSet?.Remove(paciente);
+
+            if (enderecos != null && enderecos.Any())
+            {
+                _dbContext?.Set<Endereco>().RemoveRange(enderecos);
+            }
+
+            _dbContext?.SaveChanges();
         }
     }
 }

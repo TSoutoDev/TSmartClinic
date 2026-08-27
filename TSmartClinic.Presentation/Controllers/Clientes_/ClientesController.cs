@@ -22,11 +22,11 @@ namespace TSmartClinic.Presentation.Controllers.Clientes_
         }
 
         // GET: Cadastro
-        public override async Task<IActionResult> Cadastro(int? id)
+        public override async Task<IActionResult> Cadastro(Guid? PublicId)
         {
             await CriarViewBags();
 
-            var result = await base.Cadastro(id) as ViewResult;
+            var result = await base.Cadastro(PublicId) as ViewResult;
 
             if (result?.Model is UsuarioViewModel model)
             {

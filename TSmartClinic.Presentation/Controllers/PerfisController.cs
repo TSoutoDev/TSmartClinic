@@ -55,7 +55,7 @@ namespace TSmartClinic.Presentation.Controllers
             if (model.Id.HasValue)
             {
                 var operacoes = model.SelectedOperacaoIds ?? Enumerable.Empty<int>();
-                _perfilService.Atualizar(model.Id.Value, model);
+                _perfilService.Atualizar(model.PublicId.Value, model);
                // await _perfilPermissaoService.SalvarOperacoesDoPerfilAsync(model.Id.Value, operacoes);
 
             }
@@ -63,19 +63,19 @@ namespace TSmartClinic.Presentation.Controllers
             return await base.Cadastro(model);
         }
 
-        public override async Task<IActionResult> Cadastro(int? id)
+        public override async Task<IActionResult> Cadastro(Guid? publicId)
         {
             await CriarViewBags();
 
             var arvore = await _perfilPermissaoService.ListarArvorePermissoesAsync();
 
-            if (!id.HasValue)
+            if (!publicId.HasValue)
             {
                 return View(new PerfilViewModel { Modulos = arvore });
             }
 
             //ResponseViewModel<List<PerfilViewModel>>
-            var resp = await _perfilService.ObterPorId(id.Value);
+            var resp = await _perfilService.ObterPorPublicId(publicId.Value);
 
             // "Objeto" ITENS do payload
             var model = (resp?.Itens ?? new List<PerfilViewModel>()).FirstOrDefault();
@@ -87,7 +87,7 @@ namespace TSmartClinic.Presentation.Controllers
             }
 
             model.Modulos = arvore;
-            model.SelectedOperacaoIds = await _perfilPermissaoService.ObterOperacoesDoPerfilAsync(id.Value);
+            model.SelectedOperacaoIds = await _perfilPermissaoService.ObterOperacoesDoPerfilAsync(publicId.Value);
 
             return View(model);
         }

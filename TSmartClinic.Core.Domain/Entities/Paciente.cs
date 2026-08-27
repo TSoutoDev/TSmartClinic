@@ -3,8 +3,9 @@ using TSmartClinic.Core.Domain.Interfaces.Entities;
 
 namespace TSmartClinic.Core.Domain.Entities
 {
-    public class Paciente : Base, IEntidadePorCliente
+    public class Paciente : Base, IEntidadePorCliente, IEntidadeComPublicId
     {
+        public Guid PublicId { get; set; } = Guid.NewGuid();
         public string? NomePaciente { get; set; }
         public DateTime? DataNascimento { get; set; }
         public string? CPF { get; set; }

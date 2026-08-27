@@ -12,9 +12,9 @@ namespace TSmartClinic.Presentation.Controllers.Pacientes
             _pacienteService = pacienteService;
         }
 
-        public async Task<IActionResult> PacientesDadosPartial(int id)
+        public async Task<IActionResult> PacientesDadosPartial(Guid publicId)
         {
-            var paciente = await _pacienteService.ObterPorId(id);
+            var paciente = await _pacienteService.ObterPorPublicId(publicId);
 
             if (paciente == null)
                 return NotFound();

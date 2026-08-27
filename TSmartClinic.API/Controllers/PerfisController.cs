@@ -57,15 +57,15 @@ namespace TSmartClinic.API.Controllers
         }
 
         [AuthorizePermission("Perfis_Editar")]
-        public override ActionResult<PerfilResponseDTO> Atualizar(int id, PerfilUpdateRequestDTO objRequest)
+        public override ActionResult<PerfilResponseDTO> Atualizar(Guid publicId, PerfilUpdateRequestDTO objRequest)
         {
-            return base.Atualizar(id, objRequest);
+            return base.Atualizar(publicId, objRequest);
         }
 
         [AuthorizePermission("Perfis_Excluir")]
-        public override ActionResult Excluir(int id)
+        public override ActionResult Excluir(Guid publicId)
         {
-            return base.Excluir(id);
+            return base.Excluir(publicId);
         }
     }
 }

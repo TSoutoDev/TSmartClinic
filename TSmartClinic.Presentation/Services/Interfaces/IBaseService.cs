@@ -8,9 +8,10 @@ namespace TSmartClinic.Presentation.Services.Interfaces
         where TViewModel : BaseViewModel
     {
         Task<ResponseViewModel<TViewModel>> ObterPorId(int id);
+        Task<ResponseViewModel<TViewModel>> ObterPorPublicId(Guid publicId);
         Task<ResponseViewModel<TViewModel>> Inserir(TViewModel entity);
-        Task<ResponseViewModel<TViewModel>> Atualizar(int id, TViewModel entity);
-        Task<ResponseViewModel<TViewModel>> Excluir(int id);
+        Task<ResponseViewModel<TViewModel>> Atualizar(Guid publicId, TViewModel entity);
+        Task<ResponseViewModel<TViewModel>> Excluir(Guid publicId);
         Task<ResponseViewModel<TViewModel>> Listar(TFilterViewModel filtro);
     }
 }

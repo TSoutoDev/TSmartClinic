@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TSmartClinic.API.Handles;
 using TSmartClinic.Core.Domain.Entities;
+using TSmartClinic.Core.Domain.Exceptions;
 using TSmartClinic.Core.Domain.Helpers.FilterHelper;
 using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Shared.DTOs.Requests.Insert;
@@ -18,7 +19,7 @@ namespace TSmartClinic.API.Controllers
         {
         }
 
-        [AuthorizePermission("Pacientes_Acessar")]
+        [AuthorizePermission("Pacientes_Acessar")] 
         [HttpPost("listar")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -30,14 +31,19 @@ namespace TSmartClinic.API.Controllers
         }
 
         [AuthorizePermission("Pacientes_Acessar")]
-        [HttpGet("{id}")]
+        [HttpGet("{publicId:guid}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(403)]
         [ProducesResponseType(500)]
-        public override ActionResult<PacienteResponseDTO> ObterPorId(int id)
+        public ActionResult<PacienteResponseDTO> ObterPorPublicId(Guid publicId)
         {
-            return base.ObterPorId(id);
+            var paciente = Service.ObterPorPublicId(publicId);
+
+            if (paciente == null)
+                throw new NotFoundException();
+
+            return StatusCode(200, Mapper.Map<PacienteResponseDTO>(paciente));
         }
 
         [AuthorizePermission("Pacientes_Incluir")]
@@ -48,30 +54,59 @@ namespace TSmartClinic.API.Controllers
         [ProducesResponseType(500)]
         public override ActionResult<PacienteResponseDTO> Inserir(PacienteInsertRequestDTO objRequest)
         {
+            ValidarFoto(objRequest.Foto, objRequest.FotoContentType);
             return base.Inserir(objRequest);
         }
 
         [AuthorizePermission("Pacientes_Editar")]
-        [HttpPatch("{id}")]
+        [HttpPatch("{publicId:guid}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(403)]
         [ProducesResponseType(500)]
-        public override ActionResult<PacienteResponseDTO> Atualizar(int id, PacienteUpdateRequestDTO objRequest)
+        public override ActionResult<PacienteResponseDTO> Atualizar(Guid publicId, PacienteUpdateRequestDTO objRequest)
         {
-            return base.Atualizar(id, objRequest);
+            ValidarFoto(objRequest.Foto, objRequest.FotoContentType);
+            return base.Atualizar(publicId, objRequest);
         }
 
         [AuthorizePermission("Pacientes_Excluir")]
-        [HttpDelete("{id}")]
+        [HttpDelete("{publicId:guid}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(403)]
         [ProducesResponseType(500)]
-        public override ActionResult Excluir(int id)
+        public override ActionResult Excluir(Guid publicId)
         {
-            return base.Excluir(id);
+            return base.Excluir(publicId);
         }
+
+        #region Métodos auxiliares
+
+        private void ValidarFoto(byte[]? foto, string? contentType)
+        {
+            if (foto == null || foto.Length == 0)
+                return;
+
+            // Foto existente sendo mantida
+            if (string.IsNullOrWhiteSpace(contentType))
+                return;
+
+            if (foto.Length > 2 * 1024 * 1024)
+                throw new Exception("A foto deve ter no máximo 2 MB.");
+
+            var tiposPermitidos = new[]
+            {
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            };
+
+            if (!tiposPermitidos.Contains(contentType.ToLower()))
+                throw new Exception("Formato de foto inválido. Utilize JPG, PNG ou WEBP.");
+        }
+
+        #endregion
     }
 }

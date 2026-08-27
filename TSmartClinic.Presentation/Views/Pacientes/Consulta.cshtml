@@ -161,9 +161,7 @@
 </div>
 
 
-@if (Model != null &&
-     Model.Itens != null &&
-     Model.Itens.Count > 0)
+@if (Model != null &&  Model.Itens != null && Model.Itens.Count > 0)
 {
     <div class="card">
         <div class="card-body">
@@ -185,8 +183,7 @@
                     {
                         <tr class="clickable"
                             style="cursor:pointer"
-                            onclick="location.href='@Url.Action("CentralPaciente", "Pacientes", new { id = item.Id })'">
-
+                            onclick="location.href='@Url.Action("CentralPaciente", "Pacientes", new { publicId = item.PublicId })'">
                             <td> @item.NomePaciente?.ToUpper() </td>
                             <td> @(string.IsNullOrWhiteSpace(item.CPF) ? "-" : item.CPF) </td>
                             <td> @(string.IsNullOrWhiteSpace(item.Telefone) ? "-" : item.Telefone)</td>
@@ -206,4 +203,20 @@ else if (Model != null)
         <i class="fa fa-info-circle"></i>
         Nenhum paciente encontrado.
     </div>
+}
+
+
+@section Scripts
+{
+     
+    <script>
+           //grid
+        $(document).ready(function () {
+
+            $('#gridResultados').DataTable(
+                dataTableLocalInit()
+            );
+
+        });
+    </script>
 }

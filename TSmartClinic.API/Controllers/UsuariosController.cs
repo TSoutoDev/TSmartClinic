@@ -111,15 +111,15 @@ namespace TSmartClinic.API.Controllers
         }
 
         [AuthorizePermission("Usuarios_Editar")]
-        public override ActionResult<UsuarioResponseDTO> Atualizar(int id, UsuarioUpdateRequestDTO objRequest)
+        public override ActionResult<UsuarioResponseDTO> Atualizar(Guid publicId, UsuarioUpdateRequestDTO objRequest)
         {
-            return base.Atualizar(id, objRequest);
+            return base.Atualizar(publicId, objRequest);
         }
 
         [AuthorizePermission("Usuarios_Excluir")]
-        public override ActionResult Excluir(int id)
+        public override ActionResult Excluir(Guid publicId)
         {
-            return base.Excluir(id);
+            return base.Excluir(publicId);
         }
     }
 }

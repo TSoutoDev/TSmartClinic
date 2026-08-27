@@ -4,452 +4,292 @@
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
     ViewBag.Titulo = "Cadastro de Pacientes";
 
-    var enderecoPaciente = Model.PacienteEnderecos?
-        .FirstOrDefault(x => x.Tipo == "Residencial")
-        ?? Model.PacienteEnderecos?.FirstOrDefault();
-
+    var enderecoPaciente = Model.PacienteEnderecos?.FirstOrDefault(x => x.Tipo == "Residencial") ?? Model.PacienteEnderecos?.FirstOrDefault();
     var endereco = enderecoPaciente?.Endereco ?? new EnderecoViewModel();
+
+    var temFoto = Model.Foto != null && Model.Foto.Length > 0;
+    var fotoBase64 = temFoto ? Convert.ToBase64String(Model.Foto!) : null;
 }
 
-
-
-@using (Html.BeginForm())
+@using (Html.BeginForm("Cadastro", "Pacientes", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
+    @Html.HiddenFor(model => model.PublicId)
     <div class="row">
         <div class="col-md-12">
-
             <div class="card card-small">
 
                 <div class="card-body">
 
-                    @* =========================
-                       DADOS DO PACIENTE
-                       ========================= *@
+                    @* ========================= DADOS DO PACIENTE ========================= *@
 
-                    <div class="form-secao-titulo">
-                        <i class="fa-solid fa-user"></i>
-                        Dados do Paciente
-                    </div>
+                    <div class="form-secao-titulo"><i class="fa-solid fa-user"></i> Dados do Paciente</div>
 
-                    <div class="row">
+                    @* FOTO *@
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label-tsmart">Foto do Paciente</label>
 
-                        <div class="col-md-6">
-
-                            <label class="form-label-tsmart">Nome</label>
-
-                            <div class="campo-com-icone">
-                                <i class="fa-regular fa-user"></i>
-
-                                @Html.TextBoxFor(model => model.NomePaciente, new
+                            <div class="d-flex align-items-center gap-3">
+                                @if (temFoto)
                                 {
-                                    @class = "form-control",
-                                                        @autocomplete = "off"
-                                                        })
-                        </div>
-
-                        <span class="text-danger">
-                            @Html.ValidationMessageFor(model => model.NomePaciente)
-                        </span>
-
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label-tsmart">CPF</label>
-                        <div class="campo-com-icone">
-                            <i class="fa-regular fa-id-card"></i>
-                            @Html.TextBoxFor(model => model.CPF, 
-                                new{
-                                    @class = "form-control",
-                                    @autocomplete = "off"
-                                   })
-                            <div class="invalid-feedback"> Informe um CPF válido. </div>
-                        </div>
-
-                        <span class="text-danger">
-                            @Html.ValidationMessageFor(model => model.CPF)
-                        </span>
-
-                    </div>
-
-                    <div class="col-md-3">
-
-                        <label class="form-label-tsmart">Data de Nascimento</label>
-
-                        <div class="campo-com-icone">
-                            <i class="fa-regular fa-calendar"></i>
-
-                            @Html.TextBoxFor(model => model.DataNascimento, "{0:yyyy-MM-dd}",
-                            new
-                            {
-                                @class = "form-control",
-                                @type = "date"
-                            })
-                        </div>
-
-                        <div class="invalid-feedback">
-                            Informe uma data de nascimento válida.
-                        </div>
-
-                        <span class="text-danger">
-                            @Html.ValidationMessageFor(model => model.DataNascimento)
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="row mt-3">
-
-                    <div class="col-md-3">
-
-                        <label class="form-label-tsmart">Telefone</label>
-
-                        <div class="campo-com-icone">
-                            <i class="fa-solid fa-phone"></i>
-
-                            @Html.TextBoxFor(model => model.Telefone, 
-                                new{
-                                    @class = "form-control",
-                                    @autocomplete = "off"
-                                   })
-                        </div>
-
-                        <div class="invalid-feedback"> Informe um de telefone válido. </div>
-
-                        <span class="text-danger">
-                            @Html.ValidationMessageFor(model => model.Telefone)
-                        </span>
-
-                    </div>
-
-
-                    <div class="col-md-5">
-
-                        <label class="form-label-tsmart">Email</label>
-
-                        <div class="campo-com-icone">
-                            <i class="fa-regular fa-envelope"></i>
-
-                            @Html.TextBoxFor(model => model.Email, new
-                                                        {
-                                    @class = "form-control",
-                                                        @autocomplete = "off",
-                                                        @type = "email"
-                                                        })
-                        </div>
-
-                        <span class="text-danger">
-                            @Html.ValidationMessageFor(model => model.Email)
-                        </span>
-
-                    </div>
-
-
-                    <div class="col-md-4">
-
-                        <label class="form-label-tsmart">Convênio</label>
-
-                        <div class="campo-com-icone">
-
-                            <i class="fa-solid fa-shield-heart"></i>
-
-                            <select asp-for="ConvenioId"
-                                    class="form-select"
-                                    asp-items="ViewBag.Convenios">
-
-                                <option value="">
-                                    - Selecione o Convênio -
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                        <span class="text-danger">
-                            @Html.ValidationMessageFor(model => model.ConvenioId)
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="row mt-3">
-
-                    <div class="col-md-12">
-
-                        <label class="form-label-tsmart">Observações</label>
-
-                        <div class="campo-com-icone textarea-icone">
-
-                            <i class="fa-regular fa-note-sticky"></i>
-
-                            @Html.TextAreaFor(model => model.Observacoes, new
-                                                        {
-                                    @class = "form-control",
-                                                        @rows = "4",
-                                                        @autocomplete = "off"
-                                                        })
-
-                        </div>
-
-                        <span class="text-danger">
-                            @Html.ValidationMessageFor(model => model.Observacoes)
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                @* =========================
-                       ENDEREÇO
-                 ========================= *@
-
-                <hr class="my-4" />
-
-                <div class="form-secao-titulo">
-                    <i class="fa-solid fa-location-dot"></i>
-                    Endereço
-                </div>
-
-
-                @* Dados necessários para o Model Binder *@
-                <input type="hidden" name="PacienteEnderecos[0].Tipo" value="Residencial" />
-                <input type="hidden" name="PacienteEnderecos[0].EnderecoId" value="@enderecoPaciente?.EnderecoId" />
-                <input type="hidden" name="PacienteEnderecos[0].Endereco.Id" value="@endereco.Id" />
-
-                <div class="row">
-
-                    <div class="col-md-3">
-
-                        <label class="form-label-tsmart">CEP</label>
-
-                        <div class="campo-com-icone">
-
-                            <i class="fa-solid fa-location-crosshairs"></i>
-
-                            <input type="text"
-                                   name="PacienteEnderecos[0].Endereco.Cep"
-                                   value="@endereco.Cep"
-                                   class="form-control"
-                                   autocomplete="off" />
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-6">
-
-                        <label class="form-label-tsmart">Logradouro</label>
-
-                        <div class="campo-com-icone">
-
-                            <i class="fa-solid fa-road"></i>
-
-                            <input type="text"
-                                   name="PacienteEnderecos[0].Endereco.Logradouro"
-                                   value="@endereco.Logradouro"
-                                   class="form-control"
-                                   autocomplete="off" />
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-3">
-
-                        <label class="form-label-tsmart">Número</label>
-
-                        <div class="campo-com-icone">
-
-                            <i class="fa-solid fa-hashtag"></i>
-
-                            <input type="text"
-                                   name="PacienteEnderecos[0].Endereco.Numero"
-                                   value="@endereco.Numero"
-                                   class="form-control"
-                                   autocomplete="off" />
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="row mt-3">
-
-                    <div class="col-md-4">
-
-                        <label class="form-label-tsmart">Complemento</label>
-
-                        <div class="campo-com-icone">
-
-                            <i class="fa-regular fa-building"></i>
-
-                            <input type="text"
-                                   name="PacienteEnderecos[0].Endereco.Complemento"
-                                   value="@endereco.Complemento"
-                                   class="form-control"
-                                   autocomplete="off" />
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-3">
-
-                        <label class="form-label-tsmart">Bairro</label>
-
-                        <div class="campo-com-icone">
-
-                            <i class="fa-solid fa-map"></i>
-
-                            <input type="text"
-                                   name="PacienteEnderecos[0].Endereco.Bairro"
-                                   value="@endereco.Bairro"
-                                   class="form-control"
-                                   autocomplete="off" />
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-3">
-
-                        <label class="form-label-tsmart">Cidade</label>
-
-                        <div class="campo-com-icone">
-
-                            <i class="fa-solid fa-city"></i>
-
-                            <input type="text"
-                                   name="PacienteEnderecos[0].Endereco.Cidade"
-                                   value="@endereco.Cidade"
-                                   class="form-control"
-                                   autocomplete="off" />
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-2">
-
-                        <label class="form-label-tsmart">Estado</label>
-
-                        <div class="campo-com-icone">
-
-                            <i class="fa-solid fa-map-location-dot"></i>
-
-                            <input type="text"
-                                   name="PacienteEnderecos[0].Endereco.Estado"
-                                   value="@endereco.Estado"
-                                   class="form-control"
-                                   autocomplete="off"
-                                   maxlength="2" />
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            @* =========================
-                   SITUAÇÃO / AÇÕES
-                   ========================= *@
-
-            <div class="card-body">
-
-                <div class="row">
-
-                    <div class="col-md-2">
-
-                        <label class="form-label-tsmart">Situação</label>
-
-                        <div class="campo-com-icone">
-                            @if (!Model.Id.HasValue)
-                                {
-                                    <input type="hidden" asp-for="Ativo" value="true" />
-
-                                    <div class="campo-com-icone">
-                                        <i class="fa-solid fa-circle-check"></i>
-
-                                        <select class="form-select" disabled>
-                                            <option selected>Ativo</option>
-                                        </select>
-                                    </div>
+                                    <img id="previewFotoPaciente" src="data:image/jpeg;base64,@fotoBase64" alt="Foto do paciente" class="rounded-circle border" style="width:80px;height:80px;object-fit:cover;" />
                                 }
                                 else
                                 {
-                                    <div class="campo-com-icone">
-                                        <i class="fa-solid fa-circle-check"></i>
-
-                                        <select asp-for="Ativo" class="form-select">
-                                            <option value="true">Ativo</option>
-                                            <option value="false">Inativo</option>
-                                        </select>
+                                    <div id="previewFotoPlaceholder" class="rounded-circle border d-flex align-items-center justify-content-center" style="width:80px;height:80px;background:#f4f7ff;color:#8c9bb5;">
+                                        <i class="fa-regular fa-user fa-2x"></i>
                                     </div>
+
+                                    <img id="previewFotoPaciente" src="" alt="Foto do paciente" class="rounded-circle border d-none" style="width:80px;height:80px;object-fit:cover;" />
                                 }
 
+                                <div class="flex-grow-1">
+                                    <div class="campo-com-icone">
+                                        <i class="fa-regular fa-image"></i>
+                                        <input type="file" id="FotoArquivo" name="FotoArquivo" class="form-control" accept="image/jpeg,image/png,image/webp" />
+                                    </div>
+                                    <small class="text-muted">JPG, PNG ou WEBP. Máximo recomendado: 2 MB.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label-tsmart">Nome</label>
+                            <div class="campo-com-icone">
+                                <i class="fa-regular fa-user"></i>
+                                @Html.TextBoxFor(model => model.NomePaciente, new { @class = "form-control", @autocomplete = "off" })
+                            </div>
+                            <span class="text-danger">@Html.ValidationMessageFor(model => model.NomePaciente)</span>
                         </div>
 
+                        <div class="col-md-3">
+                            <label class="form-label-tsmart">CPF</label>
+                            <div class="campo-com-icone">
+                                <i class="fa-regular fa-id-card"></i>
+                                @Html.TextBoxFor(model => model.CPF, new { @class = "form-control", @autocomplete = "off" })
+                                <div class="invalid-feedback">Informe um CPF válido.</div>
+                            </div>
+                            <span class="text-danger">@Html.ValidationMessageFor(model => model.CPF)</span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label-tsmart">Data de Nascimento</label>
+                            <div class="campo-com-icone">
+                                <i class="fa-regular fa-calendar"></i>
+                                @Html.TextBoxFor(model => model.DataNascimento, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
+                                <div class="invalid-feedback">Informe uma data de nascimento válida.</div>
+                            </div>
+                            <span class="text-danger">@Html.ValidationMessageFor(model => model.DataNascimento)</span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label class="form-label-tsmart">Telefone</label>
+                            <div class="campo-com-icone">
+                                <i class="fa-solid fa-phone"></i>
+                                @Html.TextBoxFor(model => model.Telefone, new { @class = "form-control", @autocomplete = "off" })
+                            </div>
+                            <span class="text-danger">@Html.ValidationMessageFor(model => model.Telefone)</span>
+                        </div>
+
+                        <div class="col-md-5">
+                            <label class="form-label-tsmart">Email</label>
+                            <div class="campo-com-icone">
+                                <i class="fa-regular fa-envelope"></i>
+                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control", @autocomplete = "off", @type = "email" })
+                            </div>
+                            <span class="text-danger">@Html.ValidationMessageFor(model => model.Email)</span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label-tsmart">Convênio</label>
+                            <div class="campo-com-icone">
+                                <i class="fa-solid fa-shield-heart"></i>
+                                <select asp-for="ConvenioId" class="form-select" asp-items="ViewBag.Convenios">
+                                    <option value="">- Selecione o Convênio -</option>
+                                </select>
+                            </div>
+                            <span class="text-danger">@Html.ValidationMessageFor(model => model.ConvenioId)</span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label class="form-label-tsmart">Observações</label>
+                            <div class="campo-com-icone textarea-icone">
+                                <i class="fa-regular fa-note-sticky"></i>
+                                @Html.TextAreaFor(model => model.Observacoes, new { @class = "form-control", @rows = "4", @autocomplete = "off" })
+                            </div>
+                            <span class="text-danger">@Html.ValidationMessageFor(model => model.Observacoes)</span>
+                        </div>
+                    </div>
+
+                    @* ========================= ENDEREÇO ========================= *@
+
+                    <hr class="my-4" />
+
+                    <div class="form-secao-titulo"><i class="fa-solid fa-location-dot"></i> Endereço</div>
+
+                    <input type="hidden" name="PacienteEnderecos[0].Tipo" value="Residencial" />
+                    <input type="hidden" name="PacienteEnderecos[0].EnderecoId" value="@enderecoPaciente?.EnderecoId" />
+                    <input type="hidden" name="PacienteEnderecos[0].Endereco.Id" value="@endereco.Id" />
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="form-label-tsmart">CEP</label>
+                            <div class="campo-com-icone">
+                                <i class="fa-solid fa-location-crosshairs"></i>
+                                <input type="text" name="PacienteEnderecos[0].Endereco.Cep" value="@endereco.Cep" class="form-control" autocomplete="off" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label-tsmart">Logradouro</label>
+                            <div class="campo-com-icone">
+                                <i class="fa-solid fa-road"></i>
+                                <input type="text" name="PacienteEnderecos[0].Endereco.Logradouro" value="@endereco.Logradouro" class="form-control" autocomplete="off" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label-tsmart">Número</label>
+                            <div class="campo-com-icone">
+                                <i class="fa-solid fa-hashtag"></i>
+                                <input type="text" name="PacienteEnderecos[0].Endereco.Numero" value="@endereco.Numero" class="form-control" autocomplete="off" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <label class="form-label-tsmart">Complemento</label>
+                            <div class="campo-com-icone">
+                                <i class="fa-regular fa-building"></i>
+                                <input type="text" name="PacienteEnderecos[0].Endereco.Complemento" value="@endereco.Complemento" class="form-control" autocomplete="off" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label-tsmart">Bairro</label>
+                            <div class="campo-com-icone">
+                                <i class="fa-solid fa-map"></i>
+                                <input type="text" name="PacienteEnderecos[0].Endereco.Bairro" value="@endereco.Bairro" class="form-control" autocomplete="off" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label-tsmart">Cidade</label>
+                            <div class="campo-com-icone">
+                                <i class="fa-solid fa-city"></i>
+                                <input type="text" name="PacienteEnderecos[0].Endereco.Cidade" value="@endereco.Cidade" class="form-control" autocomplete="off" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label-tsmart">Estado</label>
+                            <div class="campo-com-icone">
+                                <i class="fa-solid fa-map-location-dot"></i>
+                                <input type="text" name="PacienteEnderecos[0].Endereco.Estado" value="@endereco.Estado" class="form-control" autocomplete="off" maxlength="2" />
+                            </div>
+                        </div>
                     </div>
 
                 </div>
 
+                @* ========================= SITUAÇÃO / AÇÕES ========================= *@
 
-                <div class="mt-3 d-flex gap-2">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label class="form-label-tsmart">Situação</label>
 
-                    <button type="submit"
-                            class="btn btn-success"
-                            onclick="loading()">
+                            @if (!Model.Id.HasValue)
+                            {
+                                <input type="hidden" asp-for="Ativo" value="true" />
+                                <div class="campo-com-icone">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <select class="form-select" disabled><option selected>Ativo</option></select>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="campo-com-icone">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <select asp-for="Ativo" class="form-select">
+                                        <option value="true">Ativo</option>
+                                        <option value="false">Inativo</option>
+                                    </select>
+                                </div>
+                            }
+                        </div>
+                    </div>
 
-                        <i class="fa-solid fa-check me-1"></i>
-                        Gravar
+                    <div class="mt-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-success" onclick="loading()"><i class="fa-solid fa-check me-1"></i> Gravar</button>
 
-                    </button>
-
-
-                    @if (Model.Id.HasValue)
+                        @if (Model.PublicId != Guid.Empty)
                         {
                             <button type="submit"
                                     class="btn btn-danger"
-                                    formaction="@Url.Action("Excluir", "Pacientes", new { id = Model.Id })"
+                                    formaction="@Url.Action("Excluir", "Pacientes")"
                                     formmethod="post"
                                     onclick="loading()">
-
-                                <i class="fa-regular fa-trash-can me-1"></i>
-                                Excluir
-
+                                <i class="fa-regular fa-trash-can me-1"></i> Excluir
                             </button>
                         }
 
-
-                        <a href="/Pacientes/Consulta"
-                           class="btn btn-secondary">
-
-                            <i class="fa-solid fa-arrow-left me-1"></i>
-                            Voltar
-
-                        </a>
-
+                        <a href="/Pacientes/Consulta" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-1"></i> Voltar</a>
                     </div>
-
                 </div>
 
             </div>
-
         </div>
     </div>
 }
-<script src="~/js/validacoes.js" asp-append-version="true"></script>
+
+@section Scripts
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputFoto = document.getElementById("FotoArquivo");
+            const previewFoto = document.getElementById("previewFotoPaciente");
+            const placeholder = document.getElementById("previewFotoPlaceholder");
+
+            if (!inputFoto || !previewFoto) return;
+
+            inputFoto.addEventListener("change", function () {
+                const arquivo = this.files && this.files[0];
+
+                if (!arquivo) return;
+
+                const tiposPermitidos = ["image/jpeg", "image/png", "image/webp"];
+
+                if (!tiposPermitidos.includes(arquivo.type)) {
+                    alert("Selecione uma imagem JPG, PNG ou WEBP.");
+                    this.value = "";
+                    return;
+                }
+
+                if (arquivo.size > 2 * 1024 * 1024) {
+                    alert("A foto deve ter no máximo 2 MB.");
+                    this.value = "";
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    previewFoto.src = e.target.result;
+                    previewFoto.classList.remove("d-none");
+
+                    if (placeholder) placeholder.classList.add("d-none");
+                };
+
+                reader.readAsDataURL(arquivo);
+            });
+        });
+    </script>
+}

@@ -42,7 +42,7 @@
         @if (paciente != null)
         {
             <div class="central-header-actions">
-                <a href="@Url.Action("Cadastro", "Pacientes", new { id = paciente.Id })" class="btn btn-outline-secondary">
+                <a href="@Url.Action("Cadastro", "Pacientes", new { publicId = paciente.PublicId })" class="btn btn-outline-secondary">
                     <i class="fa-solid fa-pen me-1"></i>Editar Paciente
                 </a>
 

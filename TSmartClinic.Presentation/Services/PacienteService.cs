@@ -65,5 +65,7 @@ namespace TSmartClinic.Presentation.Services
                 return JsonSerializer.Deserialize<PacienteViewModel>(content, options);
             }
         }
+
+
     }
 }

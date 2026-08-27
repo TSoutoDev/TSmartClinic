@@ -68,7 +68,7 @@ public class PerfilPermissaoService : BaseService<BaseFilterViewModel, Permissoe
         return lista ?? new();
     }
 
-    public async Task<List<int>> ObterOperacoesDoPerfilAsync(int perfilId)
+    public async Task<List<int>> ObterOperacoesDoPerfilAsync(Guid perfilId)
     {
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
@@ -97,7 +97,6 @@ public class PerfilPermissaoService : BaseService<BaseFilterViewModel, Permissoe
 
         return operacaoIds;
     }
-
 
     public async Task SalvarOperacoesDoPerfilAsync(int perfilId, IEnumerable<int> operacaoIds)
     {

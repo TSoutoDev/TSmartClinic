@@ -81,7 +81,7 @@ namespace AgendaApp.API.Mapper
                  .ReverseMap();
             CreateMap<Endereco, EnderecoResponseDTO>().ReverseMap();
             CreateMap<PacienteEndereco, PacienteEnderecoResponseDTO>().ReverseMap();
-            CreateMap<Paciente, PacienteResponseDTO>().ReverseMap(); ;
+            CreateMap<Paciente, PacienteResponseDTO>().ReverseMap();
         }
     }
 }

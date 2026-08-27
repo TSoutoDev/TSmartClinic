@@ -39,7 +39,7 @@ namespace TSmartClinic.API.Services
             return base.Inserir(entity);
         }
 
-        public override Perfil Atualizar(int id, Perfil entity)
+        public override Perfil Atualizar(Guid publicId, Perfil entity)
         {
             if (!_usuarioLogadoService.UsuarioMaster)
             {

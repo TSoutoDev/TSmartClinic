@@ -4,5 +4,6 @@ namespace TSmartClinic.Core.Domain.Interfaces.Repositories
 {
     public interface IPacienteRepository : IBaseRepository<Paciente>
     {
+        void ExcluirComEnderecos(Paciente paciente);
     }
 }

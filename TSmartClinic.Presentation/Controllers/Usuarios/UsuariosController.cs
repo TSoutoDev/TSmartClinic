@@ -58,16 +58,16 @@ namespace TSmartClinic.Presentation.Controllers.Usuarios
         }
 
         // GET: Cadastro
-        public override async Task<IActionResult> Cadastro(int? id)
+        public override async Task<IActionResult> Cadastro(Guid? publicId)
         {
             await CriarViewBags();
 
-            var result = await base.Cadastro(id) as ViewResult;
+            var result = await base.Cadastro(publicId) as ViewResult;
 
             if (result?.Model is UsuarioViewModel model)
             {
                 // CADASTRO NOVO
-                if (!id.HasValue)
+                if (!publicId.HasValue)
                 {
                     model.DataExpiracaoSenha = DateTime.Today.AddDays(365);
                 }

@@ -9,7 +9,7 @@ namespace TSmartClinic.Presentation.Services.Interfaces
     {
         Task<List<ModuloViewModel>> ListarArvorePermissoesAsync(); 
         Task<List<PermissoesViewModel>> ListarArvoreModuloPermissoesAsync(); 
-        Task<List<int>> ObterOperacoesDoPerfilAsync(int perfilId);
+        Task<List<int>> ObterOperacoesDoPerfilAsync(Guid perfilId);
         Task SalvarOperacoesDoPerfilAsync(int perfilId, IEnumerable<int> operacaoIds);
 
     }

@@ -57,9 +57,9 @@ namespace TSmartClinic.API.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(403)]
         [ProducesResponseType(500)]
-        public override ActionResult<ConvenioResponseDTO> Atualizar(int id, BaseConvenioRequestDTO objRequest)
+        public override ActionResult<ConvenioResponseDTO> Atualizar(Guid publicId, BaseConvenioRequestDTO objRequest)
         {
-            return base.Atualizar(id, objRequest);
+            return base.Atualizar(publicId, objRequest);
         }
 
         [AuthorizePermission("Convenios_Excluir")]
@@ -68,9 +68,9 @@ namespace TSmartClinic.API.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(403)]
         [ProducesResponseType(500)]
-        public override ActionResult Excluir(int id)
+        public override ActionResult Excluir(Guid publicId)
         {
-            return base.Excluir(id);
+            return base.Excluir(publicId);
         }
     }
 }

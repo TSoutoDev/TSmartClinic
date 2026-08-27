@@ -308,6 +308,31 @@ namespace TSmartClinic.Data.Repositories
 
         }
 
+        public virtual TEntity ObterPorPublicId(Guid publicId, params Expression<Func<TEntity, object>>[] properties)
+        {
+            if (!typeof(IEntidadeComPublicId).IsAssignableFrom(typeof(TEntity)))
+            {
+                throw new InvalidOperationException($"A entidade {typeof(TEntity).Name} não implementa IEntidadeComPublicId.");
+            }
+
+            IQueryable<TEntity> query = _dbSet.AsQueryable();
+
+            // Aplica Includes recebidos
+            if (properties != null)
+            {
+                foreach (var property in properties)
+                {
+                    query = query.Include(property);
+                }
+            }
+
+            // Mantém a proteção por clínica
+            query = AplicarFiltroCliente(query);
+
+            // EF.Property permite o EF traduzir PublicId para SQL
+            return query.FirstOrDefault(x => EF.Property<Guid>(x, "PublicId") == publicId);
+        }
+
         //aplicar filto por CLienteId(Clinica)
         protected IQueryable<TEntity> AplicarFiltroCliente(IQueryable<TEntity> query)
         {

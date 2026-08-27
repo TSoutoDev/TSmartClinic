@@ -10,8 +10,10 @@
         public string? Observacoes { get; set; }
         public bool? Ativo { get; set; } = true;
         public int? ConvenioId { get; set; }
-        public byte[]? Foto { get; set; }
         public int? ClienteId { get; set; }
+        public byte[]? Foto { get; set; }
+        public string? FotoNomeArquivo { get; set; }
+        public string? FotoContentType { get; set; }
 
     }
 }

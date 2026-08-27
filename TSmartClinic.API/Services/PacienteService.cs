@@ -1,7 +1,5 @@
-﻿using System.Linq.Expressions;
-using TSmartClinic.Core.Domain.Entities;
+﻿using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Exceptions;
-using TSmartClinic.Core.Domain.Helpers.FilterHelper;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Core.Domain.Service;
@@ -17,9 +15,9 @@ namespace TSmartClinic.API.Services
             _pacienteRepository = pacienteRepository;
         }
 
-        public override Paciente Atualizar(int id, Paciente paciente)
+        public override Paciente Atualizar(Guid publicId, Paciente paciente)
         {
-            var pacienteBanco = _pacienteRepository.ObterPorId(id);
+            var pacienteBanco = _pacienteRepository.ObterPorPublicId(publicId);
 
             if (pacienteBanco == null)
                 throw new NotFoundException();
@@ -56,6 +54,23 @@ namespace TSmartClinic.API.Services
             _pacienteRepository.Atualizar(pacienteBanco);
 
             return pacienteBanco;
+        }
+
+        public override Paciente Inserir(Paciente entity)
+        {
+            entity.DataCadastro = DateTime.Today;
+
+            return base.Inserir(entity);
+        }
+
+        public override void Excluir(Guid publicId)
+        {
+            var paciente = _pacienteRepository.ObterPorPublicId(publicId);
+
+            if (paciente == null)
+                throw new NotFoundException();
+
+            _pacienteRepository.ExcluirComEnderecos(paciente);
         }
     }
 }

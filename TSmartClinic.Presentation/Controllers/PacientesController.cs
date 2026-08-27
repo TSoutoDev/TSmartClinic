@@ -22,9 +22,41 @@ namespace TSmartClinic.Presentation.Controllers
             return await base.Consulta();
         }
 
+        [HttpGet]
+        public override async Task<IActionResult> Cadastro(Guid? publicId)
+        {
+            await CriarViewBags();
+
+            return await base.Cadastro(publicId);
+        }
+
         [HttpPost]
         public override async Task<IActionResult> Cadastro(PacienteViewModel model)
         {
+            var arquivo = Request.Form.Files["FotoArquivo"];
+
+            if (arquivo != null && arquivo.Length > 0)
+            {
+                using var memoryStream = new MemoryStream();
+
+                await arquivo.CopyToAsync(memoryStream);
+
+                model.Foto = memoryStream.ToArray();
+                model.FotoContentType = arquivo.ContentType;
+            }
+            else if (model.PublicId.HasValue)
+            {
+                var pacienteAtual = await _pacienteService.ObterPorPublicId(model.PublicId.Value);
+
+                if (pacienteAtual?.Sucesso == true &&
+                    pacienteAtual.Itens != null &&
+                    pacienteAtual.Itens.Any())
+                {
+                    model.Foto = pacienteAtual.Itens.First().Foto;
+                    model.FotoContentType = null;
+                }
+            }
+
             var result = await base.Cadastro(model);
 
             await CriarViewBags();
@@ -32,46 +64,21 @@ namespace TSmartClinic.Presentation.Controllers
             return result;
         }
 
-        [HttpGet]
-        public override async Task<IActionResult> Cadastro(int? id)
-        {
-            await CriarViewBags();
-
-            var result = await base.Cadastro(id) as ViewResult;
-
-            if (result?.Model is PacienteViewModel model)
-            {
-                // CADASTRO NOVO
-                // Obtem cliente do claim
-                var clienteIdClaim = User.FindFirst("Cliente_Id")?.Value;
-
-                if (int.TryParse(clienteIdClaim, out var clienteId))
-                {
-                    model.ClienteId = clienteId;
-                }
-
-                if (!id.HasValue)
-                {
-                    model.Ativo = true;
-                    model.DataCadastro = DateTime.Today;
-                }
-            }
-            return result;
-        }
-
-        [HttpGet]
+        [HttpPost]
         public override async Task<IActionResult> BuscaAvancada(BaseFilterViewModel filtro)
         {
             return await base.BuscaAvancada(filtro);
         }
 
         [HttpGet]
-        public async Task<IActionResult> CentralPaciente(int id)
+        public async Task<IActionResult> CentralPaciente(Guid publicId)
         {
-            var paciente = await _pacienteService.ObterPorId(id);
+            var retorno = await _pacienteService.ObterPorPublicId(publicId);
 
-            if (paciente == null)
+            if (!retorno.Sucesso || retorno.Itens == null || !retorno.Itens.Any())
                 return NotFound();
+
+            var paciente = retorno.Itens.First();
 
             var response = new ResponseViewModel<PacienteViewModel>
             {
@@ -83,7 +90,6 @@ namespace TSmartClinic.Presentation.Controllers
 
             return View(response);
         }
-
 
         #region Métodos auxiliares
         private async Task CriarViewBags()

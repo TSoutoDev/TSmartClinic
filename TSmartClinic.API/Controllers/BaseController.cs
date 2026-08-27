@@ -85,10 +85,10 @@ namespace TSmartClinic.API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(403)]
         [ProducesResponseType(500)]
-        public virtual ActionResult<TResponseDTO> Atualizar(int id, TUpdateRequestDTO objRequest)
+        public virtual ActionResult<TResponseDTO> Atualizar(Guid publicId, TUpdateRequestDTO objRequest)
         {
             var obj = Mapper.Map<TEntity>(objRequest);
-            var objAlterado = _baseService?.Atualizar(id, obj);
+            var objAlterado = _baseService?.Atualizar(publicId, obj);
 
             return StatusCode(200, Mapper?.Map<TResponseDTO>(objAlterado));
         }
@@ -98,9 +98,9 @@ namespace TSmartClinic.API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(403)]
         [ProducesResponseType(500)]
-        public virtual ActionResult Excluir(int id)
+        public virtual ActionResult Excluir(Guid publicId)
         {
-            _baseService?.Excluir(id);
+            _baseService?.Excluir(publicId);
 
             return StatusCode(200);
         }

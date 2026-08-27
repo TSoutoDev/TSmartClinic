@@ -120,9 +120,9 @@ namespace TSmartClinic.API.Services
         }
 
 
-        public override Usuario Atualizar(int id, Usuario usuario)
+        public override Usuario Atualizar(Guid publicId, Usuario usuario)
         {
-            var usuarioExistente = _usuarioRepository?.ObterPorId(id);
+            var usuarioExistente = _usuarioRepository?.ObterPorPublicId(publicId);
 
             // Se a senha foi alterada, criptografar
             if (!string.Equals(usuario.Senha, usuarioExistente))
@@ -132,7 +132,7 @@ namespace TSmartClinic.API.Services
             // Atualizar o usuario
             var usuarioAtualizado = _usuarioRepository?.Atualizar(usuario);
 
-            return base.Atualizar(id, usuario);
+            return base.Atualizar(publicId, usuario);
         }
 
         public List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clinicasUsuario)

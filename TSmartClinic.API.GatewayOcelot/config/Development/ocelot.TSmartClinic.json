@@ -258,7 +258,7 @@
 
     //PACIENTES
     {
-      "DownstreamPathTemplate": "/api/pacientes/{id}",
+      "DownstreamPathTemplate": "/api/pacientes/{publicId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -269,7 +269,7 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
-      "UpstreamPathTemplate": "/pacientes/{id}",
+      "UpstreamPathTemplate": "/pacientes/{publicId}",
       "UpstreamHttpMethod": [ "GET", "PATCH", "DELETE" ]
     },
 

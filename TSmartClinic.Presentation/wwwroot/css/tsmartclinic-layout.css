@@ -564,3 +564,46 @@ body.vertical-collpsed .tsmart-sidebar #side-menu > li > a {
         font-size: 22px;
     }
 }
+/* =========================================================
+   ROLAGEM GLOBAL DAS PÁGINAS
+   ========================================================= */
+
+html,
+body {
+    min-height: 100%;
+}
+
+    body.tsmart-app {
+        min-height: 100vh;
+        overflow-x: hidden;
+        overflow-y: auto !important;
+    }
+
+#layout-wrapper {
+    min-height: 100vh;
+    height: auto;
+}
+
+.tsmart-main {
+    min-height: 100vh;
+    height: auto;
+    overflow: visible;
+}
+
+.tsmart-page-content {
+    min-height: calc(100vh - 130px);
+    height: auto;
+    overflow: visible;
+    padding-bottom: 30px;
+}
+
+    .tsmart-page-content .container-fluid {
+        height: auto;
+        min-height: 100%;
+        overflow: visible;
+    }
+
+.tsmart-footer {
+    position: relative;
+    width: 100%;
+}

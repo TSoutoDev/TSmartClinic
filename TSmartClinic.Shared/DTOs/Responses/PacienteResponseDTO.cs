@@ -2,6 +2,7 @@
 {
     public class PacienteResponseDTO : BaseResponseDTO
     {
+        public Guid PublicId { get; set; }
         public int Id { get; set; }
         public string? NomePaciente { get; set; }
         public DateTime? DataNascimento { get; set; }
@@ -13,6 +14,7 @@
         public DateTime? DataCadastro { get; set; }
         public int? ConvenioId { get; set; }
         public int ClienteId { get; set; }
+        public byte[]? Foto { get; set; }
         public ConvenioResponseDTO? Convenio { get; set; }
         public List<PacienteEnderecoResponseDTO>? PacienteEnderecos { get; set; }
     }

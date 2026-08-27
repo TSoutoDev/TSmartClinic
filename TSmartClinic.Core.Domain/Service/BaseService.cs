@@ -7,8 +7,7 @@ using TSmartClinic.Core.Domain.Interfaces.Services;
 
 namespace TSmartClinic.Core.Domain.Service
 {
-    public class BaseService<TEntity> : IBaseService<TEntity>
-        where TEntity : Base
+    public class BaseService<TEntity> : IBaseService<TEntity>  where TEntity : Base
     {
         private readonly IBaseRepository<TEntity> _baseRepository;
 
@@ -17,10 +16,18 @@ namespace TSmartClinic.Core.Domain.Service
             _baseRepository = baseRepository;
         }
 
-        public virtual TEntity Atualizar(int id, TEntity entity)
+        public virtual TEntity Inserir(TEntity entity)
+        {
+            //limpa os campos texto
+            entity.RemoverEspacosEmBranco();
+
+            return _baseRepository?.Inserir(entity);
+        
+        }
+        public virtual TEntity Atualizar(Guid publicId, TEntity entity)
         {
             //Recupera o registro no banco
-            TEntity entityBanco = _baseRepository?.ObterPorId(id);
+            TEntity entityBanco = _baseRepository.ObterPorPublicId(publicId);
 
             //Se não encontrou estoura exceção
             if (entityBanco == null) throw new NotFoundException();
@@ -34,25 +41,6 @@ namespace TSmartClinic.Core.Domain.Service
             return entityBanco;
         }
 
-        public virtual void Excluir(int id)
-        {
-            //Recupera o registro no banco
-            TEntity entityBanco = _baseRepository?.ObterPorId(id);
-
-            //Se não encontrou estoura exceção
-            if (entityBanco == null) throw new NotFoundException();
-
-            _baseRepository.Excluir(entityBanco);
-        }
-
-        public virtual TEntity Inserir(TEntity entity)
-        {
-            //limpa os campos texto
-            entity.RemoverEspacosEmBranco();
-
-            return _baseRepository?.Inserir(entity);
-        }
-
         public virtual List<TEntity> Listar(BaseFiltro filtro)
         {
             return _baseRepository.Listar(filtro);
@@ -60,8 +48,25 @@ namespace TSmartClinic.Core.Domain.Service
 
         public virtual TEntity ObterPorId(int id)
         {
-            return _baseRepository?.ObterPorId(id);
+            return _baseRepository.ObterPorId(id);
         }
+
+        public virtual TEntity ObterPorPublicId(Guid publicId)
+        {
+            return _baseRepository.ObterPorPublicId(publicId);
+        }
+
+        public virtual void Excluir(Guid publicId)
+        {
+            //Recupera o registro no banco
+            TEntity entityBanco = _baseRepository.ObterPorPublicId(publicId);
+
+            //Se não encontrou estoura exceção
+            if (entityBanco == null) throw new NotFoundException();
+
+            _baseRepository.Excluir(entityBanco);
+        }
+
         public void Dispose()
         {
             _baseRepository?.Dispose();

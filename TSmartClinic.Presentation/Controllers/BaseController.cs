@@ -76,14 +76,17 @@ namespace TSmartClinic.Presentation.Controllers
         }
 
 
-        public virtual async Task<IActionResult> Cadastro(int? id)
+        [HttpGet]
+        public virtual async Task<IActionResult> Cadastro(Guid? publicId)
         {
-            if (id.HasValue)
+            if (publicId.HasValue && publicId.Value != Guid.Empty)
             {
-                var retorno = await _service.ObterPorId(id.Value);
+                var retorno = await _service.ObterPorPublicId(publicId.Value);
 
                 if (retorno.Sucesso)
+                {
                     Model = retorno.Itens.FirstOrDefault();
+                }
                 else
                 {
                     TempData["MensagemErro"] = retorno.Mensagem;
@@ -91,7 +94,10 @@ namespace TSmartClinic.Presentation.Controllers
                 }
             }
             else
-                if (Model == null) Model = (TViewModel)Activator.CreateInstance(typeof(TViewModel));
+            {
+                if (Model == null)
+                    Model = (TViewModel)Activator.CreateInstance(typeof(TViewModel));
+            }
 
             return View(Model);
         }
@@ -106,14 +112,17 @@ namespace TSmartClinic.Presentation.Controllers
                 {
                     ResponseViewModel<TViewModel> retorno = null;
 
-                    if (!model.Id.HasValue) //Inclusão
+                    if (model.PublicId.GetValueOrDefault() == Guid.Empty) // Inclusão
                     {
                         retorno = await _service.Inserir(model);
 
-                        if (retorno.Sucesso) model = (TViewModel)Activator.CreateInstance(typeof(TViewModel));
+                        if (retorno.Sucesso)
+                            model = (TViewModel)Activator.CreateInstance(typeof(TViewModel));
                     }
-                    else //Alteração
-                        retorno = await _service.Atualizar(model.Id.Value, model);
+                    else // Alteração
+                    {
+                        retorno = await _service.Atualizar(model.PublicId.Value, model);
+                    }
 
                     if (retorno.Sucesso)
                         TempData["MensagemSucesso"] = "Gravação realizada com sucesso.";
@@ -139,18 +148,22 @@ namespace TSmartClinic.Presentation.Controllers
         [HttpPost]
         public virtual async Task<IActionResult> Excluir(TViewModel model)
         {
-            var retorno = await _service.Excluir(model.Id.Value);
+            if (!model.PublicId.HasValue || model.PublicId == Guid.Empty)
+            {
+                TempData["MensagemErro"] = "Identificador do registro inválido.";
+                return View("Cadastro", model);
+            }
+
+            var retorno = await _service.Excluir(model.PublicId.Value);
 
             if (retorno.Sucesso)
             {
                 TempData["MensagemSucesso"] = "Exclusão realizada com sucesso.";
                 return RedirectToAction("Consulta");
             }
-            else
-            {
-                TempData["MensagemErro"] = retorno.Mensagem;
-                return View("Cadastro", model);
-            }
+
+            TempData["MensagemErro"] = retorno.Mensagem;
+            return View("Cadastro", model);
         }
 
 

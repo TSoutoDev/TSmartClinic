@@ -49,7 +49,7 @@ namespace TSmartClinic.Presentation.Services
         }
 
 
-        public virtual async Task<ResponseViewModel<TViewModel>> Atualizar(int id, TViewModel entity)
+        public virtual async Task<ResponseViewModel<TViewModel>> Atualizar(Guid publicId, TViewModel entity)
         {
             ResponseViewModel<TViewModel> retorno = new ResponseViewModel<TViewModel>();
 
@@ -59,7 +59,7 @@ namespace TSmartClinic.Presentation.Services
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
-                HttpResponseMessage response = await client.PatchAsJsonAsync($"{_baseUrlController}/{id}", entity);
+                HttpResponseMessage response = await client.PatchAsJsonAsync($"{_baseUrlController}/{publicId}", entity);
 
                 retorno.StatusCode = response.StatusCode.GetHashCode();
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -85,34 +85,44 @@ namespace TSmartClinic.Presentation.Services
             }
         }
 
-        public async Task<ResponseViewModel<TViewModel>> Excluir(int id)
+        public virtual async Task<ResponseViewModel<TViewModel>> Excluir(Guid publicId)
         {
-            ResponseViewModel<TViewModel> retorno = new ResponseViewModel<TViewModel>();
+            var retorno = new ResponseViewModel<TViewModel>();
 
             using (var client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
-                HttpResponseMessage response = await client.DeleteAsync($"{_baseUrlController}/{id}");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", AccessToken);
+
+                var response = await client.DeleteAsync($"{_baseUrlController}/{publicId}");
 
                 retorno.StatusCode = response.StatusCode.GetHashCode();
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    retorno.Sucesso = true;
-                else
+
+                if (response.IsSuccessStatusCode)
                 {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var erro = string.IsNullOrWhiteSpace(content)
-                        ? null
-                        : JsonSerializer.Deserialize<ErroViewModel>(content);
-
-                    if (retorno.StatusCode == 401)
-                        retorno.Mensagem = "Operação não autorizada!";
-                    else if (retorno.StatusCode == 403)
-                        retorno.Mensagem = "Usuario não tem permissão!";
-                    else
-                        retorno.Mensagem = erro?.Message ?? "Erro não tratado.  Operação não realizada.";
-
-                    retorno.Sucesso = false;
+                    retorno.Sucesso = true;
+                    return retorno;
                 }
+
+                var content = await response.Content.ReadAsStringAsync();
+
+                var erro = string.IsNullOrWhiteSpace(content)
+                    ? null
+                    : JsonSerializer.Deserialize<ErroViewModel>(content);
+
+                retorno.Sucesso = false;
+
+                if (retorno.StatusCode == 401)
+                    retorno.Mensagem = "Operação não autorizada!";
+
+                else if (retorno.StatusCode == 403)
+                    retorno.Mensagem = "Usuário não tem permissão!";
+
+                else if (retorno.StatusCode == 404)
+                    retorno.Mensagem = "Registro não encontrado!";
+
+                else
+                    retorno.Mensagem = erro?.Message ?? "Operação não realizada.";
 
                 return retorno;
             }
@@ -243,6 +253,61 @@ namespace TSmartClinic.Presentation.Services
             }
         }
 
+        public virtual async Task<ResponseViewModel<TViewModel>> ObterPorPublicId(Guid publicId)
+        {
+            ResponseViewModel<TViewModel> retorno = new ResponseViewModel<TViewModel>();
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", this.AccessToken);
+
+                HttpResponseMessage response = await client.GetAsync($"{_baseUrlController}/{publicId}");
+
+                retorno.StatusCode = response.StatusCode.GetHashCode();
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    var content = await response.Content.ReadAsStringAsync();
+
+                    var item = JsonSerializer.Deserialize<TViewModel>(content, options);
+
+                    retorno.Itens = new List<TViewModel>();
+
+                    if (item != null)
+                        retorno.Itens.Add(item);
+
+                    retorno.QuantidadeRegistros = retorno.Itens.Count;
+                    retorno.Sucesso = true;
+                }
+                else
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+
+                    var erro = string.IsNullOrWhiteSpace(content) ? null : JsonSerializer.Deserialize<ErroViewModel>(content);
+
+                    if (retorno.StatusCode == 401)
+                        retorno.Mensagem = "Operação não autorizada!";
+
+                    else if (retorno.StatusCode == 403)
+                        retorno.Mensagem = "Usuário não tem permissão!";
+
+                    else if (retorno.StatusCode == 404)
+                        retorno.Mensagem = "Registro não encontrado!";
+                    else
+                        retorno.Mensagem = erro?.Message ?? "Erro não tratado. Operação não realizada.";
+
+                    retorno.Sucesso = false;
+                }
+
+                return retorno;
+            }
+        }
 
     }
 }
