@@ -12,37 +12,39 @@ namespace TSmartClinic.Presentation.TagHelpers
             _httpContextAccessor = httpContextAccessor;
         }
 
-
         [HtmlAttributeName("asp-permissao")]
         public string Permissoes { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             var user = _httpContextAccessor.HttpContext?.User;
+
             if (user == null)
             {
                 output.SuppressOutput();
                 return;
             }
 
-            var requiredPermissions = Permissoes.Split(',')
-                                          .Select(p => p.Trim())
-                                          .Where(p => !string.IsNullOrWhiteSpace(p))
-                                          .ToList();
+            // Master possui acesso total
+            var masterClaim = user.FindFirst("UsuarioMaster")?.Value;
+
+            if (bool.TryParse(masterClaim, out var usuarioMaster) && usuarioMaster)
+                return;
+
+            var requiredPermissions = Permissoes
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(p => !string.IsNullOrWhiteSpace(p))
+                .ToList();
 
             var userPermissions = user.Claims
-                   .Where(c => c.Type == "permissao")
-                   .SelectMany(c => c.Value.Split(',', StringSplitOptions.RemoveEmptyEntries))
-                   .Select(p => p.Trim())
-                   .ToHashSet(StringComparer.OrdinalIgnoreCase);
+                .Where(c => c.Type == "permissao")
+                .SelectMany(c => c.Value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-            bool temPermissao = requiredPermissions.Any(p => userPermissions.Contains(p));
+            var temPermissao = requiredPermissions.Any(p => userPermissions.Contains(p));
 
             if (!temPermissao)
-            {
                 output.SuppressOutput();
-            }
         }
-
     }
 }

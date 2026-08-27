@@ -2301,7 +2301,7 @@
       ],
       "DownstreamHttpMethod": null,
       "DownstreamHttpVersion": null,
-      "DownstreamPathTemplate": "/api/nichos/{id}",
+      "DownstreamPathTemplate": "/api/nichos/{publicId}",
       "DownstreamScheme": "http",
       "FileCacheOptions": {
         "TtlSeconds": 0,
@@ -2353,7 +2353,7 @@
         "PATCH",
         "DELETE"
       ],
-      "UpstreamPathTemplate": "/nichos/{id}"
+      "UpstreamPathTemplate": "/nichos/{publicId}"
     },
     {
       "AddClaimsToRequest": {},

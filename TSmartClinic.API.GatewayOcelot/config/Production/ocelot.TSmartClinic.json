@@ -462,7 +462,7 @@
     },
     //NICHOS
     {
-      "DownstreamPathTemplate": "/api/nichos/{id}",
+      "DownstreamPathTemplate": "/api/nichos/{publicId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -473,7 +473,7 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
-      "UpstreamPathTemplate": "/nichos/{id}",
+      "UpstreamPathTemplate": "/nichos/{publicId}",
       "UpstreamHttpMethod": [ "GET", "PATCH", "DELETE" ]
     },
     {

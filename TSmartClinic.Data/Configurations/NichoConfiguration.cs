@@ -17,6 +17,8 @@ namespace TSmartClinic.Data.Configurations
             .HasColumnName("Id")
             .ValueGeneratedOnAdd() // diga ao EF que o valor é gerado;
             .UseIdentityByDefaultColumn(); // mapeia identity do Postgres;
+            builder.Property(x => x.PublicId).HasColumnName("PublicId").IsRequired();
+            builder.HasIndex(x => x.PublicId).IsUnique();
             builder.Property(c => c.NomeNicho).HasColumnName("NomeNicho").HasMaxLength(200).IsRequired();
             builder.Property(c => c.Ativo).HasColumnName("Ativo").IsRequired();
         }

@@ -55,6 +55,7 @@ namespace AgendaApp.API.Mapper
                 .ForMember(dest => dest.UsuarioClientePerfil, opt => opt.MapFrom(src => src.UsuarioClientePerfil)).ReverseMap();
             CreateMap<OperacaoPerfil, UsuarioUpdateRequestDTO>().ReverseMap();
             CreateMap<PacienteUpdateRequestDTO, Paciente>().ReverseMap();
+            CreateMap<NichoUpdateRequestDTO, Nicho>().ReverseMap();
 
             //Response
             CreateMap<Cliente, ClienteResponseDTO>();

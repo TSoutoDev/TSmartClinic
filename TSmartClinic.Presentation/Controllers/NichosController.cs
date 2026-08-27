@@ -6,7 +6,8 @@ namespace TSmartClinic.Presentation.Controllers
 {
     public class NichosController : BaseController<INichoService,BaseFilterViewModel, NichoViewModel>
     {
-        public NichosController(INichoService service) : base(service)
+
+        public NichosController(INichoService nichoService) : base(nichoService)
         {
         }
     }

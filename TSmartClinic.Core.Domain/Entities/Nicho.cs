@@ -1,7 +1,10 @@
-﻿namespace TSmartClinic.Core.Domain.Entities
+﻿using TSmartClinic.Core.Domain.Interfaces.Entities;
+
+namespace TSmartClinic.Core.Domain.Entities
 {
-    public class Nicho : Base
+    public class Nicho : Base, IEntidadeComPublicId
     {
+        public Guid PublicId { get; set; } = Guid.NewGuid();
         public string? NomeNicho { get; set; }
         public bool? Ativo { get; set; }
 

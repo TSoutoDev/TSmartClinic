@@ -80,7 +80,8 @@
                     @{
                         foreach (var item in Model.Itens)
                         {
-                            <tr class="clickable" onclick="javascript:location.href='Cadastro/@item.Id'">
+                            <tr class="clickable"
+                                onclick="location.href='@Url.Action("Cadastro", "Nichos", new { publicId = item.PublicId })'">
                                 <td>@item.NomeNicho?.ToUpper()</td>
                             </tr>
                         }
