@@ -11,9 +11,8 @@
     var fotoBase64 = temFoto ? Convert.ToBase64String(Model.Foto!) : null;
 }
 
-@using (Html.BeginForm("Cadastro", "Pacientes", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    @Html.HiddenFor(model => model.PublicId)
+<form asp-controller="Pacientes" asp-action="Cadastro" method="post">
+    <input asp-for="PublicId" type="hidden" />
     <div class="row">
         <div class="col-md-12">
             <div class="card card-small">
@@ -253,7 +252,7 @@
             </div>
         </div>
     </div>
-}
+</form>
 
 @section Scripts
 {

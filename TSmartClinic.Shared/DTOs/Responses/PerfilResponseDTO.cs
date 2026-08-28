@@ -6,6 +6,7 @@ namespace TSmartClinic.Shared.DTOs.Responses
     public class PerfilResponseDTO : BaseResponseDTO
     {
         public int? Id { get; set; }
+        public Guid PublicId { get; set; }
         public string? NomePerfil { get; set; }
         public int? ValidadeDias { get; set; }
         public int? ErrosSenha { get; set; }

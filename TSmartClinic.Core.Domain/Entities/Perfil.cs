@@ -1,9 +1,11 @@
 ﻿using TSmartClinic.Core.Domain.Helpers;
+using TSmartClinic.Core.Domain.Interfaces.Entities;
 
 namespace TSmartClinic.Core.Domain.Entities
 {
-    public class Perfil : Base
+    public class Perfil : Base, IEntidadeComPublicId
     {
+        public Guid PublicId { get; set; } = Guid.NewGuid();
         public string? NomePerfil { get; set; }
         public int? ValidadeDias { get; set; }
         public int? ErrosSenha { get; set; }

@@ -1,6 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TSmartClinic.API.Repositories;
-using TSmartClinic.Core.Domain.Entities;
+﻿using TSmartClinic.Core.Domain.Entities;
+using TSmartClinic.Core.Domain.Exceptions;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Core.Domain.Service;
@@ -41,6 +40,14 @@ namespace TSmartClinic.API.Services
 
         public override Perfil Atualizar(Guid publicId, Perfil entity)
         {
+            var perfilExistente = _perfilRepository.ObterPorPublicId(publicId);
+
+            if (perfilExistente == null)
+                throw new NotFoundException();
+
+            // Recupera o Id interno através do PublicId
+            entity.Id = perfilExistente.Id;
+
             if (!_usuarioLogadoService.UsuarioMaster)
             {
                 entity.NichoId = _usuarioLogadoService.NichoClienteId;

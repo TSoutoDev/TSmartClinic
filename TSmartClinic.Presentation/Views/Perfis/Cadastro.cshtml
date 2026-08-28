@@ -12,16 +12,10 @@
     var user = HttpContextAccessor.HttpContext?.User;
 }
 
-
-@using (Html.BeginForm("Cadastro", "Perfis", FormMethod.Post, new { autocomplete = "off" }))
-{
-    @Html.AntiForgeryToken()
-
-    @* Id (edição) *@
-    @if (Model != null && Model.Id.HasValue)
-    {
-        <input asp-for="Id" type="hidden" />
-    }
+<form asp-controller="Perfis" asp-action="Cadastro" method="post">
+    <input asp-for="PublicId" type="hidden" />
+@Html.AntiForgeryToken()
+    <input asp-for="PublicId" type="hidden" />
 
     <div class="card">
         <div class="card-body">
@@ -164,7 +158,7 @@
                                                                    id="op_@op.Id"
                                                                    name="SelectedOperacaoIds"
                                                                    value="@op.Id"
-                                                            @(isChecked ? "checked" : "") />
+                                                                   @(isChecked ? "checked" : "") />
                                                             <label class="form-check-label" for="op_@op.Id">
                                                                 @op.NomeOperacao
                                                             </label>
@@ -189,17 +183,25 @@
             <div class="mt-3 row">
                 <div class="col-md-2">
                     <label>Situação</label>
-                    <select asp-for="Ativo" class="form-select" disabled="@(!Model.Id.HasValue ? "disabled" : null)">
-                        <option value="true">Ativo</option>
-                        <option value="false">Inativo</option>
-                    </select>
-                    @* Se o select estiver desabilitado (novo), espelhe o valor pra ir no POST *@
-                    @if (!Model.Id.HasValue)
+
+                    @if (!Model.PublicId.HasValue || Model.PublicId.Value == Guid.Empty)
                     {
-                        <input type="hidden" asp-for="Ativo" />
+                        <input type="hidden" name="Ativo" value="true" />
+
+                        <select class="form-select" disabled>
+                            <option value="true" selected>Ativo</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <select asp-for="Ativo" class="form-select">
+                            <option value="true">Ativo</option>
+                            <option value="false">Inativo</option>
+                        </select>
                     }
                 </div>
             </div>
+
             <!-- DEBUG: mostra os valores antes do envio -->
             <textarea id="debugSelected" style="display:none" readonly></textarea>
             <script>
@@ -214,13 +216,13 @@
             <div class="mt-3 d-flex gap-2">
 
                 <button type="submit"
-                        asp-permissao="@(Model.Id.HasValue ? "Perfis_Editar" : "Perfis_Incluir")"
+                        asp-permissao="@((Model.PublicId.HasValue && Model.PublicId.Value != Guid.Empty) ? "Perfis_Editar" : "Perfis_Incluir")"
                         onclick="loading()"
                         class="btn btn-success">
                     Gravar
                 </button>
 
-                @if (Model.Id.HasValue)
+                @if (Model.PublicId.HasValue && Model.PublicId.Value != Guid.Empty)
                 {
                     <button type="submit"
                             asp-action="Excluir"
@@ -231,99 +233,100 @@
                         Excluir
                     </button>
                 }
+
                 <a href="/Perfis/Consulta" class="btn btn-secondary">Voltar</a>
             </div>
 
             @section Scripts {
-            <script>
-                (function () {
-                    function setIndeterminate(el, val) { if (el) el.indeterminate = !!val; }
-                    function showParcialBadge(selector, show) {
-                        document.querySelectorAll(selector).forEach(b => {
-                            b.classList.toggle('d-none', !show);
-                        });
+                <script>
+                    (function () {
+                        function setIndeterminate(el, val) { if (el) el.indeterminate = !!val; }
+                        function showParcialBadge(selector, show) {
+                            document.querySelectorAll(selector).forEach(b => {
+                                b.classList.toggle('d-none', !show);
+                            });
+                        }
+
+                        // Marca/desmarca todas as operações por lista de ids
+                        // function setOps(ids, checked) {
+                        //     ids.forEach(id => {
+                        //         const op = document.querySelector('input[name="SelectedOperacaoIds"][id="op_' + id + '"]');
+                        //         if (op) op.checked = checked;
+                        //     });
+                        // }
+                        function setOps(ids, checked) {
+                            ids.forEach(id => {
+                                // id aqui é string ou number. Use getElementById porque é mais rápido e direto.
+                                const el = document.getElementById('op_' + id);
+                                if (el) el.checked = checked;
+                            });
                     }
 
-                    // Marca/desmarca todas as operações por lista de ids
-                    // function setOps(ids, checked) {
-                    //     ids.forEach(id => {
-                    //         const op = document.querySelector('input[name="SelectedOperacaoIds"][id="op_' + id + '"]');
-                    //         if (op) op.checked = checked;
-                    //     });
-                    // }
-                    function setOps(ids, checked) {
-                        ids.forEach(id => {
-                            // id aqui é string ou number. Use getElementById porque é mais rápido e direto.
-                            const el = document.getElementById('op_' + id);
-                            if (el) el.checked = checked;
-                        });
-                }
+                        // Recalcula estados (pais e badges)
+                        function atualizarPais() {
+                            // funcionalidades
+                            document.querySelectorAll('.switch-func').forEach(f => {
+                                const ids = (f.dataset.ids || '').split(',').filter(Boolean);
+                                let marcadas = 0, total = ids.length;
+                                ids.forEach(id => {
+                                    const op = document.querySelector('#op_' + id);
+                                    if (op && op.checked) marcadas++;
+                                });
 
-                    // Recalcula estados (pais e badges)
-                    function atualizarPais() {
-                        // funcionalidades
-                        document.querySelectorAll('.switch-func').forEach(f => {
-                            const ids = (f.dataset.ids || '').split(',').filter(Boolean);
-                            let marcadas = 0, total = ids.length;
-                            ids.forEach(id => {
-                                const op = document.querySelector('#op_' + id);
-                                if (op && op.checked) marcadas++;
+                                if (marcadas === 0) {
+                                    f.checked = false; setIndeterminate(f, false); showParcialBadge('.parcial-' + f.id, false);
+                                } else if (marcadas === total) {
+                                    f.checked = true; setIndeterminate(f, false); showParcialBadge('.parcial-' + f.id, false);
+                                } else {
+                                    f.checked = false; setIndeterminate(f, true); showParcialBadge('.parcial-' + f.id, true);
+                                }
                             });
 
-                            if (marcadas === 0) {
-                                f.checked = false; setIndeterminate(f, false); showParcialBadge('.parcial-' + f.id, false);
-                            } else if (marcadas === total) {
-                                f.checked = true; setIndeterminate(f, false); showParcialBadge('.parcial-' + f.id, false);
-                            } else {
-                                f.checked = false; setIndeterminate(f, true); showParcialBadge('.parcial-' + f.id, true);
-                            }
-                        });
+                            // módulos
+                            document.querySelectorAll('.switch-modulo').forEach(m => {
+                                const ids = (m.dataset.ids || '').split(',').filter(Boolean);
+                                let marcadas = 0, total = ids.length;
+                                ids.forEach(id => {
+                                    const op = document.querySelector('#op_' + id);
+                                    if (op && op.checked) marcadas++;
+                                });
 
-                        // módulos
-                        document.querySelectorAll('.switch-modulo').forEach(m => {
-                            const ids = (m.dataset.ids || '').split(',').filter(Boolean);
-                            let marcadas = 0, total = ids.length;
-                            ids.forEach(id => {
-                                const op = document.querySelector('#op_' + id);
-                                if (op && op.checked) marcadas++;
+                                if (marcadas === 0) {
+                                    m.checked = false; setIndeterminate(m, false); showParcialBadge('.parcial-' + m.id, false);
+                                } else if (marcadas === total) {
+                                    m.checked = true; setIndeterminate(m, false); showParcialBadge('.parcial-' + m.id, false);
+                                } else {
+                                    m.checked = false; setIndeterminate(m, true); showParcialBadge('.parcial-' + m.id, true);
+                                }
                             });
+                        }
 
-                            if (marcadas === 0) {
-                                m.checked = false; setIndeterminate(m, false); showParcialBadge('.parcial-' + m.id, false);
-                            } else if (marcadas === total) {
-                                m.checked = true; setIndeterminate(m, false); showParcialBadge('.parcial-' + m.id, false);
-                            } else {
-                                m.checked = false; setIndeterminate(m, true); showParcialBadge('.parcial-' + m.id, true);
-                            }
+                        // Eventos
+                        document.querySelectorAll('.switch-modulo').forEach(chk => {
+                            chk.addEventListener('change', (e) => {
+                                const ids = (e.target.dataset.ids || '').split(',').filter(Boolean);
+                                setOps(ids, e.target.checked);
+                                atualizarPais();
+                            });
                         });
-                    }
 
-                    // Eventos
-                    document.querySelectorAll('.switch-modulo').forEach(chk => {
-                        chk.addEventListener('change', (e) => {
-                            const ids = (e.target.dataset.ids || '').split(',').filter(Boolean);
-                            setOps(ids, e.target.checked);
-                            atualizarPais();
+                        document.querySelectorAll('.switch-func').forEach(chk => {
+                            chk.addEventListener('change', (e) => {
+                                const ids = (e.target.dataset.ids || '').split(',').filter(Boolean);
+                                setOps(ids, e.target.checked);
+                                atualizarPais();
+                            });
                         });
-                    });
 
-                    document.querySelectorAll('.switch-func').forEach(chk => {
-                        chk.addEventListener('change', (e) => {
-                            const ids = (e.target.dataset.ids || '').split(',').filter(Boolean);
-                            setOps(ids, e.target.checked);
-                            atualizarPais();
+                        document.querySelectorAll('.switch-op').forEach(chk => {
+                            chk.addEventListener('change', atualizarPais);
                         });
-                    });
 
-                    document.querySelectorAll('.switch-op').forEach(chk => {
-                        chk.addEventListener('change', atualizarPais);
-                    });
-
-                    // inicial
-                    atualizarPais();
-                })();
-            </script>
+                        // inicial
+                        atualizarPais();
+                    })();
+                </script>
             }
         </div>
     </div>
-}
+</form>

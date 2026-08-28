@@ -4,9 +4,8 @@
     ViewBag.Titulo = "Cadastro de Nichos";
 }
 
-@using (Html.BeginForm("Cadastro", "Nichos", FormMethod.Post))
-{
-    @Html.HiddenFor(model => model.PublicId)
+<form asp-controller="Nichos" asp-action="Cadastro" method="post">
+    <input asp-for="PublicId" type="hidden" />
 
     <div class="row">
         <div class="col-md-12">
@@ -73,9 +72,9 @@
             </div>
         </div>
     </div>
+</form>
 
 
 
 
-}
 

@@ -21,6 +21,18 @@ namespace TSmartClinic.API.Repositories
             _operacaoPerfilRepository = operacaoPerfilRepository;
             _usuarioLogadoService = usuarioLogadoService;
         }
+        public override Perfil ObterPorPublicId(Guid publicId, params Expression<Func<Perfil, object>>[] properties)
+        {
+            var query = _dbSet
+                .Include(x => x.Nicho)
+                .Include(x => x.Cliente)
+                .Include(x => x.OperacaoPerfis)
+                .AsQueryable();
+
+            query = AplicarFiltroCliente(query);
+
+            return query.FirstOrDefault(x => x.PublicId == publicId);
+        }
 
         public override Perfil ObterPorId(int id, params Expression<Func<Perfil, object>>[] properties)
         {
@@ -78,44 +90,74 @@ namespace TSmartClinic.API.Repositories
 
         public override Perfil Atualizar(Perfil entity)
         {
-            // Carrega perfil rastreado
-            var perfilDb = _dbSet.FirstOrDefault(p => p.Id == entity.Id);
-            if (perfilDb == null) throw new Exception("Perfil não encontrado");
+            var perfilDb = _dbSet.Include(p => p.OperacaoPerfis).FirstOrDefault(p => p.Id == entity.Id);
 
-            // Cria strategy para retry
+            if (perfilDb == null)
+                throw new Exception("Perfil não encontrado");
+
             var strategy = _dbContext.Database.CreateExecutionStrategy();
 
             strategy.Execute(() =>
             {
                 using var transaction = _dbContext.Database.BeginTransaction();
+
                 try
                 {
-                    // 1) Atualiza campos simples (apenas valores escalares)
+                    // Campos do Perfil
                     perfilDb.NomePerfil = entity.NomePerfil;
+                    perfilDb.ValidadeDias = entity.ValidadeDias;
+                    perfilDb.ErrosSenha = entity.ErrosSenha;
+                    perfilDb.ResponsavelTecnico = entity.ResponsavelTecnico;
                     perfilDb.Ativo = entity.Ativo;
-                    // atualize outros campos escalares se houver...
+                    perfilDb.NichoId = entity.NichoId;
+                    perfilDb.ClienteId = entity.ClienteId;
 
-                    // 2) Delta de OperacaoPerfis: implementamos como "replace" para evitar duplicação
-                    // Extrai IDs vindos da UI (sem duplicatas)
-                    var idsNovos = entity.OperacaoPerfis?.Select(op => op.OperacaoId).Distinct().ToList() ?? new List<int>();
 
-                    // 2a) Remove tudo que existe para esse perfil (DELETE direto)
-                    _operacaoPerfilRepository.RemoverPorPerfilId(perfilDb.Id);
+                    // Operações recebidas da tela
+                    var idsNovos = entity.OperacaoPerfis?
+                        .Select(x => x.OperacaoId)
+                        .Distinct()
+                        .ToList()
+                        ?? new List<int>();
 
-                    // 2b) Cria os novos registros (somente se houver IDs)
-                    if (idsNovos.Any())
+
+                    // Operações atualmente existentes
+                    var atuais = perfilDb.OperacaoPerfis.ToList();
+
+
+                    // Remove somente as desmarcadas
+                    var paraRemover = atuais
+                        .Where(atual => !idsNovos.Contains(atual.OperacaoId))
+                        .ToList();
+
+                    if (paraRemover.Any())
                     {
-                        var novos = idsNovos.Select(id => new OperacaoPerfil
+                        _dbContext.Set<OperacaoPerfil>()
+                            .RemoveRange(paraRemover);
+                    }
+
+
+                    // Adiciona somente as novas
+                    var idsAtuais = atuais
+                        .Select(x => x.OperacaoId)
+                        .ToHashSet();
+
+                    var paraAdicionar = idsNovos
+                        .Where(id => !idsAtuais.Contains(id))
+                        .Select(id => new OperacaoPerfil
                         {
                             PerfilId = perfilDb.Id,
                             OperacaoId = id
-                        }).ToList();
+                        })
+                        .ToList();
 
-                        // Adiciona ao ChangeTracker — _operacaoPerfilRepository.AdicionarRange() não faz SaveChanges()
-                        _operacaoPerfilRepository.AdicionarRange(novos);
+                    if (paraAdicionar.Any())
+                    {
+                        _dbContext.Set<OperacaoPerfil>()
+                            .AddRange(paraAdicionar);
                     }
 
-                    // 3) Persiste todas alterações (perfil + operacaoPerfil) de uma vez
+
                     _dbContext.SaveChanges();
 
                     transaction.Commit();
@@ -127,8 +169,9 @@ namespace TSmartClinic.API.Repositories
                 }
             });
 
-            // Opcional: recarregar navegações se precisar devolver operações
-            _dbContext.Entry(perfilDb).Collection(p => p.OperacaoPerfis).Load();
+            _dbContext.Entry(perfilDb)
+                .Collection(p => p.OperacaoPerfis)
+                .Load();
 
             return perfilDb;
         }

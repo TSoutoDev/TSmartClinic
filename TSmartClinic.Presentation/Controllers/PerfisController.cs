@@ -37,28 +37,16 @@ namespace TSmartClinic.Presentation.Controllers
         {
             await CriarViewBags();
 
-            // Monte OperacaoPerfis a partir dos IDs marcados (sempre antes de usar o model)
             var ids = (model.SelectedOperacaoIds ?? Enumerable.Empty<int>()).Distinct();
+
             model.OperacaoPerfis = ids
                 .Select(id => new OperacaoPerfilViewModel
                 {
-                    OperacaoId = id,
-                    // Se for edição você tem Id; se for criação pode deixar 0/null
-                    PerfilId = model.Id ?? 0
+                    OperacaoId = id
                 })
                 .ToList();
 
-            // Carrega árvore
             model.Modulos = await _perfilPermissaoService.ListarArvorePermissoesAsync();
-
-            // 🔹 Salva as operações do perfil (apenas se já tem Id)
-            if (model.Id.HasValue)
-            {
-                var operacoes = model.SelectedOperacaoIds ?? Enumerable.Empty<int>();
-                _perfilService.Atualizar(model.PublicId.Value, model);
-               // await _perfilPermissaoService.SalvarOperacoesDoPerfilAsync(model.Id.Value, operacoes);
-
-            }
 
             return await base.Cadastro(model);
         }

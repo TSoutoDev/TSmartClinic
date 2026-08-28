@@ -20,12 +20,12 @@ public class PerfilPermissaoService : BaseService<BaseFilterViewModel, Permissoe
         _baseUrlController = $"{urlApiSettings!.Value.ApiGateway}/permissoesAcesso";
         _logger = logger;
     }
-    
+
     public async Task<List<PermissoesViewModel>> ListarArvoreModuloPermissoesAsync()
     {
         using (var client = new HttpClient())
         {
-             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
 
             var result = await client.GetAsync($"{_baseUrlController}/permissoes-acesso");
 
@@ -67,25 +67,25 @@ public class PerfilPermissaoService : BaseService<BaseFilterViewModel, Permissoe
 
         return lista ?? new();
     }
-
-    public async Task<List<int>> ObterOperacoesDoPerfilAsync(Guid perfilId)
+    public async Task<List<int>> ObterOperacoesDoPerfilAsync(Guid publicId)
     {
         using var client = new HttpClient();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
 
-        var url = $"http://localhost:5136/api/permissoesacesso/permissoes-acesso/{perfilId}";
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", AccessToken);
+
+        var url = $"http://localhost:5136/api/permissoesacesso/permissoes-acesso/{publicId}";
+
         var resp = await client.GetAsync(url);
-        if (resp.StatusCode == HttpStatusCode.NoContent) return new();
+
+        if (resp.StatusCode == HttpStatusCode.NoContent)
+            return new();
 
         resp.EnsureSuccessStatusCode();
+
         var json = await resp.Content.ReadAsStringAsync();
 
-        _logger.LogInformation($"JSON recebido: {json}");
-
-        var modulos = JsonSerializer.Deserialize<List<ModuloViewModel>>(json, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        }) ?? new List<ModuloViewModel>();
+        var modulos = JsonSerializer.Deserialize<List<ModuloViewModel>>(json, new JsonSerializerOptions{PropertyNameCaseInsensitive = true}) ?? new List<ModuloViewModel>();
 
         // Extrair todos os IDs de operações em todos os módulos e funcionalidades
         var operacaoIds = modulos
@@ -108,7 +108,7 @@ public class PerfilPermissaoService : BaseService<BaseFilterViewModel, Permissoe
 
         // Ex.: PUT /permissoesAcesso/perfis/{perfilId}/operacoes  body: [1,2,3]
         // var resp = await client.PutAsync($"{_baseUrlController}/perfis/{perfilId}/operacoes", content);
-         var resp = await client.PutAsync($"http://localhost:5136/api/permissoesacesso/permissoes-acesso/{perfilId}/operacoes", content);
+        var resp = await client.PutAsync($"http://localhost:5136/api/permissoesacesso/permissoes-acesso/{perfilId}/operacoes", content);
         resp.EnsureSuccessStatusCode();
     }
 

@@ -63,9 +63,9 @@ namespace TSmartClinic.API.Services
 
         public override Usuario Inserir(Usuario usuario)
         {
-            //  Não armazene senha reversível na criação
+
             // Se vier senha no DTO, ignore aqui e force o primeiro acesso via link
-            usuario.Senha = null; // ou algum placeholder; ideal é null e a coluna permitir null até o primeiro acesso
+            usuario.Senha = null; 
             usuario.PrimeiroAcesso = true;
             usuario.DataUltimoAcesso = null;
 

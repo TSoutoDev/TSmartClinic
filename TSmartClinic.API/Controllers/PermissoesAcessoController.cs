@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using TSmartClinic.API.Services;
+
 //using TSmartClinic.API.DTOs.Responses;
 using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Shared.DTOs.Responses.PermissoesAcessoRersponse;
@@ -16,12 +18,15 @@ namespace TSmartClinic.API.Controllers
         private readonly IOperacaoService _operacaoService;
         private readonly IFuncionalidadeService _funcionalidadeService;
         private readonly IMapper _mapper;
-        public PermissoesAcessoController(IMapper mapper, IFuncionalidadeService funcionalidadeService, IModuloService moduloService, IOperacaoService operacaoService)
+        private readonly IPerfilService _perfilService;
+        public PermissoesAcessoController(IMapper mapper, IFuncionalidadeService funcionalidadeService, IModuloService moduloService, IOperacaoService operacaoService, IPerfilService perfilService)
         {
             _moduloService = moduloService;
             _operacaoService = operacaoService;
             _funcionalidadeService = funcionalidadeService;
             _mapper = mapper;
+            _perfilService = perfilService;
+
         }
 
         [HttpGet("permissoes-acesso")]
@@ -39,13 +44,19 @@ namespace TSmartClinic.API.Controllers
             return Ok(dto);
         }
 
-        [HttpGet("permissoes-acesso/{perfilId}")]
+
+        [HttpGet("permissoes-acesso/{publicId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult<List<int>>> ObterOperacoesDoPerfil(int perfilId, CancellationToken ct)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<int>>> ObterOperacoesDoPerfil(Guid publicId, CancellationToken ct)
         {
-            // Supondo que exista um método no service que retorne os IDs das operações do perfil
-            var ids = await _moduloService.ListarIdsPorPerfilAsync(perfilId, ct);
+            var perfil = _perfilService.ObterPorPublicId(publicId);
+
+            if (perfil == null)
+                return NotFound();
+
+            var ids = await _moduloService.ListarIdsPorPerfilAsync(perfil.Id, ct);
 
             if (ids == null || ids.Count == 0)
                 return NoContent();
@@ -53,15 +64,21 @@ namespace TSmartClinic.API.Controllers
             return Ok(ids);
         }
 
-        [HttpPut("permissoes-acesso/{perfilId}/operacoes")]
+
+        [HttpPut("permissoes-acesso/{publicId:guid}/operacoes")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> SalvarOperacoesDoPerfil(int perfilId, [FromBody] List<int> operacaoIds, CancellationToken ct)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SalvarOperacoesDoPerfil( Guid publicId,  [FromBody] List<int> operacaoIds, CancellationToken ct)
         {
-            // Supondo que exista um método para persistir as operações do perfil
-            await _moduloService.AtualizarOperacoesDoPerfilAsync(perfilId, operacaoIds ?? new List<int>(), ct);
+            var perfil = _perfilService.ObterPorPublicId(publicId);
+
+            if (perfil == null)
+                return NotFound();
+
+            await _moduloService.AtualizarOperacoesDoPerfilAsync(perfil.Id, operacaoIds ?? new List<int>(), ct);
+
             return NoContent();
         }
-
 
 
 

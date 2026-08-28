@@ -49,8 +49,15 @@ namespace AgendaApp.API.Mapper
             CreateMap<Categoria, CategoriaUpdateRequestDTO>().ReverseMap();
             CreateMap<Modulo, ModuloUpdateRequestDTO>().ReverseMap();
             CreateMap<Paciente, PacienteUpdateRequestDTO>().ReverseMap();
+            CreateMap<PerfilUpdateRequestDTO, Perfil>()
+             .ForMember(dest => dest.Id, opt => opt.Ignore())
+             .ForMember(dest => dest.PublicId, opt => opt.Ignore())
+             .ForMember(dest => dest.OperacaoPerfis,
+                 opt => opt.MapFrom(src => src.OperacaoPerfis));
+
             CreateMap<Perfil, PerfilUpdateRequestDTO>()
-             .ForMember(dest => dest.OperacaoPerfis, opt => opt.MapFrom(src => src.OperacaoPerfis)).ReverseMap();
+                .ForMember(dest => dest.OperacaoPerfis,
+                    opt => opt.MapFrom(src => src.OperacaoPerfis));
 
             CreateMap<Tarefa, TarefaUpdateRequestDTO>().ReverseMap();
             CreateMap<PacienteUpdateRequestDTO, Paciente>().ReverseMap();

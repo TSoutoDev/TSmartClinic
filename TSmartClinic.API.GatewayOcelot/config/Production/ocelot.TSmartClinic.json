@@ -259,7 +259,7 @@
 
     //PERFIS
     {
-      "DownstreamPathTemplate": "/api/perfis/{id}",
+      "DownstreamPathTemplate": "/api/perfis/{publicId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -270,7 +270,7 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
-      "UpstreamPathTemplate": "/perfis/{id}",
+      "UpstreamPathTemplate": "/perfis/{publicId}",
       "UpstreamHttpMethod": [ "GET", "PATCH", "DELETE" ]
     },
     {

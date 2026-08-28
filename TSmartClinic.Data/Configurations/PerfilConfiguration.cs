@@ -17,6 +17,8 @@ namespace TSmartClinic.Data.Configurations
                 .HasColumnName("Id")
                 .ValueGeneratedOnAdd() // diga ao EF que o valor é gerado;
                 .UseIdentityByDefaultColumn(); // mapeia identity do Postgres
+            builder.Property(x => x.PublicId).HasColumnName("PublicId").IsRequired();
+            builder.HasIndex(x => x.PublicId).IsUnique();
             builder.Property(c => c.NomePerfil).HasColumnName("NomePerfil").HasMaxLength(100).IsRequired();
             builder.Property(c => c.ValidadeDias).HasColumnName("ValidadeDias");
             builder.Property(c => c.ErrosSenha).HasColumnName("ErrosSenha");
@@ -25,7 +27,6 @@ namespace TSmartClinic.Data.Configurations
             builder.Property(c => c.NichoId).HasColumnName("NichoId").IsRequired();
             builder.Property(c => c.ClienteId).HasColumnName("ClienteId").IsRequired();
 
-            // PK gerada pelo banco (IDENTITY)  
             //mapeamento do relacionamento (1pN)
             builder.HasOne(f => f.Nicho)
             .WithMany(o => o.Perfis)
