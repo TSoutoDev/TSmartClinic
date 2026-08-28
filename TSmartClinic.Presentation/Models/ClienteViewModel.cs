@@ -9,6 +9,8 @@
         public string? EmailContato { get; set; }
         public bool? Ativo { get; set; } = true;
         public DateTime? DataCadastro { get; set; }
+        public byte[]? Logo { get; set; }
         public int? NichoId { get; set; }
+        public ICollection<ClienteEnderecoViewModel>? ClienteEnderecos { get; set; }
     }
 }

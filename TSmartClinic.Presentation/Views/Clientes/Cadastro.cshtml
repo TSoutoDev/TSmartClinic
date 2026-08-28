@@ -1,24 +1,27 @@
-﻿@using System.Linq
+﻿@model TSmartClinic.Presentation.Models.ClienteViewModel
+@using System.Linq
 @using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Mvc.Rendering
 @using TSmartClinic.Presentation.Models.PermissoesAcesso
 @using TSmartClinic.Presentation.Services.Interfaces
+
 @inject IUsuarioLogadoService UsuarioLogado
 @inject IHttpContextAccessor HttpContextAccessor
-@model TSmartClinic.Presentation.Models.ClienteViewModel
 
 @{
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
     ViewBag.Titulo = "Cadastro de Cliente";
-    var user = HttpContextAccessor.HttpContext?.User;
+
+    var nichos = ViewBag.Nichos as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
+    var clienteEndereco = Model.ClienteEnderecos?.FirstOrDefault(x => x.Tipo == "Comercial") ?? Model.ClienteEnderecos?.FirstOrDefault();
+    var endereco = clienteEndereco?.Endereco ?? new EnderecoViewModel();
+
+    var temLogo = Model.Logo != null && Model.Logo.Length > 0;
+    var logoBase64 = temLogo ? Convert.ToBase64String(Model.Logo!) : null;
 }
 
-@using (Html.BeginForm())
+@section Styles
 {
-    @if (Model != null && Model.Id.HasValue)
-    {
-        <input asp-for="Id" type="hidden" />
-    }
-
     <style>
         .card {
             border: none;
@@ -26,7 +29,6 @@
             overflow: hidden;
         }
 
-        /* Wrapper para ícone dentro do input */
         .input-icon {
             position: relative;
         }
@@ -42,7 +44,7 @@
 
             .input-icon input,
             .input-icon select {
-                padding-left: 2.5rem; /* espaço para o ícone */
+                padding-left: 2.5rem;
                 border-radius: 8px;
                 border: 1px solid #dcdfe6;
                 transition: 0.2s ease-in-out;
@@ -54,140 +56,432 @@
                     box-shadow: 0 0 0 3px rgba(72, 135, 215, 0.15);
                 }
 
-        .logo {
-            height: 28px;
-            vertical-align: middle;
-            position: relative;
-            top: -3px;
+        .logo-preview {
+            max-height: 90px;
+            max-width: 220px;
+            object-fit: contain;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 6px;
+            background: #fff;
         }
     </style>
+}
+
+<form asp-controller="Clientes" asp-action="Cadastro" method="post">
+
+    <input asp-for="PublicId" type="hidden" />
+
+    <input type="hidden" id="LogoBase64" name="Logo" value="@(Model.Logo != null && Model.Logo.Length > 0 ? Convert.ToBase64String(Model.Logo)
+                           : "")" />
 
     <div class="card">
         <div class="card-body">
-            <ul class="nav nav-tabs" role="tablist" id="tabBusca">
+            <ul class="nav nav-tabs" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#busca_padrao" role="tab">
-                        <span class="d-block d-sm-none"><i class="fas fa-search"></i></span>
-                        <span class="d-none d-sm-block">Dados Gerais</span>
+                    <a class="nav-link active"
+                       data-bs-toggle="tab"
+                       href="#dados_gerais"
+                       role="tab">
+
+                        <span class="d-block d-sm-none">
+                            <i class="fas fa-info-circle"></i>
+                        </span>
+
+                        <span class="d-none d-sm-block">
+                            Dados Gerais
+                        </span>
                     </a>
                 </li>
             </ul>
 
-            <!-- Linha 1 -->
-            <div class="row mt-4">
-                <div class="col-md-4">
-                    <label for="NomeCliente">Nome *</label>
-                    <div class="input-icon">
-                        <i class="fa fa-building"></i>
-                        @Html.TextBoxFor(model => model.NomeCliente, new { @class = "form-control", @autocomplete = "off", @placeholder = "Digite o nome da empresa" })
-                    </div>
-                    <span class="text-danger">@Html.ValidationMessageFor(model => model.NomeCliente)</span>
-                </div>
+            <div class="tab-content">
 
-                <div class="col-md-4">
-                    <label for="RazaoSocial">Razão Social *</label>
-                    <div class="input-icon">
-                        <i class="fa fa-briefcase"></i>
-                        @Html.TextBoxFor(model => model.RazaoSocial, new { @class = "form-control", @autocomplete = "off", @placeholder = "Digite o nome da razão social" })
-                    </div>
-                    <span class="text-danger">@Html.ValidationMessageFor(model => model.RazaoSocial)</span>
-                </div>
+                <div class="tab-pane fade show active"
+                     id="dados_gerais"
+                     role="tabpanel">
 
-                <div class="col-md-4">
-                    <label for="Cnpj">CNPJ *</label>
-                    <div class="input-icon">
-                        <i class="fa fa-id-card"></i>
-                        @Html.TextBoxFor(model => model.CNPJ, new { @class = "form-control", @autocomplete = "off", @maxlength = "18", @placeholder = "Digite o CNPJ" })
-                    </div>
-                    <span class="text-danger">@Html.ValidationMessageFor(model => model.CNPJ)</span>
-                </div>
-            </div>
+                    <div class="row mt-4">
 
-            <!-- Linha 2 -->
-            <div class="row mt-3">
-                <div class="col-md-4">
-                    <label>Email *</label>
-                    <div class="input-icon">
-                        <i class="fa fa-envelope"></i>
-                        @Html.TextBoxFor(model => model.EmailContato, new { @class = "form-control Email", @placeholder = "Digite o email", @autocomplete = "off", type = "email" })
-                    </div>
-                    <span class="text-danger">@Html.ValidationMessageFor(model => model.EmailContato)</span>
-                </div>
+                        <div class="col-md-4">
+                            <label for="NomeCliente">Nome *</label>
 
-                <div class="col-md-4">
-                    <label for="Telefone">Telefone</label>
-                    <div class="input-icon">
-                        <i class="fa fa-phone"></i>
-                        @Html.TextBoxFor(model => model.Telefone, new { @class = "form-control", @autocomplete = "off", @maxlength = "20", @placeholder = "Digite o telefone" })
-                    </div>
-                    <span class="text-danger">@Html.ValidationMessageFor(model => model.Telefone)</span>
-                </div>
+                            <div class="input-icon">
+                                <i class="fa fa-building"></i>
 
-                <div class="col-md-4">
-                    @if (UsuarioLogado != null && UsuarioLogado.UsuarioMaster)
-                    {
-                        <label for="NichoId">Nicho *</label>
-                        <i class="fa-solid fa-crown" title="Usuário Master" style="color: gold; margin-left: 5px;"></i>
-                        <div class="input-icon">
-                            <i class="fa fa-layer-group"></i>
-                            <select id="NichoId" name="NichoId" class="form-select" asp-for="NichoId" asp-items="@ViewBag.Nichos"></select>
+                                @Html.TextBoxFor(model => model.NomeCliente,
+                                    new
+                                    {
+                                        @class = "form-control",
+                                        autocomplete = "off",
+                                        placeholder = "Digite o nome da empresa"
+                                    })
+                            </div>
+
+                            <span class="text-danger">
+                                @Html.ValidationMessageFor(model => model.NomeCliente)
+                            </span>
                         </div>
-                        <span class="text-danger">@Html.ValidationMessageFor(m => m.NichoId)</span>
-                    }
+
+                        <div class="col-md-4">
+                            <label for="RazaoSocial">Razão Social *</label>
+
+                            <div class="input-icon">
+                                <i class="fa fa-briefcase"></i>
+
+                                @Html.TextBoxFor( model => model.RazaoSocial,
+                                        new
+                                        {
+                                            @class = "form-control",
+                                            autocomplete = "off",
+                                            placeholder = "Digite o nome da razão social"
+                                        })
+                            </div>
+
+                            <span class="text-danger">
+                                @Html.ValidationMessageFor(model => model.RazaoSocial)
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="CNPJ">CNPJ *</label>
+
+                            <div class="input-icon">
+                                <i class="fa fa-id-card"></i>
+
+                                @Html.TextBoxFor(model => model.CNPJ,
+                                        new
+                                        {
+                                            @class = "form-control",
+                                            autocomplete = "off",
+                                            maxlength = "18",
+                                            placeholder = "Digite o CNPJ"
+                                        })
+                            </div>
+
+                            <span class="text-danger">
+                                @Html.ValidationMessageFor(model => model.CNPJ)
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="row mt-3">
+
+                        <div class="col-md-4">
+                            <label>Email *</label>
+
+                            <div class="input-icon">
+                                <i class="fa fa-envelope"></i>
+
+                                @Html.TextBoxFor(model => model.EmailContato,
+                                        new
+                                        {
+                                            @class = "form-control Email",
+                                            placeholder = "Digite o email",
+                                            autocomplete = "off",
+                                            type = "email"
+                                        })
+                            </div>
+
+                            <span class="text-danger">
+                                @Html.ValidationMessageFor(model => model.EmailContato)
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="Telefone">Telefone</label>
+
+                            <div class="input-icon">
+                                <i class="fa fa-phone"></i>
+
+                                @Html.TextBoxFor(model => model.Telefone,
+                                        new
+                                        {
+                                            @class = "form-control",
+                                            autocomplete = "off",
+                                            maxlength = "20",
+                                            placeholder = "Digite o telefone"
+                                        })
+                            </div>
+
+                            <span class="text-danger">
+                                @Html.ValidationMessageFor(model => model.Telefone)
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+
+                            @if (UsuarioLogado != null && UsuarioLogado.UsuarioMaster)
+                            {
+                                <label for="NichoId">Nicho *</label>
+
+                                <i class="fa-solid fa-crown"
+                                   title="Usuário Master"
+                                   style="color: gold; margin-left: 5px;">
+                                </i>
+
+                                <div class="input-icon">
+                                    <i class="fa fa-layer-group"></i>
+
+                                    <select id="NichoId"
+                                            asp-for="NichoId"
+                                            asp-items="nichos"
+                                            class="form-select">
+                                    </select>
+                                </div>
+
+                                <span class="text-danger">
+                                    @Html.ValidationMessageFor(m => m.NichoId)
+                                </span>
+                            }
+
+                        </div>
+
+                        @* ========================= ENDEREÇO ========================= *@
+
+                        <hr class="my-4" />
+
+                        <div class="form-secao-titulo">
+                            <i class="fa-solid fa-location-dot"></i> Endereço
+                        </div>
+
+                        <input type="hidden" name="ClienteEnderecos[0].Tipo" value="Comercial" />
+                        <input type="hidden" name="ClienteEnderecos[0].EnderecoId" value="@clienteEndereco?.EnderecoId" />
+                        <input type="hidden" name="ClienteEnderecos[0].Endereco.Id" value="@endereco.Id" />
+
+                        <div class="row">
+
+                            <div class="col-md-3">
+                                <label class="form-label-tsmart">CEP</label>
+                                <div class="campo-com-icone">
+                                    <i class="fa-solid fa-location-crosshairs"></i>
+                                    <input type="text"
+                                           name="ClienteEnderecos[0].Endereco.Cep"
+                                           value="@endereco.Cep"
+                                           class="form-control"
+                                           autocomplete="off" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label-tsmart">Logradouro</label>
+                                <div class="campo-com-icone">
+                                    <i class="fa-solid fa-road"></i>
+                                    <input type="text"
+                                           name="ClienteEnderecos[0].Endereco.Logradouro"
+                                           value="@endereco.Logradouro"
+                                           class="form-control"
+                                           autocomplete="off" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label-tsmart">Número</label>
+                                <div class="campo-com-icone">
+                                    <i class="fa-solid fa-hashtag"></i>
+                                    <input type="text"
+                                           name="ClienteEnderecos[0].Endereco.Numero"
+                                           value="@endereco.Numero"
+                                           class="form-control"
+                                           autocomplete="off" />
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row mt-3">
+
+                            <div class="col-md-4">
+                                <label class="form-label-tsmart">Complemento</label>
+                                <div class="campo-com-icone">
+                                    <i class="fa-regular fa-building"></i>
+                                    <input type="text"
+                                           name="ClienteEnderecos[0].Endereco.Complemento"
+                                           value="@endereco.Complemento"
+                                           class="form-control"
+                                           autocomplete="off" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label-tsmart">Bairro</label>
+                                <div class="campo-com-icone">
+                                    <i class="fa-solid fa-map"></i>
+                                    <input type="text"
+                                           name="ClienteEnderecos[0].Endereco.Bairro"
+                                           value="@endereco.Bairro"
+                                           class="form-control"
+                                           autocomplete="off" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label-tsmart">Cidade</label>
+                                <div class="campo-com-icone">
+                                    <i class="fa-solid fa-city"></i>
+                                    <input type="text"
+                                           name="ClienteEnderecos[0].Endereco.Cidade"
+                                           value="@endereco.Cidade"
+                                           class="form-control"
+                                           autocomplete="off" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label class="form-label-tsmart">Estado</label>
+                                <div class="campo-com-icone">
+                                    <i class="fa-solid fa-map-location-dot"></i>
+                                    <input type="text"
+                                           name="ClienteEnderecos[0].Endereco.Estado"
+                                           value="@endereco.Estado"
+                                           class="form-control"
+                                           autocomplete="off"
+                                           maxlength="2" />
+                                </div>
+                            </div>
+
+                        </div>
+
+                    <div class="row mt-3">
+
+                        <div class="col-md-6">
+                            <label for="UploadLogo"
+                                   class="form-label">
+                                Logomarca
+                            </label>
+
+                            <input type="file"
+                                   id="UploadLogo"
+                                   class="form-control"
+                                   accept=".jpg,.jpeg,.png,.webp" />
+
+                            <small class="text-muted">
+                                Formatos permitidos: JPG, PNG ou WEBP.
+                            </small>
+                        </div>
+
+                        <div class="col-md-6">
+
+                            @if (Model.Logo != null && Model.Logo.Length > 0)
+                            {
+                                <label class="form-label d-block">
+                                    Logo atual
+                                </label>
+
+                                <img id="PreviewLogo"
+                                     class="logo-preview"
+                                     src="data:image/png;base64,@Convert.ToBase64String(Model.Logo)"
+                                     alt="Logomarca do cliente" />
+                            }
+                            else
+                            {
+                                <img id="PreviewLogo"
+                                     class="logo-preview d-none"
+                                     alt="Pré-visualização da logomarca" />
+                            }
+
+                        </div>
+
+                    </div>
+
+                    <div class="row mt-4">
+
+                        <div class="col-md-2">
+                            <label>Situação</label>
+
+                            @if (!Model.PublicId.HasValue || Model.PublicId.Value == Guid.Empty)
+                            {
+                                <input type="hidden" name="Ativo" value="true" />
+                                <select class="form-select"
+                                        disabled>
+                                    <option value="true"
+                                            selected>
+                                        Ativo
+                                    </option>
+                                </select>
+                            }
+                            else
+                            {
+                                <select asp-for="Ativo"
+                                        class="form-select">
+                                    <option value="true">Ativo</option>
+                                    <option value="false">Inativo</option>
+                                </select>
+                            }
+
+                        </div>
+
+                    </div>
+
                 </div>
+
             </div>
 
-            <!-- Situação -->
-            <div class="row mt-4">
-                <div class="col-md-2">
-                    <label>Situação</label>
-                    <select asp-for="Ativo" class="form-select" disabled="@(!Model.Id.HasValue ? "disabled" : null)">
-                        <option value="true">Ativo</option>
-                        <option value="false">Inativo</option>
-                    </select>
-                </div>
-            </div>
+            <div class="mt-4 d-flex gap-2">
 
-            <!-- Botões -->
-            <div class="mt-4">
                 <button type="submit"
-                        asp-permissao="@(Model.Id.HasValue ? "Clientes_Editar" : "Clientes_Incluir")"
+                        asp-permissao="@(Model.PublicId.HasValue && Model.PublicId.Value != Guid.Empty ? "Clientes_Editar" : "Clientes_Incluir")"
                         onclick="loading()"
                         class="btn btn-success">
+                    <i class="fa fa-save me-1"></i>
                     Gravar
                 </button>
 
-                @if (Model.Id.HasValue)
+                @if (Model.PublicId.HasValue && Model.PublicId.Value != Guid.Empty)
                 {
                     <button type="submit"
                             asp-action="Excluir"
                             asp-permissao="Clientes_Excluir"
                             onclick="loading()"
                             class="btn btn-danger">
+
+                        <i class="fa-regular fa-trash-can me-1"></i>
                         Excluir
                     </button>
                 }
 
-                <a href="/Clientes/Consulta" class="btn btn-secondary">Voltar</a>
+                <a asp-controller="Clientes"
+                   asp-action="Consulta"
+                   class="btn btn-secondary">
+                    <i class="fa-solid fa-arrow-left me-1"></i>
+                    Voltar
+                </a>
+
             </div>
 
-            <!-- Script upload logo -->
-            <script>
-                document.getElementById('UploadFoto')?.addEventListener('change', function (evt) {
-                    const file = evt.target.files[0];
-                    if (!file) {
-                        document.getElementById('FotoBase64').value = '';
-                        return;
-                    }
-
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const base64String = e.target.result.split(',')[1];
-                        document.getElementById('FotoBase64').value = base64String;
-                    };
-                    reader.readAsDataURL(file);
-                });
-            </script>
         </div>
     </div>
+
+</form>
+
+@section Scripts
+{
+    <script>
+        document.getElementById('UploadLogo')
+            ?.addEventListener('change', function (evt) {
+
+                const file = evt.target.files[0];
+
+                if (!file)
+                    return;
+
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+
+                    const resultado = e.target.result;
+                    const base64String = resultado.split(',')[1];
+
+                    document.getElementById('LogoBase64').value = base64String;
+
+                    const preview = document.getElementById('PreviewLogo');
+
+                    preview.src = resultado;
+                    preview.classList.remove('d-none');
+                };
+
+                reader.readAsDataURL(file);
+            });
+    </script>
 }

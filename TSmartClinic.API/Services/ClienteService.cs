@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TSmartClinic.Core.Domain.Entities;
+using TSmartClinic.Core.Domain.Exceptions;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Core.Domain.Service;
@@ -29,6 +30,55 @@ namespace TSmartClinic.API.Services
             }
             // Usuário master: retorna todos
             return await _clienteRepository.ListarClientes();
+        }
+
+        public override Cliente Atualizar(Guid publicId, Cliente cliente)
+        {
+            var clienteBanco = _clienteRepository.ObterPorPublicId(publicId);
+
+            if (clienteBanco == null)
+                throw new NotFoundException();
+
+            clienteBanco.Atualizar(cliente);
+
+            if (cliente.ClienteEndereco != null && cliente.ClienteEndereco.Any())
+            {
+                var enderecoRecebido = cliente.ClienteEndereco.FirstOrDefault();
+
+                if (enderecoRecebido?.Endereco != null)
+                {
+                    var vinculoBanco = clienteBanco.ClienteEndereco?.FirstOrDefault();
+
+                    if (vinculoBanco?.Endereco != null)
+                    {
+                        vinculoBanco.Tipo = enderecoRecebido.Tipo;
+
+                        vinculoBanco.Endereco.Atualizar(enderecoRecebido.Endereco);
+                    }
+                    else
+                    {
+                        clienteBanco.ClienteEndereco ??= new List<ClienteEndereco>();
+
+                        clienteBanco.ClienteEndereco.Add(new ClienteEndereco
+                        {
+                            Tipo = enderecoRecebido.Tipo,
+                            Endereco = enderecoRecebido.Endereco
+                        }
+                        );
+                    }
+                }
+            }
+
+            _clienteRepository.Atualizar(clienteBanco);
+
+            return clienteBanco;
+        }
+
+        public override Cliente Inserir(Cliente entity)
+        {
+            entity.DataCadastro = DateTime.UtcNow;
+
+            return base.Inserir(entity);
         }
     }
 }

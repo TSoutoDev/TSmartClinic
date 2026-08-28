@@ -48,7 +48,7 @@
     },
     //CLIENTES
     {
-      "DownstreamPathTemplate": "/api/clientes/{id}",
+      "DownstreamPathTemplate": "/api/clientes/{publicId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -59,7 +59,7 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
-      "UpstreamPathTemplate": "/clientes/{id}",
+      "UpstreamPathTemplate": "/clientes/{publicId}",
       "UpstreamHttpMethod": [ "GET", "PATCH", "DELETE" ]
     },
     {

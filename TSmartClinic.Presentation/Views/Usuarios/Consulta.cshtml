@@ -75,6 +75,7 @@
 {
     <div class="card">
         <div class="card-body">
+
             <table id="gridResultados" class="table table-hover table-striped">
                 <thead class="table-header">
                     <tr>
@@ -86,19 +87,16 @@
                 </thead>
 
                 <tbody>
-                    @{
-                        foreach (var item in Model.Itens)
+                    @foreach (var item in Model.Itens)
                         {
                             <tr class="clickable"
                                 onclick="location.href='@Url.Action("Cadastro", "Usuarios", new { publicId = item.PublicId })'">
                                 <td>@item.Nome?.ToUpper()</td>
                                 <td>@item.Email?.ToUpper()</td>
                                 <td>@item.UsuarioClientePerfil.FirstOrDefault()?.Perfil?.NomePerfil</td>
-
-
                             </tr>
                         }
-                    }
+                    
                 </tbody>
             </table>
         </div>

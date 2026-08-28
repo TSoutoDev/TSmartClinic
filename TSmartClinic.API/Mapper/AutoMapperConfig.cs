@@ -23,7 +23,6 @@ namespace AgendaApp.API.Mapper
         {
 
             //Base
-            CreateMap<Cliente, BaseClienteRequestDTO>().ReverseMap();
             CreateMap<Modulo, BaseModuloRequestDTO>().ReverseMap();
             CreateMap<Nicho, BaseNichoRequestDTO>().ReverseMap();
             CreateMap<Paciente, BasePacienteRequestDTO>().ReverseMap();
@@ -32,6 +31,10 @@ namespace AgendaApp.API.Mapper
             CreateMap<UsuarioClientePerfil, BaseUsuarioClientePerfilRequestDto>().ReverseMap();
             CreateMap<Convenio, BaseConvenioRequestDTO>().ReverseMap();
             CreateMap<BaseEnderecoRequestDTO, Endereco>().ReverseMap();
+            CreateMap<BaseClienteRequestDTO, Cliente>()
+            .ForMember(dest => dest.ClienteEndereco,
+                opt => opt.MapFrom(src => src.ClienteEnderecos));
+            CreateMap<BaseClienteEnderecoRequestDTO, ClienteEndereco>().ReverseMap();
 
             //insert
             CreateMap<Categoria, CategoriaInsertRequestDTO>().ReverseMap();
@@ -79,7 +82,6 @@ namespace AgendaApp.API.Mapper
             CreateMap<UsuarioClientePerfil, UsuarioClientePerfilUpdateRequestDto>();
 
             //Response
-            CreateMap<Cliente, ClienteResponseDTO>();
             CreateMap<Nicho, NichoResponseDTO>();
             CreateMap<Categoria, CategoriaResponseDTO>().ReverseMap();
             CreateMap<Convenio, ConvenioResponseDTO>();
@@ -106,6 +108,13 @@ namespace AgendaApp.API.Mapper
                 .ForMember(dest => dest.Perfil,
                     opt => opt.MapFrom(src => src.Perfil))
                 .ReverseMap();
+
+            CreateMap<Cliente, ClienteResponseDTO>()
+                .ForMember(dest => dest.ClienteEnderecos,
+                    opt => opt.MapFrom(src => src.ClienteEndereco))
+                .ReverseMap();
+
+            CreateMap<ClienteEndereco, ClienteEnderecoResponseDTO>().ReverseMap();
         }
     }
 }
