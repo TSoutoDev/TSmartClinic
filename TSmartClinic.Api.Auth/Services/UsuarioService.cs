@@ -15,9 +15,9 @@ namespace TSmartClinic.Api.Auth.Services
             _usuarioRepository = usuarioRepository;
         }
 
-        public void Bloquear(int id)
+        public void Bloquear(Guid publicId)
         {
-            var usuario = _usuarioRepository?.ObterPorId(id);
+            var usuario = _usuarioRepository?.ObterPorPublicId(publicId);
 
             usuario.Bloquear();
 

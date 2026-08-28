@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TSmartClinic.Core.Domain.Entities;
+using TSmartClinic.Core.Domain.Exceptions;
 using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Core.Domain.Interfaces.Services;
@@ -43,9 +44,12 @@ namespace TSmartClinic.API.Services
             _tokenService = tokenService;
         }
 
-        public void Bloquear(int id)
+        public void Bloquear(Guid publicId)
         {
-            var usuario = _usuarioRepository?.ObterPorId(id);
+            var usuario = _usuarioRepository?.ObterPorPublicId(publicId);
+
+            if (usuario == null)
+                throw new NotFoundException();
 
             usuario?.Bloquear();
 
@@ -59,18 +63,29 @@ namespace TSmartClinic.API.Services
 
         public override Usuario Inserir(Usuario usuario)
         {
-            // 👉 Não armazene senha reversível na criação
+            //  Não armazene senha reversível na criação
             // Se vier senha no DTO, ignore aqui e force o primeiro acesso via link
             usuario.Senha = null; // ou algum placeholder; ideal é null e a coluna permitir null até o primeiro acesso
             usuario.PrimeiroAcesso = true;
+            usuario.DataUltimoAcesso = null;
 
             if (_usuarioLogadoService.UsuarioMaster)
                 _perfilRepository.ListarTodos();
+
+            //Garantir que a data seja convertido para UTC  ants de persistir.
+            if (usuario.DataExpiracaoSenha.HasValue)
+            {
+                usuario.DataExpiracaoSenha =
+                    usuario.DataExpiracaoSenha.Value.Kind == DateTimeKind.Utc
+                        ? usuario.DataExpiracaoSenha.Value
+                        : usuario.DataExpiracaoSenha.Value.ToUniversalTime();
+            }
 
             // guarda a lista antes e zera para evitar save em cascata indevido
             var perfis = usuario.UsuarioClientePerfil?.ToList();
             usuario.UsuarioClientePerfil = null;
             usuario.LoginInclusao = _usuarioLogadoService.Email;
+
             // 1) Persistir o usuário
             var usuarioGravado = _usuarioRepository!.Inserir(usuario);
 
@@ -115,24 +130,35 @@ namespace TSmartClinic.API.Services
                 // _logger?.LogError(ex, "Falha ao enfileirar e-mail de primeiro acesso para {Email}", usuarioGravado.Email);
             }
 
-            // 5) Retornar o objeto já persistido
+            // 7) Retornar o objeto já persistido
             return usuarioGravado;
         }
-
 
         public override Usuario Atualizar(Guid publicId, Usuario usuario)
         {
             var usuarioExistente = _usuarioRepository?.ObterPorPublicId(publicId);
 
-            // Se a senha foi alterada, criptografar
-            if (!string.Equals(usuario.Senha, usuarioExistente))
+            if (usuarioExistente == null)
+                throw new NotFoundException();
+
+            // Recupera o Id interno através do PublicId
+            usuario.Id = usuarioExistente.Id;
+
+            // Garantir que a data seja convertido para UTC  ants de persistir.
+            if (usuario.DataExpiracaoSenha.HasValue)
+            {
+                usuario.DataExpiracaoSenha = usuario.DataExpiracaoSenha.Value.Kind == DateTimeKind.Utc
+                        ? usuario.DataExpiracaoSenha.Value
+                        : usuario.DataExpiracaoSenha.Value.ToUniversalTime();
+            }
+
+            // Só criptografa se realmente veio uma nova senha
+            if (!string.IsNullOrWhiteSpace(usuario.Senha))
             {
                 usuario.Senha = _criptografiaProvider.Criptografar(usuario.Senha);
             }
-            // Atualizar o usuario
-            var usuarioAtualizado = _usuarioRepository?.Atualizar(usuario);
 
-            return base.Atualizar(publicId, usuario);
+            return _usuarioRepository!.Atualizar(usuario);
         }
 
         public List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clinicasUsuario)

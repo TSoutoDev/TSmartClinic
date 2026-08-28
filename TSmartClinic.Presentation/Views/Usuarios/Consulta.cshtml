@@ -89,7 +89,8 @@
                     @{
                         foreach (var item in Model.Itens)
                         {
-                            <tr class="clickable" onclick="javascript:location.href='Cadastro/@item.Id'">
+                            <tr class="clickable"
+                                onclick="location.href='@Url.Action("Cadastro", "Usuarios", new { publicId = item.PublicId })'">
                                 <td>@item.Nome?.ToUpper()</td>
                                 <td>@item.Email?.ToUpper()</td>
                                 <td>@item.UsuarioClientePerfil.FirstOrDefault()?.Perfil?.NomePerfil</td>

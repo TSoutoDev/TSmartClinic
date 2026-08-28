@@ -157,7 +157,7 @@
     },
     //USUÁRIO
     {
-      "DownstreamPathTemplate": "/api/usuarios/{id}",
+      "DownstreamPathTemplate": "/api/usuarios/{publicId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -168,7 +168,7 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
-      "UpstreamPathTemplate": "/usuarios/{id}",
+      "UpstreamPathTemplate": "/usuarios/{publicId}",
       "UpstreamHttpMethod": [ "GET", "PATCH", "DELETE" ]
     },
     {
@@ -217,7 +217,7 @@
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
-      "DownstreamPathTemplate": "/api/usuarios/{id}/bloquear",
+      "DownstreamPathTemplate": "/api/usuarios/{publicId}/bloquear",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -228,7 +228,7 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
-      "UpstreamPathTemplate": "/usuarios/{id}/bloquear",
+      "UpstreamPathTemplate": "/usuarios/{publicId}/bloquear",
       "UpstreamHttpMethod": [ "PATCH" ]
     },
     {

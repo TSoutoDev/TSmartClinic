@@ -323,7 +323,8 @@
 
                     @foreach (var item in Model.Itens)
                     {
-                        <tr class="clickable" style="cursor:pointer;" onclick="location.href='@Url.Action("CentralPaciente", "Pacientes", new { id = item.Id })'">
+                        <tr class="clickable" style="cursor:pointer;"
+                            onclick="location.href='@Url.Action("CentralPaciente", "Pacientes", new { PublicId = item.PublicId })'">
                             <td> @item.NomePaciente?.ToUpper() </td>
                             <td> @(string.IsNullOrWhiteSpace(item.CPF) ? "-" : item.CPF)</td>
                             <td> @(string.IsNullOrWhiteSpace(item.Telefone) ? "-" : item.Telefone)</td>

@@ -112,7 +112,8 @@ namespace TSmartClinic.API.Repositories
                 .Include(u => u.UsuarioClientePerfil) // importante: carregar a coleção
                 .FirstOrDefault(p => p.Id == entity.Id);
 
-            if (usuarioDb == null) throw new Exception("Usuário não encontrado");
+            if (usuarioDb == null) 
+                throw new Exception("Usuário não encontrado");
 
             var strategy = _dbContext.Database.CreateExecutionStrategy();
 
@@ -122,7 +123,7 @@ namespace TSmartClinic.API.Repositories
                 try
                 {
                     // 1) Atualiza campos simples
-                    _mapper.Map(entity, usuarioDb);
+                    usuarioDb.Atualizar(entity);
 
                     // 2) Delta de UsuarioClientePerfil
                     var atuais = usuarioDb.UsuarioClientePerfil.ToList();
@@ -170,6 +171,7 @@ namespace TSmartClinic.API.Repositories
                         }
                     }
 
+               
                     // 3) Persiste tudo
                     _dbContext.SaveChanges();
                     transaction.Commit();
@@ -217,6 +219,19 @@ namespace TSmartClinic.API.Repositories
             usuario.PrimeiroAcesso = false;
 
             _dbContext.SaveChanges();
+        }
+
+        public override Usuario ObterPorPublicId(Guid publicId, params Expression<Func<Usuario, object>>[] properties)
+        {
+            var query = _dbSet
+                .Include(u => u.Cliente)
+                .Include(u => u.UsuarioClientePerfil)
+                    .ThenInclude(ucp => ucp.Perfil)
+                .AsQueryable();
+
+            query = AplicarFiltroCliente(query);
+
+            return query.FirstOrDefault(u => u.PublicId == publicId);
         }
     }
 }

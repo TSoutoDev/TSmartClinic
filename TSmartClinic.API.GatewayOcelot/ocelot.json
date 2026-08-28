@@ -903,7 +903,7 @@
       ],
       "DownstreamHttpMethod": null,
       "DownstreamHttpVersion": null,
-      "DownstreamPathTemplate": "/api/usuarios/{id}",
+      "DownstreamPathTemplate": "/api/usuarios/{publicId}",
       "DownstreamScheme": "http",
       "FileCacheOptions": {
         "TtlSeconds": 0,
@@ -955,7 +955,7 @@
         "PATCH",
         "DELETE"
       ],
-      "UpstreamPathTemplate": "/usuarios/{id}"
+      "UpstreamPathTemplate": "/usuarios/{publicId}"
     },
     {
       "AddClaimsToRequest": {},
@@ -1197,7 +1197,7 @@
       ],
       "DownstreamHttpMethod": null,
       "DownstreamHttpVersion": null,
-      "DownstreamPathTemplate": "/api/usuarios/{id}/bloquear",
+      "DownstreamPathTemplate": "/api/usuarios/{publicId}/bloquear",
       "DownstreamScheme": "http",
       "FileCacheOptions": {
         "TtlSeconds": 0,
@@ -1247,7 +1247,7 @@
       "UpstreamHttpMethod": [
         "PATCH"
       ],
-      "UpstreamPathTemplate": "/usuarios/{id}/bloquear"
+      "UpstreamPathTemplate": "/usuarios/{publicId}/bloquear"
     },
     {
       "AddClaimsToRequest": {},

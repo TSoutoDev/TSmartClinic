@@ -45,14 +45,15 @@ namespace TSmartClinic.API.Controllers
         }
 
         [AuthorizePermission("Editar")]
-        [HttpPatch("{id}/bloquear")]
+        [HttpPatch("{publicId:guid}/bloquear")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         [ProducesResponseType(403)]
         [ProducesResponseType(500)]
-        public ActionResult<UsuarioResponseDTO> Bloquear(int id)
+        public ActionResult Bloquear(Guid publicId)
         {
-            _usuarioService.Bloquear(id);
+            _usuarioService.Bloquear(publicId);
 
             return StatusCode(200);
         }

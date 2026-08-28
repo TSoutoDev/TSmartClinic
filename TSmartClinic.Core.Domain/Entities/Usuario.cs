@@ -1,9 +1,11 @@
 ﻿using TSmartClinic.Core.Domain.Helpers;
+using TSmartClinic.Core.Domain.Interfaces.Entities;
 
 namespace TSmartClinic.Core.Domain.Entities
 {
-    public class Usuario : Base
+    public class Usuario : Base, IEntidadeComPublicId
     {
+        public Guid PublicId { get; set; } = Guid.NewGuid();
         public string? Senha { get; set; }
         public string? Nome { get; set; }
         public string? LoginInclusao { get; set; }
@@ -27,44 +29,49 @@ namespace TSmartClinic.Core.Domain.Entities
         public void Bloquear()
         {
             this.FlagBloqueado = true;
-            this.DataBloqueio = DateTime.Now;
+            this.DataBloqueio = DateTime.UtcNow;
         }
 
         public void DefinirSenhaPrimeiroAcesso(string senhaCriptografada)
         {
             this.Senha = senhaCriptografada;
             this.PrimeiroAcesso = false; // já redefiniu a senha
-            this.DataAlteracao = DateTime.Now;
-        }
-        public override void Atualizar(Object obj)
-        {
-            Usuario usuario = obj as Usuario;
-
-            this.Nome = usuario?.Nome;
-            this.LoginAlteracao = usuario?.LoginAlteracao;
             this.DataAlteracao = DateTime.UtcNow;
-            this.DataBloqueio = usuario.DataBloqueio;
-            this.DataUltimoAcesso = usuario.DataUltimoAcesso;
-            this.DataExpiracaoSenha = usuario.DataExpiracaoSenha;
-            this.Email = usuario.Email;
-            this.Celular = usuario.Celular;
-            this.TipoUsuario = usuario.TipoUsuario;
-            this.Foto = usuario.Foto;
-            this.FlagBloqueado = usuario.FlagBloqueado;
-            this.Ativo = usuario.Ativo;
-            this.PrimeiroAcesso = usuario.PrimeiroAcesso;
-            this.ClienteId = usuario.ClienteId;
+        }
+        public override void Atualizar(object obj)
+        {
+            if (obj is not Usuario usuario)
+                return;
 
+            Nome = usuario.Nome;
+            LoginAlteracao = usuario.LoginAlteracao;
+            DataAlteracao = DateTime.UtcNow;
 
-            this.UsuarioClientePerfil = usuario.UsuarioClientePerfil
-                 .Select(e => new UsuarioClientePerfil
-                 {
-                     UsuarioId = e.UsuarioId,
-                     PerfilId = e.PerfilId,
-                     ClienteId = e.ClienteId,
-                     ClientePadrao = e.ClientePadrao
-                 })
-                 .ToList();
+            DataBloqueio = usuario.DataBloqueio;
+            DataExpiracaoSenha = usuario.DataExpiracaoSenha;
+
+            Email = usuario.Email;
+            Celular = usuario.Celular;
+            TipoUsuario = usuario.TipoUsuario;
+
+            Foto = usuario.Foto;
+            FlagBloqueado = usuario.FlagBloqueado;
+            Ativo = usuario.Ativo;
+            PrimeiroAcesso = usuario.PrimeiroAcesso;
+            ClienteId = usuario.ClienteId;
+
+            // Só altera a senha se uma nova senha vier preenchida
+            if (!string.IsNullOrWhiteSpace(usuario.Senha))
+                Senha = usuario.Senha;
+
+            UsuarioClientePerfil = usuario.UsuarioClientePerfil?
+                .Select(e => new UsuarioClientePerfil
+                {
+                    PerfilId = e.PerfilId,
+                    ClienteId = e.ClienteId,
+                    ClientePadrao = e.ClientePadrao
+                })
+                .ToList() ?? new List<UsuarioClientePerfil>();
 
             this.RemoverEspacosEmBranco();
         }

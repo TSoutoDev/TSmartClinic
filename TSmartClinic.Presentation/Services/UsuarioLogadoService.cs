@@ -25,12 +25,8 @@ namespace TSmartClinic.Presentation.Services
                 return null;
             }
         }
-
-        public string TipoUsuario =>
-            _contextAccessor.HttpContext?.User?.FindFirst("Usuario_Tipo")?.Value?.ToUpper();
-
+        public string TipoUsuario => _contextAccessor.HttpContext?.User?.FindFirst("Usuario_Tipo")?.Value?.ToUpper();
         public bool UsuarioMaster => TipoUsuario == "M";
-
         public int? ClienteId
         {
             get

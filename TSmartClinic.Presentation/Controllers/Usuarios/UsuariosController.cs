@@ -23,6 +23,7 @@ namespace TSmartClinic.Presentation.Controllers.Usuarios
         }
 
         // POST: Cadastro
+        [HttpPost]
         public override async Task<IActionResult> Cadastro(UsuarioViewModel model)
         {
             // Validação: usuário precisa selecionar um perfil
@@ -58,6 +59,7 @@ namespace TSmartClinic.Presentation.Controllers.Usuarios
         }
 
         // GET: Cadastro
+        [HttpGet]
         public override async Task<IActionResult> Cadastro(Guid? publicId)
         {
             await CriarViewBags();
@@ -99,12 +101,14 @@ namespace TSmartClinic.Presentation.Controllers.Usuarios
         }
 
         // GET: Busca Avançada
+        [HttpGet]
         public override async Task<IActionResult> BuscaAvancada(UsuarioFilterViewModel filtro)
         {
             return await base.BuscaAvancada(filtro);
         }
 
         // GET: Consulta
+        [HttpGet]
         public override async Task<IActionResult> Consulta()
         {
             return await base.Consulta();

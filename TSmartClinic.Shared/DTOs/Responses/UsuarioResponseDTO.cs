@@ -6,6 +6,7 @@ namespace TSmartClinic.Shared.DTOs.Responses
     public class UsuarioResponseDTO : BaseResponseDTO
     {
         public int Id { get; set; }
+        public Guid PublicId { get; set; }
         public string? Senha { get; set; }
         public string? Nome { get; set; }
         public string? LoginInclusao { get; set; }

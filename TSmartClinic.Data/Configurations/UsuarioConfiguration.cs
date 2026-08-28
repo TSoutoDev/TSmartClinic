@@ -18,6 +18,8 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .HasColumnName("Id")
             .ValueGeneratedOnAdd() // diga ao EF que o valor é gerado;
             .UseIdentityByDefaultColumn(); // mapeia identity do Postgres;
+        builder.Property(x => x.PublicId).HasColumnName("PublicId").IsRequired();
+        builder.HasIndex(x => x.PublicId).IsUnique();
         builder.Property(u => u.Senha).HasColumnName("Senha").HasMaxLength(510);
         builder.Property(u => u.Nome).HasColumnName("Nome").HasMaxLength(150);
         builder.Property(u => u.LoginInclusao).HasColumnName("LoginInclusao").HasMaxLength(100);
