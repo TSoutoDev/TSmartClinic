@@ -108,121 +108,156 @@
 
                         <li class="menu-title" key="t-menu">Menu Principal</li>
 
-                        <!-- PACIENTES -->
+                        <!-- ========================= -->
+                        <!-- PACIENTES                 -->
+                        <!-- HABILITADO                -->
+                        <!-- ========================= -->
                         <li>
-                            <a href="/Pacientes/Consulta" key="t-blog"><i class="bx bx-user"></i><span>Pacientes</span></a>
+                            <a href="/Pacientes/Consulta"
+                               key="t-blog"
+                               asp-permissao="Pacientes_Acessar">
+                                <i class="bx bx-user"></i>
+                                <span>Pacientes</span>
+                            </a>
                         </li>
 
-                        <!-- CLÍNICAS -->
+
+                        <!-- ========================= -->
+                        <!-- CLÍNICAS                  -->
+                        <!-- HABILITADO                -->
+                        <!-- ========================= -->
                         <li>
-                            <a href="/Clientes/Consulta" key="t-blog"><i class="bx bx-building-house"></i><span key="t-layouts">Clínicas</span></a>
+                            <a href="/Clientes/Consulta"
+                               key="t-blog"
+                               asp-permissao="Clientes_Acessar">
+                                <i class="bx bx-building-house"></i>
+                                <span key="t-layouts">Clínicas</span>
+                            </a>
                         </li>
 
-                        <!-- ATENDIMENTOS -->
+
+                        <!-- ========================= -->
+                        <!-- ATENDIMENTOS              -->
+                        <!-- TEMPORARIAMENTE BLOQUEADO -->
+                        <!-- ========================= -->
                         <li>
-                            <a href="javascript:void(0);" class="has-arrow waves-effect"><i class="bx bx-calendar"></i><span key="t-layouts">Atendimentos</span></a>
+                            <a href="javascript:void(0);"
+                               class="menu-disabled"
+                               aria-disabled="true">
+                                <i class="bx bx-calendar"></i>
+                                <span key="t-layouts">Atendimentos</span>
+                            </a>
+                        </li>
+
+
+                        <!-- ========================= -->
+                        <!-- FATURAMENTO               -->
+                        <!-- TEMPORARIAMENTE BLOQUEADO -->
+                        <!-- ========================= -->
+                        <li>
+                            <a href="javascript:void(0);"
+                               class="menu-disabled"
+                               aria-disabled="true">
+                                <i class="bx bx-money"></i>
+                                <span key="t-layouts">Faturamento</span>
+                            </a>
+                        </li>
+
+
+                        <!-- ========================= -->
+                        <!-- RELATÓRIOS                -->
+                        <!-- TEMPORARIAMENTE BLOQUEADO -->
+                        <!-- ========================= -->
+                        <li>
+                            <a href="javascript:void(0);"
+                               class="menu-disabled"
+                               aria-disabled="true">
+                                <i class="bx bx-archive-out"></i>
+                                <span key="t-dashboards">Relatórios</span>
+                            </a>
+                        </li>
+
+
+                        <!-- ========================= -->
+                        <!-- CADASTROS                 -->
+                        <!-- NÍVEL 1                   -->
+                        <!-- ========================= -->
+                        <li>
+                            <a href="javascript:void(0);"
+                               class="has-arrow waves-effect">
+                                <i class="bx bx-layout"></i>
+                                <span key="t-layouts">Cadastros</span>
+                            </a>
 
                             <ul class="sub-menu" aria-expanded="false">
+
+                                <!-- ========================= -->
+                                <!-- NICHOS                    -->
+                                <!-- NÍVEL 2 / HABILITADO      -->
+                                <!-- ========================= -->
                                 <li>
-                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Cadastros e Associações</a>
-                                    <ul class="sub-menu" aria-expanded="false">
-                                        <li><a href="javascript:void(0);" class="menu-disabled">Cadastro de Procedimentos</a></li>
-                                        <li><a href="javascript:void(0);" class="menu-disabled">Cadastro de Salas</a></li>
-                                        <li><a href="javascript:void(0);" class="menu-disabled">Associação de Sala e Procedimento</a></li>
-                                    </ul>
+                                    <a href="/Nichos/Consulta"
+                                       asp-permissao="Nichos_Acessar">
+                                        <i class="bx bx-list-ul"></i>
+                                        <span>Nichos</span>
+                                    </a>
                                 </li>
 
+
+                                <!-- ========================= -->
+                                <!-- CONVÊNIOS                 -->
+                                <!-- NÍVEL 2 / HABILITADO      -->
+                                <!-- ========================= -->
                                 <li>
-                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Atendimentos</a>
-                                    <ul class="sub-menu" aria-expanded="false">
-                                        <li><a href="javascript:void(0);" class="menu-disabled">Sala de Atendimentos</a></li>
-                                        <li><a href="javascript:void(0);" class="menu-disabled">Agenda de Atendimentos</a></li>
-                                        <li><a href="javascript:void(0);" class="menu-disabled">Painel de Atendimentos</a></li>
-                                        <li><a href="javascript:void(0);" class="menu-disabled">Painel de últimas Chamadas</a></li>
-                                    </ul>
+                                    <a href="/Convenios/Consulta"
+                                       asp-permissao="Convenios_Acessar">
+                                        <i class="bx bx-list-ul"></i>
+                                        <span>Convênios</span>
+                                    </a>
                                 </li>
 
-                                <li>
-                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Central do Paciente</a>
-                                    <ul class="sub-menu" aria-expanded="false">
-                                        <li><a href="/Pacientes/Consulta">Consulta de Pacientes</a></li>
-                                    </ul>
-                                </li>
                             </ul>
                         </li>
 
-                        <!-- FATURAMENTO -->
-                        <li>
-                            <a href="javascript:void(0);" class="has-arrow waves-effect"><i class="bx bx-money"></i><span key="t-layouts">Faturamento</span></a>
 
-                            <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="javascript:void(0);" class="menu-disabled">Contratos</a></li>
-                                <li><a href="javascript:void(0);" class="menu-disabled">Fechamento</a></li>
-                                <li><a href="javascript:void(0);" class="menu-disabled">Contas a Receber</a></li>
-                            </ul>
+                        <!-- ========================= -->
+                        <!-- CENTRAL DE NOTIFICAÇÕES   -->
+                        <!-- TEMPORARIAMENTE BLOQUEADO -->
+                        <!-- ========================= -->
+                        <li>
+                            <a href="javascript:void(0);"
+                               class="menu-disabled"
+                               aria-disabled="true">
+                                <i class="bx bx-bell"></i>
+                                <span key="t-dashboards">Central de Notificações</span>
+                            </a>
                         </li>
 
-                        <!-- RELATÓRIOS -->
+
+                        <!-- ========================= -->
+                        <!-- SUPORTE                   -->
+                        <!-- TEMPORARIAMENTE BLOQUEADO -->
+                        <!-- ========================= -->
                         <li>
-                            <a href="javascript:void(0);" class="menu-disabled" aria-disabled="true"><i class="bx bx-archive-out"></i><span key="t-dashboards">Relatórios</span></a>
+                            <a href="javascript:void(0);"
+                               class="menu-disabled"
+                               aria-disabled="true">
+                                <i class="bx bx-support"></i>
+                                <span key="t-dashboards">Suporte</span>
+                            </a>
                         </li>
 
-                        <!-- CADASTROS -->
+
+                        <!-- ========================= -->
+                        <!-- CONFIGURAÇÕES             -->
+                        <!-- HABILITADO                -->
+                        <!-- ========================= -->
                         <li>
-                            <a href="javascript:void(0);" class="has-arrow waves-effect"><i class="bx bx-layout"></i><span key="t-layouts">Cadastros</span></a>
-
-                            <ul class="sub-menu" aria-expanded="false">
-
-                                <!-- GERAIS -->
-                                <li>
-                                    <a href="javascript:void(0);" class="has-arrow waves-effect"><i class="bx bx-slider-alt"></i><span key="t-layouts">Gerais</span></a>
-
-                                    <ul class="sub-menu" aria-expanded="false">
-                                        @if (usuarioMaster)
-                                        {
-                                            <li><a href="/Nichos/Consulta" key="t-blog">Nichos <i class="bx bx-crown"></i></a></li>
-                                        }
-                                    </ul>
-                                </li>
-
-                                <!-- EMPRESAS -->
-                                <li>
-                                    <a href="javascript:void(0);" class="has-arrow waves-effect"><i class="bx bx-building"></i><span key="t-layouts">Empresas</span></a>
-
-                                    <ul class="sub-menu" aria-expanded="false">
-                                        <li><a href="/Grupo/Consulta" key="t-blog">Grupos</a></li>
-                                        <li><a href="/Regiao/Consulta" key="t-blog">Regiões</a></li>
-                                        <li><a href="/Empresa/Consulta" key="empresa">Empresas</a></li>
-                                    </ul>
-                                </li>
-
-                                <!-- TABELAS BÁSICAS -->
-                                <li>
-                                    <a href="javascript:void(0);" class="has-arrow" key="t-vertical">Tabelas Básicas</a>
-
-                                    <ul class="sub-menu" aria-expanded="false">
-                                        <li><a href="/Credenciado/Consulta" key="t-blog">Credenciados</a></li>
-                                        <li><a href="/Servico/Consulta" key="t-blog">Serviços</a></li>
-                                        <li><a href="/Especialidade/Consulta" key="t-blog">Especialidades</a></li>
-                                    </ul>
-                                </li>
-
-                            </ul>
-                        </li>
-
-                        <!-- NOTIFICAÇÕES -->
-                        <li>
-                            <a href="javascript:void(0);" class="menu-disabled" aria-disabled="true"><i class="bx bx-bell"></i><span key="t-dashboards">Central de Notificações</span></a>
-                        </li>
-
-                        <!-- SUPORTE -->
-                        <li>
-                            <a href="javascript:void(0);" class="menu-disabled" aria-disabled="true"><i class="bx bx-support"></i><span key="t-dashboards">Suporte</span></a>
-                        </li>
-
-                        <!-- CONFIGURAÇÕES -->
-                        <li>
-                            <a href="/Configuracoes/Configuracoes" class="waves-effect"><i class="bx bx-cog"></i><span key="t-layouts">Configurações</span></a>
+                            <a href="/Configuracoes/Configuracoes"
+                               class="waves-effect">
+                                <i class="bx bx-cog"></i>
+                                <span key="t-layouts">Configurações</span>
+                            </a>
                         </li>
 
                     </ul>
@@ -398,6 +433,7 @@
 
                 const userId = this.getAttribute("data-id");
 
+                fetch(`/MinhaConta/DetalhesMinhaConta/${userId}`)
                 fetch(`/MinhaConta/DetalhesMinhaConta/${userId}`)
                     .then(response => {
                         if (!response.ok) throw new Error("Erro ao carregar Minha Conta");

@@ -8,15 +8,11 @@ namespace TSmartClinic.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Convenio> builder)
         {
-            //nome da tabela
-            builder.ToTable("Convenio", "dbo"); 
-
-            //definindo o campo 'chave primária'
+            builder.ToTable("Convenio", "dbo");
             builder.HasKey(c => c.Id);
-            builder.Property(u => u.Id)
-                   .HasColumnName("Id")
-                   .ValueGeneratedOnAdd() // diga ao EF que o valor é gerado;
-                   .UseIdentityByDefaultColumn(); // mapeia identity do Postgres;
+            builder.Property(c => c.Id).HasColumnName("Id").ValueGeneratedOnAdd().UseIdentityByDefaultColumn();
+            builder.Property(c => c.PublicId).HasColumnName("PublicId").IsRequired();
+            builder.HasIndex(c => c.PublicId).IsUnique();
             builder.Property(c => c.NomeConvenio).HasColumnName("NomeConvenio").HasMaxLength(300).IsRequired();
             builder.Property(c => c.CNPJ).HasColumnName("CNPJ").HasMaxLength(18);
             builder.Property(c => c.Telefone).HasColumnName("Telefone").HasMaxLength(20);
@@ -24,10 +20,6 @@ namespace TSmartClinic.Data.Configurations
             builder.Property(c => c.Ativo).HasColumnName("Ativo");
             builder.Property(c => c.DataCadastro).HasColumnName("DataCadastro").HasColumnType("date");
             builder.Property(c => c.ClienteId).HasColumnName("ClienteId").IsRequired();
-
-            builder.Property(c => c.ClienteId)
-                .HasColumnName("ClienteId")
-                .IsRequired();
 
             builder.HasOne(c => c.Cliente)
                 .WithMany()

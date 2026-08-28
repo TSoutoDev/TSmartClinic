@@ -3,8 +3,10 @@ using TSmartClinic.Core.Domain.Interfaces.Entities;
 
 namespace TSmartClinic.Core.Domain.Entities
 {
-    public class Convenio : Base, IEntidadePorCliente
+    public class Convenio : Base, IEntidadePorCliente, IEntidadeComPublicId
     {
+        public Guid PublicId { get; set; } = Guid.NewGuid();
+
         public string? NomeConvenio { get; set; }
         public string? CNPJ { get; set; }
         public string? Telefone { get; set; }
@@ -13,20 +15,24 @@ namespace TSmartClinic.Core.Domain.Entities
         public DateTime? DataCadastro { get; set; }
         public int ClienteId { get; set; }
 
-
-
         #region Relacionamentos
+
         public Cliente? Cliente { get; set; }
         public ICollection<Paciente>? Pacientes { get; set; }
+
         #endregion
 
         public override void Atualizar(object obj)
         {
-            Convenio convenio = obj as Convenio;
+            if (obj is not Convenio convenio)
+                return;
 
-            this.NomeConvenio = convenio.NomeConvenio;
-            this.Ativo = convenio.Ativo;
-            this.ClienteId = convenio.ClienteId;
+            NomeConvenio = convenio.NomeConvenio;
+            CNPJ = convenio.CNPJ;
+            Telefone = convenio.Telefone;
+            Email = convenio.Email;
+            Ativo = convenio.Ativo;
+            ClienteId = convenio.ClienteId;
 
             this.RemoverEspacosEmBranco();
         }

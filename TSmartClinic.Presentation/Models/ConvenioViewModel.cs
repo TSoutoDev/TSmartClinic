@@ -8,5 +8,6 @@
         public string? Email { get; set; }
         public bool? Ativo { get; set; }
         public DateTime? DataCadastro { get; set; }
+        public int ClienteId { get; set; }
     }
 }

@@ -2,13 +2,14 @@
 {
     public class ConvenioResponseDTO : BaseResponseDTO
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
+        public Guid PublicId { get; set; }
         public string? NomeConvenio { get; set; }
         public string? CNPJ { get; set; }
         public string? Telefone { get; set; }
         public string? Email { get; set; }
         public bool? Ativo { get; set; }
-        public int ClienteId { get; set; }
         public DateTime? DataCadastro { get; set; }
+        public int ClienteId { get; set; }
     }
 }

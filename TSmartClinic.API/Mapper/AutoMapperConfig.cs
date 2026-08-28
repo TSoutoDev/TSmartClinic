@@ -80,11 +80,16 @@ namespace AgendaApp.API.Mapper
                 .ForMember(dest => dest.UsuarioId, opt => opt.Ignore());
 
             CreateMap<UsuarioClientePerfil, UsuarioClientePerfilUpdateRequestDto>();
+            CreateMap<ConvenioUpdateRequestDTO, Convenio>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.PublicId, opt => opt.Ignore());
+
+
 
             //Response
             CreateMap<Nicho, NichoResponseDTO>();
             CreateMap<Categoria, CategoriaResponseDTO>().ReverseMap();
-            CreateMap<Convenio, ConvenioResponseDTO>();
+            CreateMap<Convenio, ConvenioResponseDTO>().ReverseMap(); ;
             CreateMap<Paciente, PacienteResponseDTO>().ReverseMap();
 
             CreateMap<Tarefa, TarefaResponseDTO>()
