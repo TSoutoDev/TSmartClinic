@@ -1,137 +1,293 @@
 /* ===========================
-   Quick Patient Search (Topbar)
+   QUICK PATIENT SEARCH
    =========================== */
 
-/* Variáveis gerais (borda sutil) */
 :root {
-    --qp-border: rgba(60,60,67,.18);
-    --qp-border-hover: rgba(60,60,67,.28);
+    --qp-border: rgba(60, 60, 67, .18);
+    --qp-border-hover: rgba(60, 60, 67, .28);
 }
 
-/* Container: MAIS LARGURA lateral sem alterar a altura do campo */
-/* Reduz um pouco a largura máxima/ideal */
+
+/* ===========================
+   CONTAINER PRINCIPAL
+   =========================== */
+
 .quick-patient-search {
-    width: clamp(300px, 36vw, 560px); /* antes: clamp(400px, 48vw, 800px) */
+    position: relative;
+    width: clamp(300px, 36vw, 560px);
     min-width: 380px;
     max-width: 720px;
 }
 
 @media (min-width: 1600px) {
     .quick-patient-search {
-        width: clamp(340px, 40vw, 700px); /* antes: clamp(420px, 52vw, 920px) */
+        width: clamp(340px, 40vw, 700px);
         max-width: 860px;
     }
 }
 
-/* Campo em formato "pill" (altura controlada por --qp-h) */
+
+/* ===========================
+   CAMPO DE BUSCA
+   =========================== */
+
 .quick-patient-input {
-    --qp-h: 38px; /* <<< ajuste a altura aqui (36–44px) */
+    --qp-h: 38px;
+    width: 100%;
+    padding: 2px;
     background: #fff;
     border: 1px solid var(--qp-border);
-    border-radius: 9999px; /* pill */
-    padding: 2px;
-    transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+    border-radius: 9999px;
     background-clip: padding-box;
+    transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
 }
 
-    /* Hover com leve realce na borda */
     .quick-patient-input:hover {
         border-color: var(--qp-border-hover);
     }
 
-    /* Foco com realce e leve efeito "vidro" */
     .quick-patient-input:focus-within {
         border-color: var(--bs-primary);
-        box-shadow: 0 0 0 .25rem rgba(var(--bs-primary-rgb, 13,110,253), .15);
-        backdrop-filter: saturate(1.2) blur(2px);
+        box-shadow: 0 0 0 .25rem rgba(var(--bs-primary-rgb, 13, 110, 253), .15);
     }
 
-    /* Prefixo (icone/avatar) e input com a MESMA altura */
+
+    /* Prefixo e input com mesma altura */
+
     .quick-patient-input .input-group-text,
     .quick-patient-input .form-control {
         height: var(--qp-h);
     }
 
-    /* Prefixo estilizado */
+
+    /* Prefixo */
+
     .quick-patient-input .input-group-text {
+        display: inline-flex;
+        align-items: center;
+        padding-left: .8rem;
+        padding-right: .65rem;
         background: transparent;
         border: 0;
         border-radius: 9999px 0 0 9999px;
-        display: inline-flex;
-        align-items: center;
-        padding-left: .8rem; /* + respiro lateral */
-        padding-right: .65rem;
         opacity: .9;
     }
 
-    /* Input limpo */
+
+    /* Campo */
+
     .quick-patient-input .form-control {
+        padding-left: .2rem;
+        padding-right: .6rem;
         background: transparent;
         border: 0 !important;
         box-shadow: none !important;
-        padding-left: .2rem; /* + respiro lateral */
-        padding-right: .2rem;
         line-height: 1.2;
         caret-color: var(--bs-body-color, #212529);
     }
 
-        /* Placeholder elegante */
         .quick-patient-input .form-control::placeholder {
             color: #8f9aa3;
             opacity: .9;
         }
 
-/* Dropdown bonito, arredondado e alinhado ao campo */
+
+/* ===========================
+   AVATAR DO CAMPO
+   =========================== */
+
+.qp-avatar {
+    width: calc(var(--qp-h) - 10px);
+    height: calc(var(--qp-h) - 10px);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient( 135deg, #7aa6ff, #4b7bff );
+    color: #fff;
+    font-size: calc(var(--qp-h) / 2.4);
+    line-height: 1;
+}
+
+
+/* ===========================
+   DROPDOWN
+   =========================== */
+
 .quick-patient-dropdown {
     position: absolute;
+    top: calc(100% + 8px);
     left: 0;
-    right: 0;
-    top: calc(100% + .4rem);
-    display: block; /* controlado via JS com display none/block */
-    padding: .35rem;
-    border: 1px solid var(--qp-border);
-    border-radius: .85rem;
+    right: auto;
+    width: 100%;
+    min-width: 420px;
+    max-width: 520px;
+    max-height: 360px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px;
     background: #fff;
-    z-index: 1200; /* acima do header/sidebar */
-    max-height: 340px;
-    overflow: auto;
+    border: 1px solid #e7ebf2;
+    border-radius: 14px;
+    box-shadow: 0 14px 34px rgba(22, 34, 54, .14);
+    z-index: 1300;
     animation: qp-fade .12s ease-out;
 }
 
-    /* Itens com cantos arredondados, espaçamento e feedback */
-    .quick-patient-dropdown .dropdown-item {
-        border-radius: .6rem;
-        padding: .55rem .75rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: .75rem; /* espaço entre avatar e texto */
+
+/* ===========================
+   ITEM DO RESULTADO
+   =========================== */
+
+.qp-result-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 12px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    transition: background .15s ease, transform .15s ease;
+}
+
+    .qp-result-item + .qp-result-item {
+        margin-top: 2px;
     }
 
-        .quick-patient-dropdown .dropdown-item + .dropdown-item {
-            margin-top: 2px; /* separação suave */
-        }
+    .qp-result-item:hover {
+        background: #f4f7fc;
+    }
 
-        .quick-patient-dropdown .dropdown-item:hover {
-            background: var(--bs-gray-100);
-        }
+    .qp-result-item:focus {
+        outline: none;
+        background: #f1f5fb;
+    }
 
-        .quick-patient-dropdown .dropdown-item.active,
-        .quick-patient-dropdown .dropdown-item:focus {
-            background: var(--bs-primary-bg-subtle, #e7f1ff);
-            border: 1px solid var(--bs-primary-border-subtle, #cfe2ff);
-            outline: none;
-        }
 
-        .quick-patient-dropdown .dropdown-item small {
-            opacity: .8;
-        }
+/* ===========================
+   AVATAR DO RESULTADO
+   =========================== */
 
-/* Micro animação de entrada */
+.qp-result-avatar {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #edf2ff;
+    color: #4167d8;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* ===========================
+   CONTEÚDO DO RESULTADO
+   =========================== */
+
+.qp-result-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.qp-result-name {
+    margin-bottom: 3px;
+    color: #26334d;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.qp-result-info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    color: #8590a4;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+    .qp-result-info span {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+    }
+
+    .qp-result-info i {
+        font-size: 12px;
+    }
+
+
+/* ===========================
+   SETA
+   =========================== */
+
+.qp-result-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+    color: #a8b1c0;
+    font-size: 18px;
+    transition: color .15s ease, transform .15s ease;
+}
+
+.qp-result-item:hover .qp-result-arrow {
+    color: #4167d8;
+    transform: translateX(2px);
+}
+
+
+/* ===========================
+   SEM RESULTADO
+   =========================== */
+
+.qp-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 20px;
+    color: #8b96a8;
+    font-size: 12px;
+}
+
+
+/* ===========================
+   SCROLLBAR
+   =========================== */
+
+.quick-patient-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.quick-patient-dropdown::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.quick-patient-dropdown::-webkit-scrollbar-thumb {
+    background: #d8dee8;
+    border-radius: 10px;
+}
+
+
+/* ===========================
+   ANIMAÇÃO
+   =========================== */
+
 @keyframes qp-fade {
     from {
         opacity: 0;
-        transform: translateY(-2px);
+        transform: translateY(-3px);
     }
 
     to {
@@ -140,47 +296,33 @@
     }
 }
 
-/* Responsivo: esconda em telas pequenas (ou troque por modal) */
+
+/* ===========================
+   RESPONSIVO
+   =========================== */
+
+@media (max-width: 1200px) {
+    .quick-patient-search {
+        width: 380px;
+        min-width: 320px;
+    }
+
+    .quick-patient-dropdown {
+        min-width: 380px;
+    }
+}
+
 @media (max-width: 992px) {
     .quick-patient-search {
         display: none;
     }
 }
 
-/* ===== Avatares ===== */
-
-/* Avatar "bolinha" dentro do campo: cresce conforme a altura do campo */
-.qp-avatar {
-    width: calc(var(--qp-h) - 10px);
-    height: calc(var(--qp-h) - 10px);
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #7aa6ff, #4b7bff);
-    color: #fff;
-    font-size: calc(var(--qp-h) / 2.4);
-    line-height: 1;
+.qp-result-item.qp-selected {
+    background: #f1f5fb;
 }
 
-/* Avatar nos itens da lista (maior e consistente) */
-.qp-item-avatar {
-    width: 40px; /* pode ajustar para 36–44px */
-    height: 40px;
-    border-radius: 50%;
-    flex: 0 0 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #d0d7e2; /* fallback quando não houver imagem */
-    color: #fff;
-    font-weight: 700;
-    overflow: hidden;
-}
-
-    .qp-item-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
+    .qp-result-item.qp-selected .qp-result-arrow {
+        color: #4167d8;
+        transform: translateX(2px);
     }

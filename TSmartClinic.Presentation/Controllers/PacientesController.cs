@@ -91,6 +91,18 @@ namespace TSmartClinic.Presentation.Controllers
             return View(response);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> BuscarHeader(string termo)
+        {
+            if (string.IsNullOrWhiteSpace(termo))
+                return Json(new List<PacienteBuscaHeaderViewModel>());
+
+            var resultado =
+                await _pacienteService.BuscarPacientesHeader(termo);
+
+            return Json(resultado);
+        }
+
         #region Métodos auxiliares
         private async Task CriarViewBags()
         {

@@ -15,8 +15,10 @@ namespace TSmartClinic.API.Controllers
     [PermissionModule("Pacientes")]
     public class PacientesController : BaseController<Paciente, IPacienteService, BaseFiltro, PacienteInsertRequestDTO, PacienteUpdateRequestDTO, PacienteResponseDTO>
     {
+        private readonly IPacienteService _pacienteService;
         public PacientesController(IPacienteService pacienteService, IMapper mapper) : base(pacienteService, mapper)
         {
+            _pacienteService = pacienteService;
         }
 
         [HttpPost]
@@ -35,6 +37,26 @@ namespace TSmartClinic.API.Controllers
             return base.Atualizar(publicId, objRequest);
         }
 
+        [AuthorizePermission("Acessar")]
+        [HttpGet("buscar-header")]
+        public async Task<IActionResult> BuscarHeader([FromQuery] string termo)
+        {
+            if (string.IsNullOrWhiteSpace(termo))
+                return Ok(new List<object>());
+
+            var pacientes = await _pacienteService.BuscarPacientesHeader(termo);
+
+            var resultado = pacientes.Select(x => new
+            {
+                publicId = x.PublicId,
+                nomePaciente = x.NomePaciente,
+                cpf = x.CPF,
+                clienteId = x.ClienteId,
+                nomeClinica = x.Cliente?.NomeCliente
+            });
+
+            return Ok(resultado);
+        }
 
         #region Métodos auxiliares
         private void ValidarFoto(byte[]? foto, string? contentType)

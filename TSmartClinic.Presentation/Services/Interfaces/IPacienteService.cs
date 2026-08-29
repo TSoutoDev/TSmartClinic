@@ -7,5 +7,6 @@ namespace TSmartClinic.Presentation.Services.Interfaces
     {
         Task<List<PacienteViewModel>> ListarPacientes();
         Task<PacienteViewModel?> ObterPorId(int id);
+        Task<List<PacienteBuscaHeaderViewModel>> BuscarPacientesHeader(string termo);
     }
 }

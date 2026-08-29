@@ -67,5 +67,33 @@ namespace TSmartClinic.Presentation.Services
         }
 
 
+        public async Task<List<PacienteBuscaHeaderViewModel>> BuscarPacientesHeader(string termo)
+        {
+            if (string.IsNullOrWhiteSpace(termo))
+                return new List<PacienteBuscaHeaderViewModel>();
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization =  new AuthenticationHeaderValue("Bearer", this.AccessToken);
+
+                var url =
+                    $"{_baseUrlController}/buscar-header?termo={Uri.EscapeDataString(termo)}";
+
+                var result = await client.GetAsync(url);
+
+                if (!result.IsSuccessStatusCode)
+                    return new List<PacienteBuscaHeaderViewModel>();
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                var content = await result.Content.ReadAsStringAsync();
+
+                return JsonSerializer.Deserialize<List<PacienteBuscaHeaderViewModel>>(content, options) ?? new List<PacienteBuscaHeaderViewModel>();
+            }
+        }
+
     }
 }

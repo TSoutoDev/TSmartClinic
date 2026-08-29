@@ -23,12 +23,22 @@ namespace TSmartClinic.API.Repositories
 
         public Cliente ObterClinicaPadraoDoUsuario(int usuarioId)
         {
-            throw new NotImplementedException();
+            return _dbContext.UsuarioClientePerfil
+                   .AsNoTracking()
+                   .Where(x => x.UsuarioId == usuarioId && x.ClientePadrao)
+                   .Select(x => x.Cliente)
+                   .FirstOrDefault();
         }
 
         public List<Cliente> ObterClinicasDoUsuario(int usuarioId)
         {
-            throw new NotImplementedException();
+            return _dbContext.UsuarioClientePerfil
+                   .AsNoTracking()
+                   .Where(x => x.UsuarioId == usuarioId)
+                   .Select(x => x.Cliente)
+                   .Distinct()
+                   .OrderBy(x => x.NomeCliente)
+                   .ToList();
         }
 
         public List<UsuarioClientePerfil> ObterListaPorUsuarioId(int usuarioId)
@@ -47,7 +57,11 @@ namespace TSmartClinic.API.Repositories
 
         public bool UsuarioPossuiAcessoClinica(int usuarioId, int clinicaId)
         {
-            throw new NotImplementedException();
+            return _dbContext.UsuarioClientePerfil
+                    .AsNoTracking()
+                    .Any(x =>
+                        x.UsuarioId == usuarioId &&
+                        x.ClienteId == clinicaId);
         }
 
         public void AdicionarRange(IEnumerable<UsuarioClientePerfil> usuarioClientePerfis)

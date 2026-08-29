@@ -258,6 +258,21 @@
 
     //PACIENTES
     {
+      "DownstreamPathTemplate": "/api/pacientes/buscar-header",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/pacientes/buscar-header",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/pacientes/{publicId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

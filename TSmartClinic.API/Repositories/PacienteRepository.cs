@@ -41,7 +41,7 @@ namespace TSmartClinic.API.Repositories
             return query.FirstOrDefault(x => x.PublicId == publicId);
         }
 
-        public override List<Paciente> Listar( BaseFiltro filtro, params Expression<Func<Paciente, object>>[] properties)
+        public override List<Paciente> Listar(BaseFiltro filtro, params Expression<Func<Paciente, object>>[] properties)
         {
             var query = MontarFiltro(filtro, properties);
 
@@ -85,6 +85,41 @@ namespace TSmartClinic.API.Repositories
             }
 
             _dbContext?.SaveChanges();
+        }
+
+        public async Task<List<Paciente>> BuscarPacientesHeader(string termo, IEnumerable<int>? clienteIds)
+        {
+            if (string.IsNullOrWhiteSpace(termo))
+                return new List<Paciente>();
+
+            termo = termo.Trim();
+
+            var termoNumerico = new string(termo.Where(char.IsDigit).ToArray());
+
+            var query = _dbSet
+                .AsNoTracking()
+                .Include(x => x.Cliente)
+                .Where(x => x.Ativo == true);
+
+            if (clienteIds != null)
+            {
+                var ids = clienteIds.Distinct().ToList();
+
+                if (!ids.Any())
+                    return new List<Paciente>();
+
+                query = query.Where(x => ids.Contains(x.ClienteId));
+            }
+
+            query = query.Where(x => (x.NomePaciente != null && EF.Functions.ILike(x.NomePaciente, $"%{termo}%")) ||
+                                     (x.CPF != null && EF.Functions.ILike(x.CPF, $"%{termo}%")) ||
+                                     (!string.IsNullOrEmpty(termoNumerico) && x.CPF != null && EF.Functions.ILike(x.CPF.Replace(".", "").Replace("-", ""), $"%{termoNumerico}%")));
+
+
+            return await query
+                .OrderBy(x => x.NomePaciente)
+                .Take(10)
+                .ToListAsync();
         }
     }
 }

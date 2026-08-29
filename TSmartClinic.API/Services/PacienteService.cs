@@ -9,10 +9,14 @@ namespace TSmartClinic.API.Services
     public class PacienteService : BaseService<Paciente>, IPacienteService
     {
         private readonly IPacienteRepository _pacienteRepository;
+        private readonly IUsuarioLogadoService _usuarioLogadoService;
+        private readonly IUsuarioClientePerfilService _usuarioClientePerfilService;
 
-        public PacienteService(IPacienteRepository pacienteRepository) : base(pacienteRepository)
+        public PacienteService(IUsuarioLogadoService usuarioLogadoService, IUsuarioClientePerfilService usuarioClientePerfilService, IPacienteRepository pacienteRepository) : base(pacienteRepository)
         {
             _pacienteRepository = pacienteRepository;
+            _usuarioLogadoService = usuarioLogadoService;
+            _usuarioClientePerfilService = usuarioClientePerfilService;
         }
 
         public override Paciente Atualizar(Guid publicId, Paciente paciente)
@@ -71,6 +75,35 @@ namespace TSmartClinic.API.Services
                 throw new NotFoundException();
 
             _pacienteRepository.ExcluirComEnderecos(paciente);
+        }
+
+        public async Task<List<Paciente>> BuscarPacientesHeader(string termo)
+        {
+            if (string.IsNullOrWhiteSpace(termo))
+                return new List<Paciente>();
+
+            // Master pode pesquisar em todas as clínicas
+            if (_usuarioLogadoService.UsuarioMaster)
+            {
+                return await _pacienteRepository.BuscarPacientesHeader(termo);
+            }
+
+            if (!_usuarioLogadoService.UsuarioLogadoId.HasValue)
+                return new List<Paciente>();
+
+            var usuarioId = _usuarioLogadoService.UsuarioLogadoId.Value;
+
+            var clinicas = _usuarioClientePerfilService.ObterClinicasDoUsuario(usuarioId);
+
+            var clienteIds = clinicas
+                .Select(x => x.Id)
+                .Distinct()
+                .ToList();
+
+            if (!clienteIds.Any())
+                return new List<Paciente>();
+
+            return await _pacienteRepository.BuscarPacientesHeader(termo, clienteIds);
         }
     }
 }
