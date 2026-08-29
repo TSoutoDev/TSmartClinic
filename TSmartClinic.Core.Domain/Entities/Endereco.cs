@@ -12,6 +12,16 @@ namespace TSmartClinic.Core.Domain.Entities
         public string? Estado { get; set; }
         public string? Cep { get; set; }
 
+        public int? EstadoId { get; set; }
+        public int? MunicipioId { get; set; }
+
+        #region Relacionamentos
+
+        public Estado? EstadoNavigation { get; set; }
+        public Municipio? Municipio { get; set; }
+
+        #endregion
+
         public override void Atualizar(object obj)
         {
             var endereco = obj as Endereco;
@@ -26,6 +36,9 @@ namespace TSmartClinic.Core.Domain.Entities
             Cidade = endereco.Cidade;
             Estado = endereco.Estado;
             Cep = endereco.Cep;
+
+            EstadoId = endereco.EstadoId;
+            MunicipioId = endereco.MunicipioId;
 
             this.RemoverEspacosEmBranco();
         }

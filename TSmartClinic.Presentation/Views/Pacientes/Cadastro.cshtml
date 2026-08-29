@@ -67,7 +67,15 @@
                             <label class="form-label-tsmart">CPF</label>
                             <div class="campo-com-icone">
                                 <i class="fa-regular fa-id-card"></i>
-                                @Html.TextBoxFor(model => model.CPF, new { @class = "form-control", @autocomplete = "off" })
+                                @Html.TextBoxFor(model => model.CPF,
+                                new
+                                {
+                                    @class = "form-control",
+                                    autocomplete = "off",
+                                    maxlength = "14",
+                                    placeholder = "Digite o CPF",
+                             
+                                })
                                 <div class="invalid-feedback">Informe um CPF válido.</div>
                             </div>
                             <span class="text-danger">@Html.ValidationMessageFor(model => model.CPF)</span>
@@ -130,6 +138,9 @@
 
                     <hr class="my-4" />
 
+                    <input type="hidden" name="PacienteEnderecos[0].Endereco.EstadoId" value="@endereco.EstadoId" />
+                    <input type="hidden" name="PacienteEnderecos[0].Endereco.MunicipioId" value="@endereco.MunicipioId" />
+
                     <div class="form-secao-titulo"><i class="fa-solid fa-location-dot"></i> Endereço</div>
 
                     <input type="hidden" name="PacienteEnderecos[0].Tipo" value="Residencial" />
@@ -141,9 +152,16 @@
                             <label class="form-label-tsmart">CEP</label>
                             <div class="campo-com-icone">
                                 <i class="fa-solid fa-location-crosshairs"></i>
-                                <input type="text" name="PacienteEnderecos[0].Endereco.Cep" value="@endereco.Cep" class="form-control" autocomplete="off" />
+                                <input type="text"
+                                       name="PacienteEnderecos[0].Endereco.Cep"
+                                       value="@endereco.Cep"
+                                       class="form-control"
+                                       autocomplete="off"
+                                       maxlength="9"
+                                       onblur="buscarCep(this)" />
                             </div>
                         </div>
+                        
 
                         <div class="col-md-6">
                             <label class="form-label-tsmart">Logradouro</label>

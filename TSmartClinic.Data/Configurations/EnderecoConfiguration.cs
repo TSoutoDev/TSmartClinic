@@ -24,6 +24,19 @@ namespace TSmartClinic.Data.Configurations
             builder.Property(e => e.Cidade).HasColumnName("Cidade").HasMaxLength(200);
             builder.Property(e => e.Estado).HasColumnName("Estado").HasMaxLength(100);
             builder.Property(e => e.Cep).HasColumnName("CEP").HasMaxLength(10);
+            builder.Property(e => e.EstadoId).HasColumnName("EstadoId");
+            builder.Property(e => e.MunicipioId).HasColumnName("MunicipioId");
+            builder.Property(e => e.MunicipioId).HasColumnName("MunicipioId");
+
+            builder.HasOne(e => e.EstadoNavigation)
+                .WithMany()
+                .HasForeignKey(e => e.EstadoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(e => e.Municipio)
+                .WithMany()
+                .HasForeignKey(e => e.MunicipioId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

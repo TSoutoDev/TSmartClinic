@@ -150,13 +150,14 @@
                                 <i class="fa fa-id-card"></i>
 
                                 @Html.TextBoxFor(model => model.CNPJ,
-                                        new
-                                        {
-                                            @class = "form-control",
-                                            autocomplete = "off",
-                                            maxlength = "18",
-                                            placeholder = "Digite o CNPJ"
-                                        })
+                                    new
+                                    {
+                                        @class = "form-control",
+                                        autocomplete = "off",
+                                        maxlength = "18",
+                                        placeholder = "Digite o CNPJ",
+                                     
+                                    })
                             </div>
 
                             <span class="text-danger">
@@ -250,6 +251,14 @@
                         <input type="hidden" name="ClienteEnderecos[0].EnderecoId" value="@clienteEndereco?.EnderecoId" />
                         <input type="hidden" name="ClienteEnderecos[0].Endereco.Id" value="@endereco.Id" />
 
+                        <input type="hidden"
+                               name="ClienteEnderecos[0].Endereco.EstadoId"
+                               value="@endereco.EstadoId" />
+
+                        <input type="hidden"
+                               name="ClienteEnderecos[0].Endereco.MunicipioId"
+                               value="@endereco.MunicipioId" />
+
                         <div class="row">
 
                             <div class="col-md-3">
@@ -260,7 +269,9 @@
                                            name="ClienteEnderecos[0].Endereco.Cep"
                                            value="@endereco.Cep"
                                            class="form-control"
-                                           autocomplete="off" />
+                                           autocomplete="off"
+                                           maxlength="9"
+                                           onblur="buscarCep(this)" />
                                 </div>
                             </div>
 

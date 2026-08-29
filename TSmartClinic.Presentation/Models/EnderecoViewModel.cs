@@ -10,4 +10,7 @@ public class EnderecoViewModel : BaseViewModel
     public string? Cidade { get; set; }
     public string? Estado { get; set; }
     public string? Cep { get; set; }
+
+    public int? EstadoId { get; set; }
+    public int? MunicipioId { get; set; }
 }
