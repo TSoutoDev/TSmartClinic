@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using TSmartClinic.API.Handles;
+using TSmartClinic.API.Services;
 using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Exceptions;
 using TSmartClinic.Core.Domain.Helpers.FilterHelper;
@@ -21,11 +22,13 @@ namespace TSmartClinic.API.Controllers
     {
         private readonly IUsuarioService _usuarioService;
         private readonly ITokenService _tokenService;
+        private readonly IUsuarioLogadoService _usuarioLogadoService;
 
-        public UsuariosController(ITokenService tokenService, IUsuarioService usuarioService, IMapper mapper) : base(usuarioService, mapper)
+        public UsuariosController(IUsuarioLogadoService usuarioLogadoService, ITokenService tokenService, IUsuarioService usuarioService, IMapper mapper) : base(usuarioService, mapper)
         {
             _usuarioService = usuarioService;
             _tokenService = tokenService;
+            _usuarioLogadoService = usuarioLogadoService;
         }
 
         [AuthorizePermission("Acessar")]
@@ -97,6 +100,28 @@ namespace TSmartClinic.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet("minha-conta")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<UsuarioResponseDTO> MinhaConta()
+        {
+            var usuarioId = _usuarioLogadoService.UsuarioLogadoId;
+
+            if (!usuarioId.HasValue)
+                return Unauthorized();
+
+            var usuario = _usuarioService.ObterPorId(usuarioId.Value);
+
+            if (usuario == null)
+                return NotFound();
+
+            var response = Mapper.Map<UsuarioResponseDTO>(usuario);
+
+            return Ok(response);
         }
     }
 }

@@ -1,30 +1,56 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using TSmartClinic.API.Handles;
+using TSmartClinic.Core.Domain.Interfaces.Services;
 
-namespace TSmartClinic.API.Handles
+public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
 {
-    public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
+    private readonly IPermissaoCacheService _permissaoCacheService;
+    private readonly IUsuarioService _usuarioService;
+    private readonly IUsuarioClientePerfilService _usuarioClientePerfilService;
+
+    public PermissionAuthorizationHandler(IPermissaoCacheService permissaoCacheService, IUsuarioService usuarioService, IUsuarioClientePerfilService usuarioClientePerfilService)
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
+        _permissaoCacheService = permissaoCacheService;
+        _usuarioService = usuarioService;
+        _usuarioClientePerfilService = usuarioClientePerfilService;
+    }
+
+    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
+    {
+        var tipoUsuario = context.User.FindFirst("TipoUsuario")?.Value;
+
+        // Master tem acesso total
+        if (string.Equals(tipoUsuario,"M", StringComparison.OrdinalIgnoreCase))
         {
-            var masterClaim = context.User.FindFirst("UsuarioMaster")?.Value;
-
-            if (bool.TryParse(masterClaim, out var usuarioMaster) && usuarioMaster)
-            {
-                context.Succeed(requirement);
-                return Task.CompletedTask;
-            }
-
-            var permissoes = context.User.Claims
-                .Where(c => c.Type == "permissao")
-                .SelectMany(c => c.Value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-                .ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-            if (permissoes.Contains(requirement.Permissao))
-            {
-                context.Succeed(requirement);
-            }
-
+            context.Succeed(requirement);
             return Task.CompletedTask;
         }
+
+        var usuarioIdClaim = context.User.FindFirst("Usuario_Id")?.Value;
+
+        if (!int.TryParse(usuarioIdClaim, out var usuarioId))
+            return Task.CompletedTask;
+
+        // tenta buscar no cache
+        var permissoes =  _permissaoCacheService.ObterPermissoes(usuarioId);
+
+        // se não encontrou, busca no banco
+        if (permissoes == null)
+        {
+            var clinicas = _usuarioClientePerfilService.ObterClinicasDoUsuario(usuarioId);
+
+            permissoes = _usuarioService.ObterPermissaoUsuario(usuarioId, clinicas);
+
+            // salva no cache
+            _permissaoCacheService.SalvarPermissoes(usuarioId, permissoes);
+        }
+
+        //valida a permissão
+        if (permissoes.Contains(requirement.Permissao, StringComparer.OrdinalIgnoreCase))
+        {
+            context.Succeed(requirement);
+        }
+
+        return Task.CompletedTask;
     }
 }

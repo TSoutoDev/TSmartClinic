@@ -112,48 +112,31 @@ namespace TSmartClinic.Presentation.Controllers
                         var cliente = autenticacao.ListClientes.FirstOrDefault();
 
                         _accessTokenService.Salvar(autenticacao.AccessToken);
-
-                        var handler = new JwtSecurityTokenHandler();
-                        var token = handler.ReadJwtToken(autenticacao.AccessToken);
-
-                        var permissoes = token.Claims
-                            .Where(x => x.Type == "permissao")
-                            .SelectMany(x => x.Value.Split(',', StringSplitOptions.RemoveEmptyEntries))
-                            .Distinct()
-                            .ToList();
+                        var permissoes = autenticacao.Permissoes ?? new List<string>();
 
                         var claims = new List<Claim>
-                        {
-                            new Claim(ClaimTypes.Name, autenticacao.Nome),
-                            new Claim(ClaimTypes.Email, autenticacao.Email),
-                            new Claim("Usuario_Id", autenticacao.IdUsuario.ToString()),
-                            new Claim("Usuario_Tipo", autenticacao.TipoUsuario),
-                            new Claim("Cliente_Nome", cliente.NomeCliente ?? ""),
-                            new Claim("Cliente_Cnpj", cliente.CNPJ ?? ""),
-                            new Claim("Cliente_Id", cliente.Id.ToString() ?? ""),
-                            new Claim("Cliente_NichoId", cliente.NichoId.ToString() ?? ""),
-                            new Claim("Usuario_Email", autenticacao.Email.ToString() ?? "")
-                        };
-
-                        claims.Add(new Claim("permissao", string.Join(',', permissoes)));
-                        // Verificando se há clínicas
-
-                        //if (autenticacao.ListClientes != null && autenticacao.ListClientes.Any())
-                        //{ 
-                        //    claims.Add(new Claim("Cliente_Nome", cliente.NomeCliente ?? ""));
-                        //    claims.Add(new Claim("Cliente_Cnpj", cliente.CNPJ ?? ""));
-                        //    claims.Add(new Claim("Cliente_Id", cliente.Id.ToString()));
-                        //}
+                            {
+                                new Claim(ClaimTypes.Name, autenticacao.Nome),
+                                new Claim(ClaimTypes.Email, autenticacao.Email),
+                                new Claim("Usuario_Id", autenticacao.IdUsuario.ToString()),
+                                new Claim("Usuario_Tipo", autenticacao.TipoUsuario),
+                                new Claim("Cliente_Nome", cliente.NomeCliente ?? ""),
+                                new Claim("Cliente_Cnpj", cliente.CNPJ ?? ""),
+                                new Claim("Cliente_Id", cliente.Id.ToString() ?? ""),
+                                new Claim("Cliente_NichoId", cliente.NichoId.ToString() ?? ""),
+                                new Claim("Usuario_Email", autenticacao.Email ?? "")
+                            };
 
                         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         var principal = new ClaimsPrincipal(identity);
 
-                        HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                       await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
 
                         //Excluir o cookie de tentativas
                         if (Request.Cookies["TSmartClinic-autx"] != null) Response.Cookies.Delete("TSmartClinic-autx", OpcoesCookies());
 
-                        // Salvar na sessão
+                        // Dados da sessão
                         HttpContext.Session.SetString("Usuario_Nome", autenticacao.Nome);
                         HttpContext.Session.SetString("Usuario_Email", autenticacao.Email);
                         HttpContext.Session.SetString("Usuario_Id", autenticacao.IdUsuario.ToString());
@@ -161,8 +144,8 @@ namespace TSmartClinic.Presentation.Controllers
                         HttpContext.Session.SetString("Cliente_Nome", cliente.NomeCliente);
                         HttpContext.Session.SetString("Cliente_Id", cliente.Id.ToString());
                         HttpContext.Session.SetString("Cliente_NichoId", cliente.NichoId.ToString());
-
-
+                        // Permissões da Presentation
+                        HttpContext.Session.SetString("Permissoes", string.Join(",", permissoes));
 
                         return RedirectToAction("Index", "Home");
                         // return RedirectToAction("Login", "Account");
@@ -182,19 +165,20 @@ namespace TSmartClinic.Presentation.Controllers
 
         }
 
-        public IActionResult Logout()
+
+        public async Task<IActionResult> Logout()
         {
-            //HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            // Primeiro chama o logout remoto enquanto o token ainda existe
+            await _autenticacaoService.Logout();
 
-            //HttpContext.Response.Cookies.Delete("peoplenetsst-autx", OpcoesCookies());
+            // Depois encerra a autenticação local
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            //HttpContext.Session.Clear();
-
-            _autenticacaoService.Logout();
+            // Limpa os dados da sessão da Presentation
+            HttpContext.Session.Clear();
 
             return RedirectToAction("Login", "Account");
         }
-
 
         private void GravarCookieTentativa(int tentativa)
         {

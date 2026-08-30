@@ -163,7 +163,7 @@ namespace TSmartClinic.API.Services
 
         public List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clinicasUsuario)
         {
-            throw new NotImplementedException();
+            return _usuarioRepository.ObterPermissaoUsuario(usuarioId, clinicasUsuario);
         }
 
         public void DefinirSenha(string token, string novaSenha)

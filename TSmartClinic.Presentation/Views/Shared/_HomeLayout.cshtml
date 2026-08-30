@@ -10,6 +10,7 @@
 @{
     var nome = HttpContextAccessor.HttpContext?.Session.GetString("Usuario_Nome") ?? "Usuário";
     var nomeClinica = HttpContextAccessor.HttpContext?.Session.GetString("Cliente_Nome") ?? "TSmartClinic";
+    var usuarioId = HttpContextAccessor.HttpContext?.Session.GetString("Usuario_Id");
     var usuarioMaster = _usuarioLogadoService.UsuarioMaster;
     var iniciais = string.Join("", nome.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(p => char.ToUpperInvariant(p[0])));
     var titulo = ViewBag.Titulo as string ?? "Início";
@@ -90,7 +91,7 @@
                         </button>
 
                         <div class="dropdown-menu dropdown-menu-end tsmart-user-menu">
-                            <a class="dropdown-item" href="#" id="btnMinhaConta" data-id="1"><i class="bx bx-user font-size-16 align-middle me-2"></i>Minha Conta</a>
+                            <a class="dropdown-item" href="#" id="btnMinhaConta"><i class="bx bx-user font-size-16 align-middle me-2"></i>Minha Conta</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item text-danger" href="/Account/Logout"><i class="bx bx-power-off font-size-16 align-middle me-2"></i>Sair do Sistema</a>
                         </div>
@@ -353,7 +354,7 @@
     <!-- SCRIPTS -->
     <environment include="Development">
         <script src="~/_framework/aspnetcore-browser-refresh.js"></script>
-        
+
 
     </environment>
 
@@ -425,29 +426,36 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const btnMinhaConta = document.getElementById("btnMinhaConta");
-            const modalEl = document.getElementById("minhaContaModal");
 
-            if (!btnMinhaConta || !modalEl) return;
+        const btnMinhaConta = document.getElementById("btnMinhaConta");
+        const modalEl = document.getElementById("minhaContaModal");
 
-            const modal = new bootstrap.Modal(modalEl);
+        if (!btnMinhaConta || !modalEl)
+            return;
 
-            btnMinhaConta.addEventListener("click", function (e) {
-                e.preventDefault();
+        const modal = new bootstrap.Modal(modalEl);
 
-                const userId = this.getAttribute("data-id");
+        btnMinhaConta.addEventListener("click", function (e) {
 
-                fetch(`/MinhaConta/DetalhesMinhaConta/${userId}`)
-                fetch(`/MinhaConta/DetalhesMinhaConta/${userId}`)
-                    .then(response => {
-                        if (!response.ok) throw new Error("Erro ao carregar Minha Conta");
-                        return response.text();
-                    })
-                    .then(html => {
-                        document.getElementById("minhaContaContent").innerHTML = html;
-                        modal.show();
-                    })
-                    .catch(err => console.error(err));
+            e.preventDefault();
+
+            fetch('/MinhaConta/DetalhesMinhaConta')
+                .then(response => {
+
+                    if (!response.ok)
+                        throw new Error("Erro ao carregar Minha Conta");
+
+                    return response.text();
+                })
+                .then(html => {
+
+                    document.getElementById("minhaContaContent").innerHTML = html;
+
+                    modal.show();
+                })
+                .catch(error => {
+                    console.error("Erro ao carregar Minha Conta:", error);
+                });
             });
         });
     </script>

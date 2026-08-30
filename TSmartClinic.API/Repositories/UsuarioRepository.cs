@@ -39,8 +39,36 @@ namespace TSmartClinic.API.Repositories
 
         public List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clientesUsuario)
         {
+            if (clientesUsuario == null || !clientesUsuario.Any())
+                return new List<string>();
 
-            throw new NotImplementedException();
+            var clienteIds = clientesUsuario
+                .Select(c => c.Id)
+                .ToList();
+
+            var perfilIds = _dbContext.UsuarioClientePerfil
+                .Where(ucp =>
+                    ucp.UsuarioId == usuarioId &&
+                    clienteIds.Contains(ucp.ClienteId))
+                .Select(ucp => ucp.PerfilId)
+                .Distinct()
+                .ToList();
+
+            if (!perfilIds.Any())
+                return new List<string>();
+
+            var permissoes =
+                (from opPerfil in _dbContext.OperacaoPerfil
+                 join operacao in _dbContext.Operacao
+                     on opPerfil.OperacaoId equals operacao.Id
+                 join funcionalidade in _dbContext.Funcionalidade
+                     on operacao.FuncionalidadeId equals funcionalidade.Id
+                 where perfilIds.Contains(opPerfil.PerfilId)
+                 select operacao.Descricao)
+                .Distinct()
+                .ToList();
+
+            return permissoes;
         }
 
         public Usuario ObterPorEmail(string email)

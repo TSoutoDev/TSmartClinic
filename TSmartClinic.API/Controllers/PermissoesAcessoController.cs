@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TSmartClinic.API.Services;
 
@@ -19,13 +20,17 @@ namespace TSmartClinic.API.Controllers
         private readonly IFuncionalidadeService _funcionalidadeService;
         private readonly IMapper _mapper;
         private readonly IPerfilService _perfilService;
-        public PermissoesAcessoController(IMapper mapper, IFuncionalidadeService funcionalidadeService, IModuloService moduloService, IOperacaoService operacaoService, IPerfilService perfilService)
+        private readonly IPermissaoCacheService _permissaoCacheService;
+
+        public PermissoesAcessoController(IPermissaoCacheService permissaoCacheService, IMapper mapper, IFuncionalidadeService funcionalidadeService, IModuloService moduloService, IOperacaoService operacaoService, IPerfilService perfilService)
         {
             _moduloService = moduloService;
             _operacaoService = operacaoService;
             _funcionalidadeService = funcionalidadeService;
             _mapper = mapper;
             _perfilService = perfilService;
+            _permissaoCacheService = permissaoCacheService;
+
 
         }
 
@@ -80,7 +85,19 @@ namespace TSmartClinic.API.Controllers
             return NoContent();
         }
 
+        [Authorize]
+        [HttpPost("limpar-cache")]
+        public IActionResult LimparCache()
+        {
+            var usuarioIdClaim = User.FindFirst("Usuario_Id")?.Value;
 
+            if (!int.TryParse(usuarioIdClaim, out var usuarioId))
+                return Unauthorized();
+
+            _permissaoCacheService.RemoverPermissoes(usuarioId);
+
+            return Ok();
+        }
 
         //[AuthorizePermission("Usuarios_Acessar")]
         //[HttpGet("modulos")]

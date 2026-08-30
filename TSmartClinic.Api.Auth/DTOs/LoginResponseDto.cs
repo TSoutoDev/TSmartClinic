@@ -11,7 +11,9 @@ namespace TSmartClinic.Api.Auth.DTOs
         public int? IdUsuario { get; set; }
         public string? TipoUsuario { get; set; }
         public bool PrimeiroAcesso { get; set; } = false;
-        public List<Cliente>? ListClientes { get; set; }
+        public List<LoginClienteDto> ListClientes { get; set; } = new();
+        public List<string> Permissoes { get; set; } = new();
+
 
     }
 }

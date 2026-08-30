@@ -29,7 +29,7 @@ namespace TSmartClinic.Core.Infra.Security.Services
                                         .Replace("=", string.Empty);
         }
 
-        public string GerarToken(AutenticacaoModel autenticacao, List<string> permissoes)
+        public string GerarToken(AutenticacaoModel autenticacao)
         {
             if (_tokenSettings == null || string.IsNullOrWhiteSpace(_tokenSettings.SecretKey))
                 throw new InvalidOperationException("Configuração de TokenSettings inválida.");
@@ -37,20 +37,22 @@ namespace TSmartClinic.Core.Infra.Security.Services
             // 1. Buscar o usuário com cliente carregado
             var usuario = _usuarioRepository.ObterPorId(autenticacao.Id, x => x.Cliente);
 
+            if (usuario == null)
+                throw new InvalidOperationException("Usuário não encontrado para geração do token.");
+
             var nichoId = usuario.Cliente != null ? usuario.Cliente.NichoId : 0;
 
             var claims = new[]
             {
                     new Claim(ClaimTypes.Name, autenticacao.Nome),
                     new Claim(ClaimTypes.Email, autenticacao.Email),
-                    new Claim("permissao", string.Join(",", permissoes)),
                     
                     // Claims que o UsuarioLogadoService precisa
                     new Claim("Usuario_Id", autenticacao.Id.ToString() ?? ""),
                     new Claim("Cliente_Id", autenticacao.ClienteId.ToString() ?? ""),
                     new Claim("Cliente_NichoId", nichoId.ToString() ?? ""),
                     new Claim("TipoUsuario", autenticacao.TipoUsuario.ToString() ?? ""), // "M" para master, por exemplo
-                    new Claim("Usuario_Email", autenticacao.Email.ToString() ?? "") // "M" para master, por exemplo
+                    new Claim("Usuario_Email", autenticacao.Email.ToString() ?? "")
                   
             };
 
@@ -67,8 +69,6 @@ namespace TSmartClinic.Core.Infra.Security.Services
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.WriteToken(jwtSecurityToken);
-
-            Console.WriteLine($"Token gerado: {token}");
 
             return token;
         }

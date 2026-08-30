@@ -5,7 +5,7 @@ namespace TSmartClinic.Core.Domain.Interfaces.Services
 {
     public  interface ITokenService
     {
-        string GerarToken(AutenticacaoModel autenticacao, List<string> permissoes);
+        string GerarToken(AutenticacaoModel autenticacao);
         string GerarTokenRedefinicaoSenha(string email);
         string GerarRefreshToken();
         //Autenticacao ValidarRefreshToken(string refreshToken, int usuarioId);

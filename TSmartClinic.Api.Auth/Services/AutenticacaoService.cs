@@ -29,70 +29,7 @@ namespace TSmartClinic.Api.Auth.Services
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
         }
-        //public LoginResponseDto Login(LoginRequestDto loginRequestDto)
-        //{
-        //    try
-        //    {
-        //        if (loginRequestDto == null)
-        //            throw new ArgumentNullException(nameof(loginRequestDto), "A requisição de login não pode ser nula.");
-
-        //        if (string.IsNullOrWhiteSpace(loginRequestDto.Email) || string.IsNullOrWhiteSpace(loginRequestDto.Senha))
-        //            throw new ArgumentException("E-mail e senha são obrigatórios.");
-
-        //        var usuario = _usuarioService?.ObterPorEmail(loginRequestDto.Email);
-
-        //        if (usuario == null)
-        //            return null;
-
-
-
-        //        // var senhaCifrada = _criptografiaProvider.Criptografar(usuario.Senha);
-        //        var senhaDecifrada = _criptografiaProvider.Decriptografar(usuario.Senha);
-
-        //        if (!senhaDecifrada.Equals(loginRequestDto.Senha))
-        //            return null;
-
-        //        var usuarioAutenticacao = _mapper.Map<AutenticacaoModel>(usuario);
-
-        //        // Garantindo os campos essenciais
-        //        usuarioAutenticacao.Id = usuario.Id;
-        //        usuarioAutenticacao.ClienteId = usuario.ClienteId;
-        //        usuarioAutenticacao.TipoUsuario = usuario.TipoUsuario; // 'M' ou 'C'
-
-        //        //var usuarioSistema = usuario.UsuariosSistema.FirstOrDefault(); REVER
-
-        //        //var permissoes = _usuarioService.ObterPermissaoUsuario(usuario.Id, loginRequestDto.ClinicaId, loginRequestDto.ModuloId);
-
-        //        var clinicasUsuario = _usuarioClinicaPerfilService.ObterClinicasDoUsuario(usuario.Id);
-
-        //        var permissoes = _usuarioService.ObterPermissaoUsuario(usuario.Id, clinicasUsuario);
-
-        //        var accessToken = _tokenService.GerarToken(usuarioAutenticacao, permissoes);
-
-        //        var response = new LoginResponseDto
-        //        {
-        //            AccessToken = accessToken,
-        //            Nome = usuario.Nome,
-        //            Email = usuario.Email,
-        //            IdUsuario = usuarioAutenticacao.Id,
-        //            TipoUsuario = usuarioAutenticacao.TipoUsuario.ToString(),
-        //            ListClientes = clinicasUsuario,// loginRequestDto.ClinicaId,
-        //            PrimeiroAcesso = usuario.PrimeiroAcesso
-        //        };
-
-        //        return response;
-        //    }
-        //    catch (AcessoNegadoException adx)
-        //    {
-        //        throw new ApplicationException("Acesso negado: " + adx.Message);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new ApplicationException("Erro inesperado ao realizar login: " + ex.Message);
-        //    }
-        //}
-
-
+      
         public LoginResponseDto? Login(LoginRequestDto loginRequestDto)
         {
             try
@@ -139,7 +76,7 @@ namespace TSmartClinic.Api.Auth.Services
                 var clinicasUsuario = _usuarioClinicaPerfilService.ObterClinicasDoUsuario(usuario.Id);
                 var permissoes = _usuarioService.ObterPermissaoUsuario(usuario.Id, clinicasUsuario);
 
-                var accessToken = _tokenService.GerarToken(usuarioAutenticacao, permissoes);
+                var accessToken = _tokenService.GerarToken(usuarioAutenticacao);
 
                 return new LoginResponseDto
                 {
@@ -148,8 +85,21 @@ namespace TSmartClinic.Api.Auth.Services
                     Email = usuario.Email,
                     IdUsuario = usuarioAutenticacao.Id,
                     TipoUsuario = usuarioAutenticacao.TipoUsuario.ToString(),
-                    ListClientes = clinicasUsuario,
-                    PrimeiroAcesso = usuario.PrimeiroAcesso
+
+                    ListClientes = clinicasUsuario
+                     .Select(c => new LoginClienteDto
+                     {
+                         Id = c.Id,
+                         PublicId = c.PublicId,
+                         NomeCliente = c.NomeCliente,
+                         RazaoSocial = c.RazaoSocial,
+                         Cnpj = c.Cnpj,
+                         NichoId = c.NichoId
+                     })
+                     .ToList(),
+
+                    PrimeiroAcesso = usuario.PrimeiroAcesso,
+                    Permissoes = permissoes
                 };
             }
             catch (AcessoNegadoException adx)

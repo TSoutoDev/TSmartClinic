@@ -8,24 +8,26 @@ namespace TSmartClinic.Presentation.Controllers.Usuarios
     public class MinhaContaController : Controller
     {
         private readonly IUsuarioService _usuarioService;
-        private readonly IUsuarioLogadoService _usuarioLogadoService;
 
-        public MinhaContaController(IUsuarioService usuarioService, IUsuarioLogadoService usuarioLogadoService)
+        public MinhaContaController(IUsuarioService usuarioService)
         {
             _usuarioService = usuarioService;
-            _usuarioLogadoService = usuarioLogadoService;
         }
 
         public async Task<IActionResult> DetalhesMinhaConta()
         {
-            var UsuarioLogadoId = _usuarioLogadoService.UsuarioLogadoId;
+            var response = await _usuarioService.ObterMinhaConta();
 
-            var response = await _usuarioService.ObterPorId(UsuarioLogadoId.Value);
+            if (response == null || !response.Sucesso || response.Itens == null || !response.Itens.Any())
+            {
+                return Json(new
+                {
+                    sucesso = false,
+                    mensagem = "Usuário não encontrado."
+                });
+            }
 
-            if (response == null || !response.Sucesso)
-                return Json(new { sucesso = false, mensagem = "Usuário não encontrado." });
-
-            var usuario = response.Itens.FirstOrDefault();
+            var usuario = response.Itens.First();
 
             if (usuario == null)
                 return Json(new { sucesso = false, mensagem = "Usuário não encontrado." });

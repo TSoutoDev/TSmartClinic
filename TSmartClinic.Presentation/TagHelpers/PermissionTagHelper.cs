@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+using TSmartClinic.Presentation.Helpers;
 
 namespace TSmartClinic.Presentation.TagHelpers
 {
@@ -13,11 +14,19 @@ namespace TSmartClinic.Presentation.TagHelpers
         }
 
         [HtmlAttributeName("asp-permissao")]
-        public string Permissoes { get; set; }
+        public string Permissoes { get; set; } = string.Empty;
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            var user = _httpContextAccessor.HttpContext?.User;
+            var httpContext = _httpContextAccessor.HttpContext;
+
+            if (httpContext == null)
+            {
+                output.SuppressOutput();
+                return;
+            }
+
+            var user = httpContext.User;
 
             if (user == null)
             {
@@ -25,26 +34,26 @@ namespace TSmartClinic.Presentation.TagHelpers
                 return;
             }
 
-            // Master possui acesso total
-            var masterClaim = user.FindFirst("UsuarioMaster")?.Value;
-
-            if (bool.TryParse(masterClaim, out var usuarioMaster) && usuarioMaster)
-                return;
-
-            var requiredPermissions = Permissoes
-                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .Where(p => !string.IsNullOrWhiteSpace(p))
+            var permissoesNecessarias = Permissoes
+                .Split(
+                    ',',
+                    StringSplitOptions.RemoveEmptyEntries |
+                    StringSplitOptions.TrimEntries)
+                .Where(x => !string.IsNullOrWhiteSpace(x))
                 .ToList();
 
-            var userPermissions = user.Claims
-                .Where(c => c.Type == "permissao")
-                .SelectMany(c => c.Value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            if (!permissoesNecessarias.Any())
+            {
+                output.SuppressOutput();
+                return;
+            }
 
-            var temPermissao = requiredPermissions.Any(p => userPermissions.Contains(p));
+            var temPermissao = permissoesNecessarias.Any(permissao => user.HasPermission(httpContext, permissao));
 
             if (!temPermissao)
+            {
                 output.SuppressOutput();
+            }
         }
     }
 }

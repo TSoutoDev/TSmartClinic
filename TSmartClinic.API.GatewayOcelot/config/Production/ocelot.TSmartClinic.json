@@ -158,6 +158,21 @@
 
     //USUÁRIO
     {
+      "DownstreamPathTemplate": "/api/usuarios/minha-conta",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/usuarios/minha-conta",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/usuarios/{publicId}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -399,6 +414,21 @@
     },
 
     //PERMISSOES-ACESSO
+    {
+      "DownstreamPathTemplate": "/api/PermissoesAcesso/limpar-cache",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/permissoes-acesso/limpar-cache",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
     {
       "DownstreamPathTemplate": "/api/permissoes-acesso/{id}",
       "DownstreamScheme": "http",

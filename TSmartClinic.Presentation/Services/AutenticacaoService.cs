@@ -15,7 +15,7 @@ namespace TSmartClinic.Presentation.Services
 
         protected readonly string _baseUrlController;
         private readonly string _accessToken;
-
+        private readonly string _apiGateway;
 
         protected string AccessToken
         {
@@ -26,7 +26,7 @@ namespace TSmartClinic.Presentation.Services
         {
             _usuarioService = usuarioService;
             _criptografiaProvider = criptografiaProvider;
-
+            _apiGateway = urlApiSettings?.Value.ApiGateway;
             _baseUrlController = $"{urlApiSettings?.Value.ApiGateway}/auth";
 
             _accessToken = accessTokenService.Obter();
@@ -84,37 +84,61 @@ namespace TSmartClinic.Presentation.Services
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
-                HttpResponseMessage response = await client.PostAsync($"{_baseUrlController}/logout", null);
 
-                retorno.StatusCode = response.StatusCode.GetHashCode();
-                if (response.StatusCode == System.Net.HttpStatusCode.Created)
+                try
                 {
-                    retorno.Sucesso = true;
-                }
-                else
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    ErroViewModel erro = string.IsNullOrWhiteSpace(content)
-                        ? null
-                        : JsonSerializer.Deserialize<ErroViewModel>(content);
+                    // 1 - Limpa o cache de permissões na API principal
+                    HttpResponseMessage responseCache = await client.PostAsync($"{_apiGateway}/permissoes-acesso/limpar-cache", null);
 
-                    retorno.Sucesso = false;
-                    if (erro == null || erro?.StatusCode == 0)
+                    if (!responseCache.IsSuccessStatusCode)
                     {
-                        retorno.StatusCode = retorno.StatusCode;
-                        retorno.Mensagem = "Erro ao gravar o registro.  Favor validar as informações.";
+                        retorno.StatusCode = responseCache.StatusCode.GetHashCode();
+                        retorno.Sucesso = false;
+                        retorno.Mensagem = "Não foi possível limpar o cache de permissões.";
+
+                        return retorno;
+                    }
+
+                    // 2 - Faz o logout na API de autenticação
+                    HttpResponseMessage response = await client.PostAsync($"{_baseUrlController}/logout", null);
+
+                    retorno.StatusCode = response.StatusCode.GetHashCode();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        retorno.Sucesso = true;
+                        retorno.Mensagem = "Logout realizado com sucesso.";
                     }
                     else
                     {
-                        retorno.StatusCode = erro.StatusCode;
-                        retorno.Mensagem = erro.Message;
-                    }
-                }
+                        var content = await response.Content.ReadAsStringAsync();
 
-                return retorno;
+                        ErroViewModel erro = string.IsNullOrWhiteSpace(content) ? null : JsonSerializer.Deserialize<ErroViewModel>(content);
+
+                        retorno.Sucesso = false;
+
+                        if (erro == null || erro.StatusCode == 0)
+                        {
+                            retorno.Mensagem = "Não foi possível realizar o logout.";
+                        }
+                        else
+                        {
+                            retorno.StatusCode = erro.StatusCode;
+                            retorno.Mensagem = erro.Message;
+                        }
+                    }
+
+                    return retorno;
+                }
+                catch (Exception ex)
+                {
+                    retorno.Sucesso = false;
+                    retorno.StatusCode = 500;
+                    retorno.Mensagem = $"Erro ao realizar logout: {ex.Message}";
+
+                    return retorno;
+                }
             }
         }
-
-
     }
 }

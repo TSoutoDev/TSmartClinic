@@ -31,6 +31,7 @@ namespace TSmartClinic.API.Extensions
             services.AddTransient<IConvenioService, ConvenioService>();
             services.AddTransient<IMunicipioService, MunicipioService>();
             services.AddTransient<IUsuarioClientePerfilService, UsuarioClientePerfilService>();
+            services.AddTransient<IPermissaoCacheService, PermissaoCacheService>();
 
             //Repositorios
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
@@ -60,6 +61,8 @@ namespace TSmartClinic.API.Extensions
             services.Configure<TokenSettings>(configuration.GetSection("TokenSettings"));
             services.AddScoped<ITokenService, TokenService>();
 
+            // Registro da cache
+            services.AddMemoryCache();
             return services;
         }
     }

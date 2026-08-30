@@ -10,5 +10,6 @@
         public string? TipoUsuario { get; set; }
         public bool PrimeiroAcesso { get; set; }
         public List<ClienteViewModel>? ListClientes { get; set; }
+        public List<string> Permissoes { get; set; } = new();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Services.Interfaces;
@@ -143,5 +144,42 @@ namespace TSmartClinic.Presentation.Services
             throw new NotImplementedException();
         }
 
+        public async Task<ResponseViewModel<UsuarioViewModel>> ObterMinhaConta()
+        {
+            var retorno = new ResponseViewModel<UsuarioViewModel>();
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization =  new AuthenticationHeaderValue("Bearer", this.AccessToken);
+
+                var response = await client.GetAsync($"{_baseUrlController}/minha-conta");
+
+                retorno.StatusCode = (int)response.StatusCode;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    var content = await response.Content.ReadAsStringAsync();
+
+                    var usuario = JsonSerializer.Deserialize<UsuarioViewModel>(content, options);
+
+                    retorno.Sucesso = true;
+                    retorno.Itens = usuario != null ? new List<UsuarioViewModel> { usuario } : new List<UsuarioViewModel>();
+
+                    return retorno;
+                }
+
+                var conteudoErro = await response.Content.ReadAsStringAsync();
+
+                retorno.Sucesso = false;
+                retorno.Mensagem = string.IsNullOrWhiteSpace(conteudoErro)  ? "Usuário não encontrado." : conteudoErro;
+
+                return retorno;
+            }
+        }
     }
 }
