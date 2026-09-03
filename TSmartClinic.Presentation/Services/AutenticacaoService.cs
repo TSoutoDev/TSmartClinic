@@ -140,5 +140,58 @@ namespace TSmartClinic.Presentation.Services
                 }
             }
         }
+
+        public async Task<ResponseViewModel<AccountViewModel>> SelecionarUnidade(string tokenSelecaoUnidade, int unidadeId, bool definirComoPadrao)
+        {
+            var retorno = new ResponseViewModel<AccountViewModel>();
+
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var request = new
+                    {
+                        TokenSelecaoUnidade = tokenSelecaoUnidade,
+                        UnidadeId = unidadeId,
+                        DefinirComoPadrao = definirComoPadrao
+                    };
+
+                    var response = await client.PostAsJsonAsync($"{_baseUrlController}/selecionar-unidade", request);
+                    retorno.StatusCode = response.StatusCode.GetHashCode();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+
+                        var options = new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        };
+
+                        var obj = JsonSerializer.Deserialize<AccountViewModel>(content, options);
+
+                        retorno.Itens = obj != null ? new List<AccountViewModel> { obj } : new List<AccountViewModel>();
+
+                        retorno.Sucesso = obj != null;
+
+                        return retorno;
+                    }
+
+                    var conteudoErro = await response.Content.ReadAsStringAsync();
+
+                    retorno.Sucesso = false;
+                    retorno.Mensagem = string.IsNullOrWhiteSpace(conteudoErro) ? "Não foi possível selecionar a unidade." : conteudoErro;
+
+                    return retorno;
+                }
+                catch (Exception ex)
+                {
+                    retorno.Sucesso = false;
+                    retorno.StatusCode = 500;
+                    retorno.Mensagem = $"Erro ao selecionar unidade: {ex.Message}";
+                    return retorno;
+                }
+            }
+        }
     }
 }

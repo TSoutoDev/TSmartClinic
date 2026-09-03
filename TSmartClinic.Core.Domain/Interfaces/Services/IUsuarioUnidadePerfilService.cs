@@ -9,5 +9,6 @@ namespace TSmartClinic.Core.Domain.Interfaces.Services
         Unidade? ObterUnidadePadraoDoUsuario(int usuarioId);
         bool UsuarioPossuiAcessoUnidade(int usuarioId, int unidadeId);
         int? ObterPerfilIdPorUsuarioUnidade(int usuarioId, int unidadeId);
+        void DefinirUnidadePadrao(int usuarioId, int unidadeId);
     }
 }

@@ -13,6 +13,18 @@
       "UpstreamHttpMethod": [ "POST" ]
     },
     {
+      "DownstreamPathTemplate": "/api/auth/selecionar-unidade",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5296
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/selecionar-unidade",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/auth/logout",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -27,6 +39,7 @@
   ],
 
   "AggregateRoutes": [],
+
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:5049"
   }

@@ -1,0 +1,751 @@
+﻿@model TSmartClinic.Presentation.Models.SelecionarUnidadeViewModel
+
+@{
+    Layout = null;
+}
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>TSmartClinic - Selecionar Unidade</title>
+
+    <link href="~/main.css" rel="stylesheet" />
+    <link href="~/home.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
+
+    <style>
+        :root {
+            --navy-950: #071838;
+            --navy-900: #0a1d47;
+            --navy-800: #11275d;
+            --blue: #2068ff;
+            --indigo: #4558f4;
+            --violet: #7d38f1;
+            --text: #102044;
+            --muted: #7c88a8;
+            --border: #dfe4ef;
+            --input: #fbfcff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 34px;
+            overflow-x: hidden;
+            background: radial-gradient(circle at 12% 16%, rgba(87, 76, 255, .18) 0, rgba(87, 76, 255, 0) 34%), radial-gradient(circle at 88% 78%, rgba(75, 207, 226, .13) 0, rgba(75, 207, 226, 0) 32%), linear-gradient(135deg, #f8f8ff 0%, #f4f6fb 55%, #f3fbfd 100%);
+        }
+
+        .login-card {
+            width: min(1370px, 94vw);
+            min-height: 790px;
+            display: grid;
+            grid-template-columns: 46% 54%;
+            background: #fff;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 34px 95px rgba(25, 39, 85, .18);
+        }
+
+        /* PAINEL ESQUERDO */
+
+        .brand-panel {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            color: #fff;
+            padding: 68px 76px 54px;
+            background: radial-gradient(circle at 72% 86%, rgba(105, 49, 255, .46), transparent 35%), linear-gradient(150deg, #07182f 0%, #0a1b43 42%, #142866 73%, #291f8a 100%);
+        }
+
+            .brand-panel::after {
+                content: '';
+                position: absolute;
+                inset: auto -140px -230px -210px;
+                height: 500px;
+                z-index: -1;
+                border-radius: 50% 50% 0 0;
+                border-top: 2px solid rgba(122, 67, 255, .8);
+                background: radial-gradient(ellipse at 66% 18%, rgba(82, 77, 255, .26), transparent 55%), linear-gradient(180deg, rgba(79, 52, 204, .20), rgba(16, 28, 78, .08));
+                transform: rotate(-2deg);
+            }
+
+        .brand-top-wave {
+            position: absolute;
+            top: -18px;
+            right: -40px;
+            width: 360px;
+            height: 180px;
+            opacity: .28;
+            pointer-events: none;
+        }
+
+        .brand-dots {
+            position: absolute;
+            top: 95px;
+            right: 64px;
+            width: 72px;
+            height: 72px;
+            opacity: .18;
+            background-image: radial-gradient(circle, #8093ff 2px, transparent 2.5px);
+            background-size: 15px 15px;
+        }
+
+        .brand-logo {
+            position: relative;
+            z-index: 3;
+            display: block;
+            width: min(410px, 88%);
+            height: auto;
+        }
+
+        .brand-copy {
+            position: relative;
+            z-index: 3;
+            width: 390px;
+            max-width: 100%;
+            margin-top: 92px;
+        }
+
+        .brand-accent {
+            width: 58px;
+            height: 4px;
+            border-radius: 999px;
+            margin-bottom: 28px;
+            background: linear-gradient(90deg, #a443f3, #2876ff);
+            box-shadow: 0 0 14px rgba(96, 78, 255, .42);
+        }
+
+        .brand-copy h1 {
+            margin: 0;
+            font-size: clamp(34px, 3.05vw, 51px);
+            line-height: 1.22;
+            font-weight: 600;
+            letter-spacing: -1.7px;
+            color: #fff;
+        }
+
+        .brand-copy p {
+            width: 350px;
+            max-width: 100%;
+            margin: 26px 0 0;
+            font-size: 18px;
+            line-height: 1.65;
+            color: rgba(230, 235, 255, .86);
+        }
+
+        .clinic-art {
+            position: absolute;
+            left: 55px;
+            right: 25px;
+            bottom: 0;
+            height: 300px;
+            z-index: 1;
+            opacity: .72;
+            pointer-events: none;
+        }
+
+            .clinic-art svg {
+                width: 100%;
+                height: 100%;
+                display: block;
+            }
+
+        /* PAINEL DIREITO */
+
+        .form-panel {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 70px 92px;
+            background: #fff;
+        }
+
+        .form-wrap {
+            width: 100%;
+            max-width: 620px;
+            margin: 0 auto;
+        }
+
+        .secure-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 10px 14px;
+            border-radius: 14px;
+            margin-bottom: 26px;
+            font-size: 14px;
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: .3px;
+            color: #2858ee;
+            background: #edf0ff;
+        }
+
+            .secure-badge .lock-box {
+                width: 26px;
+                height: 26px;
+                display: grid;
+                place-items: center;
+                border-radius: 8px;
+                background: rgba(72, 83, 255, .08);
+            }
+
+        .form-title {
+            margin: 0;
+            font-size: clamp(36px, 3.1vw, 51px);
+            line-height: 1.08;
+            font-weight: 750;
+            letter-spacing: -1.9px;
+            color: #102044;
+        }
+
+        .form-subtitle {
+            margin: 17px 0 36px;
+            font-size: 18px;
+            line-height: 1.6;
+            color: #7d89a8;
+        }
+
+        /* UNIDADES */
+
+        .unidades-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .unidade-form {
+            margin: 0;
+        }
+
+        .unidade-card {
+            width: 100%;
+            min-height: 94px;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            padding: 17px 20px;
+            background: #fbfcff;
+            display: flex;
+            align-items: center;
+            gap: 17px;
+            text-align: left;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+        }
+
+            .unidade-card:hover {
+                transform: translateY(-2px);
+                background: #fff;
+                border-color: #8691f5;
+                box-shadow: 0 13px 27px rgba(51, 65, 140, .10);
+            }
+
+            .unidade-card:focus {
+                outline: none;
+                border-color: #6574f3;
+                box-shadow: 0 0 0 4px rgba(76, 91, 244, .09);
+            }
+
+        .unidade-icon {
+            width: 55px;
+            height: 55px;
+            flex: 0 0 55px;
+            display: grid;
+            place-items: center;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 21px;
+            background: linear-gradient(135deg, #7b31ef 0%, #5150f1 52%, #156cf8 100%);
+            box-shadow: 0 9px 20px rgba(74, 73, 235, .20);
+        }
+
+        .unidade-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .unidade-nome {
+            display: block;
+            color: #132344;
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .unidade-descricao {
+            display: block;
+            color: #8792ad;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .unidade-padrao {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 7px;
+            padding: 5px 9px;
+            border-radius: 8px;
+            color: #3852df;
+            background: #edf0ff;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .unidade-arrow {
+            width: 38px;
+            height: 38px;
+            flex: 0 0 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 11px;
+            color: #6571a0;
+            background: #f0f2fa;
+            transition: transform .18s ease, color .18s ease, background .18s ease;
+        }
+
+        .unidade-card:hover .unidade-arrow {
+            transform: translateX(3px);
+            color: #fff;
+            background: linear-gradient(135deg, #7250f3, #2970fa);
+        }
+
+        .brand-divider {
+            margin-top: 42px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 22px;
+            color: #7f8ba8;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+            .brand-divider::before,
+            .brand-divider::after {
+                content: '';
+                height: 1px;
+                background: #dce2ed;
+            }
+
+        .text-danger {
+            display: block;
+            margin-bottom: 18px;
+            font-size: 13px;
+            color: #d94254;
+        }
+
+        #loading {
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(248, 249, 253, .72);
+            backdrop-filter: blur(3px);
+        }
+
+            #loading img {
+                width: 70px;
+                height: 70px;
+            }
+
+        .definir-padrao {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 10px 4px 2px;
+            color: #687594;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+            .definir-padrao input {
+                width: 16px;
+                height: 16px;
+                accent-color: #5150f1;
+                cursor: pointer;
+            }
+        @@media (max-width: 1100px) {
+            body {
+                padding: 22px;
+            }
+
+            .login-card {
+                grid-template-columns: 43% 57%;
+                min-height: 680px;
+            }
+
+            .brand-panel {
+                padding: 52px 42px 40px;
+            }
+
+            .brand-copy {
+                margin-top: 78px;
+            }
+
+                .brand-copy h1 {
+                    font-size: 34px;
+                }
+
+                .brand-copy p {
+                    font-size: 16px;
+                }
+
+            .form-panel {
+                padding: 52px 48px;
+            }
+
+            .form-title {
+                font-size: 40px;
+            }
+        }
+
+        @@media (max-width: 820px) {
+            body {
+                padding: 18px;
+                align-items: flex-start;
+            }
+
+            .login-card {
+                width: min(610px, 100%);
+                min-height: auto;
+                grid-template-columns: 1fr;
+                border-radius: 24px;
+            }
+
+            .brand-panel {
+                min-height: 330px;
+                padding: 38px 34px;
+            }
+
+            .brand-logo {
+                width: 290px;
+            }
+
+            .brand-copy {
+                margin-top: 42px;
+                width: 360px;
+            }
+
+                .brand-copy h1 {
+                    font-size: 31px;
+                }
+
+                .brand-copy p {
+                    display: none;
+                }
+
+            .brand-dots {
+                right: 28px;
+                top: 32px;
+            }
+
+            .clinic-art {
+                opacity: .34;
+                left: 40%;
+                height: 220px;
+            }
+
+            .form-panel {
+                padding: 46px 34px;
+            }
+
+            .form-title {
+                font-size: 36px;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            body {
+                padding: 0;
+                background: #fff;
+            }
+
+            .login-card {
+                width: 100%;
+                min-height: 100vh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .brand-panel {
+                min-height: 255px;
+                padding: 28px 24px;
+            }
+
+            .brand-logo {
+                width: 235px;
+            }
+
+            .brand-copy {
+                margin-top: 32px;
+            }
+
+            .brand-accent {
+                margin-bottom: 17px;
+            }
+
+            .brand-copy h1 {
+                font-size: 26px;
+            }
+
+            .clinic-art {
+                display: none;
+            }
+
+            .form-panel {
+                padding: 36px 24px;
+                align-items: flex-start;
+            }
+
+            .secure-badge {
+                margin-bottom: 20px;
+            }
+
+            .form-title {
+                font-size: 32px;
+            }
+
+            .form-subtitle {
+                margin: 13px 0 28px;
+                font-size: 15px;
+            }
+
+            .unidade-card {
+                min-height: 84px;
+                padding: 14px;
+            }
+
+            .unidade-icon {
+                width: 48px;
+                height: 48px;
+                flex-basis: 48px;
+            }
+
+            .brand-divider {
+                margin-top: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loading">
+        <img src="~/images/loading.TSmartClinic.gif" alt="Carregando..." />
+    </div>
+
+    <main class="login-card">
+
+        <section class="brand-panel">
+
+            <svg class="brand-top-wave" viewBox="0 0 360 180" aria-hidden="true">
+                <path d="M20,20 C135,118 192,8 350,28" fill="none" stroke="#5065ff" stroke-width="1.5" />
+                <path d="M0,35 C120,136 198,25 350,42" fill="none" stroke="#5065ff" stroke-width="1.5" />
+                <path d="M0,51 C118,151 218,42 350,58" fill="none" stroke="#5065ff" stroke-width="1.5" />
+                <path d="M0,68 C117,163 230,58 350,76" fill="none" stroke="#5065ff" stroke-width="1.5" />
+                <path d="M0,86 C108,173 249,72 350,95" fill="none" stroke="#5065ff" stroke-width="1.5" />
+            </svg>
+
+            <div class="brand-dots" aria-hidden="true"></div>
+
+            <img src="~/images/branding/tsmartclinic-logo-on-dark.svg"
+                 class="brand-logo"
+                 alt="TSmartClinic" />
+
+            <div class="brand-copy">
+                <div class="brand-accent"></div>
+
+                <h1>
+                    Sua clínica.<br />
+                    Sua unidade.<br />
+                    Seu ambiente.
+                </h1>
+
+                <p>
+                    Escolha onde deseja trabalhar agora.<br />
+                    Você poderá trocar de unidade posteriormente.
+                </p>
+            </div>
+
+            <div class="clinic-art" aria-hidden="true">
+                <svg viewBox="0 0 620 300" preserveAspectRatio="xMidYMax meet">
+
+                    <defs>
+                        <linearGradient id="artStroke" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0" stop-color="#304ebc" stop-opacity=".30" />
+                            <stop offset="1" stop-color="#8a42ff" stop-opacity=".75" />
+                        </linearGradient>
+
+                        <linearGradient id="artFill" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0" stop-color="#183066" stop-opacity=".75" />
+                            <stop offset="1" stop-color="#512db6" stop-opacity=".78" />
+                        </linearGradient>
+                    </defs>
+
+                    <path d="M88 290V170c0-28 16-45 43-45h36" fill="none" stroke="url(#artStroke)" stroke-width="12" stroke-linecap="round" />
+                    <path d="M162 125h36c16 0 25 8 25 20" fill="none" stroke="url(#artStroke)" stroke-width="11" stroke-linecap="round" />
+                    <path d="M180 143c28-8 54-4 76 9-14 22-40 31-76 25z" fill="url(#artFill)" stroke="url(#artStroke)" stroke-width="2" />
+
+                    <rect x="136" y="237" width="95" height="22" rx="10" fill="url(#artFill)" />
+                    <path d="M210 228c8-36 32-57 64-63 20-4 39 1 53 13l-37 68c-25 8-50 2-80-18z" fill="url(#artFill)" />
+                    <path d="M232 250h86c18 0 28 8 31 22H220c1-10 5-17 12-22z" fill="url(#artFill)" />
+                    <rect x="270" y="260" width="16" height="30" rx="5" fill="url(#artFill)" />
+
+                    <path d="M475 246v43" stroke="url(#artStroke)" stroke-width="5" stroke-linecap="round" />
+                    <path d="M475 247c-30-4-46-21-50-50 29 5 45 20 50 50z" fill="url(#artFill)" />
+                    <path d="M477 242c7-31 24-49 51-54-3 31-20 49-51 54z" fill="url(#artFill)" />
+                    <path d="M474 263c-22-3-34-14-37-35 22 3 34 14 37 35z" fill="url(#artFill)" />
+                    <rect x="448" y="271" width="58" height="19" rx="4" fill="url(#artFill)" />
+
+                    <path d="M0 289 C154 250 256 326 620 250" fill="none" stroke="#7250ff" stroke-opacity=".72" stroke-width="2" />
+                </svg>
+            </div>
+
+        </section>
+
+        <section class="form-panel">
+
+            <div class="form-wrap">
+
+                <div class="secure-badge">
+                    <span class="lock-box">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    ÁREA SEGURA
+                </div>
+
+                <h2 class="form-title">
+                    Selecione sua unidade
+                </h2>
+
+                <p class="form-subtitle">
+                    Escolha a unidade que deseja acessar para continuar.
+                </p>
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="unidades-lista">
+
+                    @foreach (var unidade in Model.Unidades)
+                    {
+                        <form asp-controller="Account"
+                              asp-action="SelecionarUnidade"
+                              method="post"
+                              class="unidade-form">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden" name="UnidadeId" value="@unidade.Id" />
+
+                            <button type="submit"
+                                    class="unidade-card"
+                                    onclick="loading()">
+
+                                <span class="unidade-icon">
+                                    <i class="fas fa-clinic-medical"></i>
+                                </span>
+
+                                <span class="unidade-info">
+
+                                    <span class="unidade-nome">
+                                        @unidade.NomeUnidade
+                                    </span>
+
+                                    <span class="unidade-descricao">
+                                        Acessar esta unidade
+                                    </span>
+
+                                    @if (unidade.UnidadePadrao)
+                                    {
+                                        <span class="unidade-padrao">
+                                            <i class="fas fa-star"></i>
+                                            Unidade padrão
+                                        </span>
+                                    }
+
+                                </span>
+
+                                <span class="unidade-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </span>
+
+                            </button>
+
+                            <label class="definir-padrao">
+                                <input type="checkbox"
+                                       name="DefinirComoPadrao"
+                                       value="true"
+                                       class="checkbox-padrao" />
+                                <span>Definir como minha unidade padrão</span>
+                            </label>
+
+                        </form>
+                    }
+
+                </div>
+
+                <div class="brand-divider">
+                    TSmartClinic
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        function loading() {
+            $('#loading').css('display', 'flex');
+        }
+    </script>
+
+    <script>
+        function loading() {
+            $('#loading').css('display', 'flex');
+        }
+
+        document.querySelectorAll('.checkbox-padrao').forEach(function (checkbox) {
+            checkbox.addEventListener('change', function () {
+
+                if (!this.checked)
+                    return;
+
+                document.querySelectorAll('.checkbox-padrao').forEach(function (outro) {
+                    if (outro !== checkbox)
+                        outro.checked = false;
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

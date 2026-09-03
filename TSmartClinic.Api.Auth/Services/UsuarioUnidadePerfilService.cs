@@ -37,5 +37,10 @@ namespace TSmartClinic.Api.Auth.Services
         {
             return _repository.ObterPerfilIdPorUsuarioUnidade(usuarioId, unidadeId);
         }
+
+        public void DefinirUnidadePadrao(int usuarioId, int unidadeId)
+        {
+            _repository.DefinirUnidadePadrao(usuarioId, unidadeId);
+        }
     }
 }

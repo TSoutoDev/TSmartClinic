@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text.Json;
 using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Services.Interfaces;
@@ -91,6 +92,19 @@ namespace TSmartClinic.Presentation.Controllers
 
                         var autenticacao = response.Itens.FirstOrDefault();
 
+                        if (autenticacao.NecessitaSelecionarUnidade)
+                        {
+                            var loginPendenteJson = JsonSerializer.Serialize(autenticacao);
+                            HttpContext.Session.SetString("LoginPendente", loginPendenteJson);
+
+                            var viewModel = new SelecionarUnidadeViewModel
+                            {
+                                Unidades = autenticacao.Unidades
+                            };
+
+                            return View("SelecionarUnidade", viewModel);
+                        }
+
                         // Converte seguro para int
                         if (!int.TryParse(autenticacao.IdUsuario?.ToString(), out int usuarioId))
                         {
@@ -109,7 +123,27 @@ namespace TSmartClinic.Presentation.Controllers
                             return View("PrimeiroAcesso", primeiroAcesso);
                         }
 
-                        var cliente = autenticacao.ListClientes.FirstOrDefault();
+                        if (!autenticacao.UnidadeId.HasValue)
+                        {
+                            TempData["MensagemErro"] = "Unidade não identificada.";
+                            return RedirectToAction("Login");
+                        }
+
+                        var unidade = autenticacao.Unidades.FirstOrDefault(x => x.Id == autenticacao.UnidadeId.Value);
+
+                        if (unidade == null)
+                        {
+                            TempData["MensagemErro"] = "Unidade vinculada ao usuário não encontrada.";
+                            return RedirectToAction("Login");
+                        }
+
+                        var cliente = autenticacao.ListClientes.FirstOrDefault(x => x.Id == unidade.ClienteId);
+
+                        if (cliente == null)
+                        {
+                            TempData["MensagemErro"] = "Cliente da unidade não encontrado.";
+                            return RedirectToAction("Login");
+                        }
 
                         _accessTokenService.Salvar(autenticacao.AccessToken);
                         var permissoes = autenticacao.Permissoes ?? new List<string>();
@@ -119,11 +153,13 @@ namespace TSmartClinic.Presentation.Controllers
                                 new Claim(ClaimTypes.Name, autenticacao.Nome),
                                 new Claim(ClaimTypes.Email, autenticacao.Email),
                                 new Claim("Usuario_Id", autenticacao.IdUsuario.ToString()),
+                                new Claim("Cliente_NichoId", cliente.NichoId.ToString() ?? ""),
                                 new Claim("Usuario_Tipo", autenticacao.TipoUsuario),
                                 new Claim("Cliente_Nome", cliente.NomeCliente ?? ""),
                                 new Claim("Cliente_Cnpj", cliente.CNPJ ?? ""),
                                 new Claim("Cliente_Id", cliente.Id.ToString() ?? ""),
-                                new Claim("Cliente_NichoId", cliente.NichoId.ToString() ?? ""),
+                                new Claim("Unidade_Id", unidade.Id.ToString()),
+                                new Claim("Unidade_Nome", unidade.NomeUnidade ?? ""),
                                 new Claim("Usuario_Email", autenticacao.Email ?? "")
                             };
 
@@ -243,7 +279,7 @@ namespace TSmartClinic.Presentation.Controllers
         [ValidateAntiForgeryToken]
         [HttpPost("account/primeiro-acesso")]
         public async Task<IActionResult> PrimeiroAcesso(ResetSenhaEPrimeiroAcessoViewModel model,
-      [FromServices] TSmartClinic.Presentation.Services.Interfaces.IUsuarioService usuarioService)
+        [FromServices] TSmartClinic.Presentation.Services.Interfaces.IUsuarioService usuarioService)
         {
             // campos não usados neste fluxo
             ModelState.Remove(nameof(ResetSenhaEPrimeiroAcessoViewModel.Email));
@@ -304,6 +340,105 @@ namespace TSmartClinic.Presentation.Controllers
                 TempData["MensagemErro"] = ex.Message;
                 return View(model);
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SelecionarUnidade(SelecionarUnidadeViewModel model)
+        {
+            if (!model.UnidadeId.HasValue)
+            {
+                ModelState.AddModelError("", "Selecione uma unidade.");
+                return View(model);
+            }
+
+            var loginPendenteJson = HttpContext.Session.GetString("LoginPendente");
+
+            if (string.IsNullOrWhiteSpace(loginPendenteJson))
+                return RedirectToAction("Login");
+
+            var loginPendente = JsonSerializer.Deserialize<AccountViewModel>(loginPendenteJson);
+
+            if (loginPendente == null || string.IsNullOrWhiteSpace(loginPendente.TokenSelecaoUnidade))
+                return RedirectToAction("Login");
+
+            var response = await _autenticacaoService.SelecionarUnidade(loginPendente.TokenSelecaoUnidade, model.UnidadeId.Value, model.DefinirComoPadrao);
+
+            if (!response.Sucesso || response.Itens == null || !response.Itens.Any())
+            {
+                model.Unidades = loginPendente.Unidades;
+                ModelState.AddModelError("", response.Mensagem ?? "Não foi possível selecionar a unidade.");
+                return View(model);
+            }
+
+            var autenticacao = response.Itens.First();
+
+            if (!autenticacao.UnidadeId.HasValue)
+            {
+                TempData["MensagemErro"] = "Unidade não identificada.";
+                return RedirectToAction("Login");
+            }
+
+            var unidade = autenticacao.Unidades.FirstOrDefault(x => x.Id == autenticacao.UnidadeId.Value);
+
+            if (unidade == null)
+            {
+                TempData["MensagemErro"] = "Unidade selecionada não encontrada.";
+                return RedirectToAction("Login");
+            }
+
+            var cliente = autenticacao.ListClientes.FirstOrDefault(x => x.Id == unidade.ClienteId);
+
+            if (cliente == null)
+            {
+                TempData["MensagemErro"] = "Cliente da unidade selecionada não encontrado.";
+                return RedirectToAction("Login");
+            }
+
+            _accessTokenService.Salvar(autenticacao.AccessToken);
+
+            var permissoes = autenticacao.Permissoes ?? new List<string>();
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, autenticacao.Nome ?? ""),
+                new Claim(ClaimTypes.Email, autenticacao.Email ?? ""),
+                new Claim("Usuario_Id", autenticacao.IdUsuario.ToString() ?? ""),
+                new Claim("Usuario_Tipo", autenticacao.TipoUsuario ?? ""),
+                new Claim("Cliente_Nome", cliente.NomeCliente ?? ""),
+                new Claim("Cliente_Cnpj", cliente.CNPJ ?? ""),
+                new Claim("Cliente_Id", cliente.Id.ToString()),
+                new Claim("Cliente_NichoId", cliente.NichoId.ToString()),
+                new Claim("Unidade_Id", unidade.Id.ToString()),
+                new Claim("Unidade_Nome", unidade.NomeUnidade ?? ""),
+                new Claim("Usuario_Email", autenticacao.Email ?? "")
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            if (Request.Cookies["TSmartClinic-autx"] != null)
+                Response.Cookies.Delete("TSmartClinic-autx", OpcoesCookies());
+
+            HttpContext.Session.SetString("Usuario_Nome", autenticacao.Nome ?? "");
+            HttpContext.Session.SetString("Usuario_Email", autenticacao.Email ?? "");
+            HttpContext.Session.SetString("Usuario_Id", autenticacao.IdUsuario.ToString() ?? "");
+            HttpContext.Session.SetString("Usuario_Tipo", autenticacao.TipoUsuario ?? "");
+
+            HttpContext.Session.SetString("Cliente_Nome", cliente.NomeCliente ?? "");
+            HttpContext.Session.SetString("Cliente_Id", cliente.Id.ToString());
+            HttpContext.Session.SetString("Cliente_NichoId", cliente.NichoId.ToString());
+
+            HttpContext.Session.SetString("Unidade_Id", unidade.Id.ToString());
+            HttpContext.Session.SetString("Unidade_Nome", unidade.NomeUnidade ?? "");
+
+            HttpContext.Session.SetString("Permissoes", string.Join(",", permissoes));
+
+            HttpContext.Session.Remove("LoginPendente");
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

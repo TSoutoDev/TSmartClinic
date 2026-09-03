@@ -219,6 +219,9 @@ namespace TSmartClinic.Api.Auth.Services
             if (!perfilId.HasValue)
                 throw new AcessoNegadoException("Usuário não possui perfil vinculado à unidade selecionada.");
 
+            if (request.DefinirComoPadrao)
+                _usuarioUnidadePerfilService.DefinirUnidadePadrao(usuarioId, unidadeSelecionada.Id);
+
             var usuarioAutenticacao = _mapper.Map<AutenticacaoModel>(usuario);
             usuarioAutenticacao.Id = usuario.Id;
             usuarioAutenticacao.TipoUsuario = usuario.TipoUsuario;

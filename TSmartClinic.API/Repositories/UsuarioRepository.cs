@@ -275,5 +275,17 @@ namespace TSmartClinic.API.Repositories
 
             return permissoes;
         }
+        public void DefinirUnidadePadrao(int usuarioId, int unidadeId)
+        {
+            var vinculos = _dbContext.UsuarioUnidadePerfil.Where(x => x.UsuarioId == usuarioId).ToList();
+
+            if (!vinculos.Any(x => x.UnidadeId == unidadeId))
+                throw new InvalidOperationException("Usuário não possui acesso à unidade informada.");
+
+            foreach (var vinculo in vinculos)
+                vinculo.UnidadePadrao = vinculo.UnidadeId == unidadeId;
+
+            _dbContext.SaveChanges();
+        }
     }
 }

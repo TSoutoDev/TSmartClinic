@@ -6,5 +6,6 @@ namespace TSmartClinic.Presentation.Services.Interfaces
     {
         Task<ResponseViewModel<AccountViewModel>> Logar(AccountViewModel accountViewModel);
         Task<ResponseViewModel<AccountViewModel>> Logout();
+        Task<ResponseViewModel<AccountViewModel>> SelecionarUnidade(string tokenSelecaoUnidade, int unidadeId, bool definirComoPadrao);
     }
 }
