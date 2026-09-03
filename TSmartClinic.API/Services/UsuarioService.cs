@@ -230,6 +230,9 @@ namespace TSmartClinic.API.Services
 
             return tokenRedefinicao;
         }
-
+        public List<string> ObterPermissoesPorPerfil(int perfilId)
+        {
+            return _usuarioRepository.ObterPermissoesPorPerfil(perfilId);
+        }
     }
 }

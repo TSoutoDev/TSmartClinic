@@ -11,6 +11,7 @@ namespace TSmartClinic.Core.Domain.Interfaces.Services
         //Autenticacao ValidarRefreshToken(string refreshToken, int usuarioId);
         void InValidarRefreshToken(string refreshToken, int usuarioId);
         ClaimsPrincipal ValidarToken(string token);
-     
+        string GerarTokenSelecaoUnidade(int usuarioId);
+
     }
 }

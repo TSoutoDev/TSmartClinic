@@ -43,5 +43,10 @@ namespace TSmartClinic.Api.Auth.Services
         {
             throw new NotImplementedException();
         }
+
+        public List<string> ObterPermissoesPorPerfil(int perfilId)
+        {
+            return _usuarioRepository.ObterPermissoesPorPerfil(perfilId);
+        }
     }
 }

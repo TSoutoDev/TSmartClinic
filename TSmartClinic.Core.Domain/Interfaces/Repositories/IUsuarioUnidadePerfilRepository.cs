@@ -1,0 +1,13 @@
+﻿using TSmartClinic.Core.Domain.Entities;
+
+namespace TSmartClinic.Core.Domain.Interfaces.Repositories
+{
+    public interface IUsuarioUnidadePerfilRepository
+    {
+        List<UsuarioUnidadePerfil> ObterListaPorUsuarioId(int usuarioId);
+        List<Unidade> ObterUnidadesDoUsuario(int usuarioId);
+        Unidade? ObterUnidadePadraoDoUsuario(int usuarioId);
+        bool UsuarioPossuiAcessoUnidade(int usuarioId, int unidadeId);
+        int? ObterPerfilIdPorUsuarioUnidade(int usuarioId, int unidadeId);
+    }
+}

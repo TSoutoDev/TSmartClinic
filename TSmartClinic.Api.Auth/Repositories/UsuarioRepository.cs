@@ -87,5 +87,18 @@ namespace TSmartClinic.Api.Auth.Repositories
 
             return query.FirstOrDefault(x => x.Email == email);
         }
+
+        public List<string> ObterPermissoesPorPerfil(int perfilId)
+        {
+            var permissoes =
+                (from opPerfil in _context.OperacaoPerfil
+                 join operacao in _context.Operacao on opPerfil.OperacaoId equals operacao.Id
+                 where opPerfil.PerfilId == perfilId
+                 select operacao.Descricao)
+                .Distinct()
+                .ToList();
+
+            return permissoes;
+        }
     }
 }

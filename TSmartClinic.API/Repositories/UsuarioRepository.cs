@@ -261,5 +261,19 @@ namespace TSmartClinic.API.Repositories
 
             return query.FirstOrDefault(u => u.PublicId == publicId);
         }
+
+        public List<string> ObterPermissoesPorPerfil(int perfilId)
+        {
+            var permissoes =
+                (from opPerfil in _dbContext.OperacaoPerfil
+                 join operacao in _dbContext.Operacao
+                     on opPerfil.OperacaoId equals operacao.Id
+                 where opPerfil.PerfilId == perfilId
+                 select operacao.Descricao)
+                .Distinct()
+                .ToList();
+
+            return permissoes;
+        }
     }
 }

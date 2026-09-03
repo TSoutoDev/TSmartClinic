@@ -4,6 +4,7 @@ using TSmartClinic.Core.Domain.Interfaces.Providers;
 using TSmartClinic.Core.Domain.Interfaces.Repositories;
 using TSmartClinic.Core.Domain.Interfaces.Services;
 using TSmartClinic.Core.Domain.Service;
+using TSmartClinic.Core.Domain.Services;
 using TSmartClinic.Core.Infra.CrossCutting.Providers;
 using TSmartClinic.Core.Infra.Security.Services;   //  namespace do TokenService
 using TSmartClinic.Core.Infra.Security.Settings;  //  namespace do TokenSettings
@@ -31,7 +32,8 @@ namespace TSmartClinic.API.Extensions
             services.AddTransient<IConvenioService, ConvenioService>();
             services.AddTransient<IMunicipioService, MunicipioService>();
             services.AddTransient<IUsuarioClientePerfilService, UsuarioClientePerfilService>();
-            services.AddTransient<IPermissaoCacheService, PermissaoCacheService>();
+            services.AddTransient<IPermissaoCacheService, PermissaoCacheService>();  
+            services.AddTransient<IUsuarioUnidadePerfilService, UsuarioUnidadePerfilService>();
 
             //Repositorios
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
@@ -50,6 +52,7 @@ namespace TSmartClinic.API.Extensions
             services.AddTransient<IConvenioRepository, ConvenioRepository>();
             services.AddTransient<IMunicipioRepository, MunicipioRepository>();
             services.AddTransient<IUsuarioClientePerfilRepository, UsuarioClientePerfilRepository>();
+            services.AddTransient<IUsuarioUnidadePerfilRepository, UsuarioUnidadePerfilRepository>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ICriptografiaProvider, CriptografiaProvider>();

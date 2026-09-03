@@ -33,6 +33,9 @@ namespace TSmartClinic.Data.Contexts
         public DbSet<TipoDocumento> TipoDocumento { get; set; }
         public DbSet<Usuario> Usuario { get; set; }
         public DbSet<UsuarioClientePerfil> UsuarioClientePerfil { get; set; }
+        public DbSet<Unidade> Unidade { get; set; }
+        public DbSet<UsuarioUnidadePerfil> UsuarioUnidadePerfil { get; set; }
+        public DbSet<UnidadeEndereco> UnidadeEndereco { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -63,6 +66,9 @@ namespace TSmartClinic.Data.Contexts
             modelBuilder.ApplyConfiguration(new PerfilConfiguration());
             modelBuilder.ApplyConfiguration(new UsuarioClientePerfilConfiguration());
             modelBuilder.ApplyConfiguration(new UsuarioConfiguration());
+            modelBuilder.ApplyConfiguration(new UnidadeConfiguration());
+            modelBuilder.ApplyConfiguration(new UsuarioUnidadePerfilConfiguration());
+            modelBuilder.ApplyConfiguration(new UnidadeEnderecoConfiguration());
             //  modelBuilder.ApplyConfiguration(new TipoDocumentoConfiguration());
         }
 

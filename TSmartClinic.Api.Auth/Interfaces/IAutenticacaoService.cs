@@ -5,6 +5,7 @@ namespace TSmartClinic.Api.Auth.Interfaces.Services
     {
         LoginResponseDto Login(LoginRequestDto loginRequestDto);
         void Logout(int usuarioId);
-        LoginResponseDto RefreshToken(int usuarioId);
+        LoginResponseDto? SelecionarUnidade(SelecionarUnidadeRequestDto request);
+        LoginResponseDto RefreshToken(int usuarioId);  
     }
 }

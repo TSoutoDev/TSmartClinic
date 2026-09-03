@@ -22,7 +22,10 @@ namespace TSmartClinic.Core.Domain.Models
         public bool FlagBloqueado { get; set; }
         public bool Ativo { get; set; }
         public int ClienteId { get; set; }
+        public int? UnidadeId { get; set; }
+        public int? ClienteNichoId { get; set; }
         public bool PrimeiroAcesso { get; set; }
         public Cliente? Cliente { get; set; }
+       
     }
 }

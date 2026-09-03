@@ -8,5 +8,7 @@ namespace TSmartClinic.Core.Domain.Interfaces.Repositories
         List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clientesUsuario);
         // Repositório faz apenas persistência.
         void AtualizarSenhaHash(int usuarioId, string senhaHash);
+        List<string> ObterPermissoesPorPerfil(int perfilId);
+
     }
 }

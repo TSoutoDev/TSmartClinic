@@ -19,19 +19,20 @@ namespace TSmartClinic.Api.Auth.Extensions
 
         public static IServiceCollection AddDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
+            //SERVICES
+            services.AddTransient<IUsuarioUnidadePerfilService, UsuarioUnidadePerfilService>();
+            services.AddTransient<IUsuarioService, UsuarioService>();
+            services.AddTransient<IUsuarioClientePerfilService, UsuarioClinicaPerfilService>();    
+
+            //REPOSITORIES
+            services.AddTransient<IUsuarioUnidadePerfilRepository, UsuarioUnidadePerfilRepository>();
+            services.AddTransient<IUsuarioRepository, UsuarioRepository>();
+            services.AddTransient<IUsuarioClientePerfilRepository, UsuarioClinicaPerfilRepository>();
 
             services.AddSqlServerConfig(configuration); // usa a sua extensão para configurar o DbContext
-
-            services.AddTransient<IUsuarioService, UsuarioService>();
-            services.AddTransient<IUsuarioRepository, UsuarioRepository>();
             services.AddTransient<IAutenticacaoService, AutenticacaoService>();
             services.AddTransient<ICriptografiaProvider, CriptografiaProvider>();
             services.AddTransient<ITokenService, TokenService>();
-
-            services.AddTransient<IUsuarioClientePerfilService, UsuarioClinicaPerfilService>();
-            services.AddTransient<IUsuarioClientePerfilRepository, UsuarioClinicaPerfilRepository>();
-
-
             services.Configure<TokenSettings>(configuration.GetSection("TokenSettings"));
 
             return services;

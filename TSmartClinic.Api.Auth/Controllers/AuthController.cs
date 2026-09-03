@@ -40,6 +40,31 @@ namespace TSmartClinic.Api.Auth.Controllers
             }
         }
 
+        [Route("selecionar-unidade")]
+        [HttpPost]
+        [ProducesResponseType(typeof(LoginResponseDto), 200)]
+        [ProducesResponseType(401)]
+        public IActionResult SelecionarUnidade(SelecionarUnidadeRequestDto request)
+        {
+            try
+            {
+                var usuario = _autenticacaoService.SelecionarUnidade(request);
+
+                if (usuario == null)
+                    return Unauthorized("Usuário não possui acesso à unidade selecionada.");
+
+                return Ok(usuario);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [Route("logout")]
         [Authorize]
         [HttpPost]

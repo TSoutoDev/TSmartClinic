@@ -43,17 +43,15 @@ namespace TSmartClinic.Core.Infra.Security.Services
             var nichoId = usuario.Cliente != null ? usuario.Cliente.NichoId : 0;
 
             var claims = new[]
-            {
-                    new Claim(ClaimTypes.Name, autenticacao.Nome),
-                    new Claim(ClaimTypes.Email, autenticacao.Email),
-                    
-                    // Claims que o UsuarioLogadoService precisa
-                    new Claim("Usuario_Id", autenticacao.Id.ToString() ?? ""),
-                    new Claim("Cliente_Id", autenticacao.ClienteId.ToString() ?? ""),
-                    new Claim("Cliente_NichoId", nichoId.ToString() ?? ""),
-                    new Claim("TipoUsuario", autenticacao.TipoUsuario.ToString() ?? ""), // "M" para master, por exemplo
-                    new Claim("Usuario_Email", autenticacao.Email.ToString() ?? "")
-                  
+             {
+                new Claim(ClaimTypes.Name, autenticacao.Nome ?? ""),
+                new Claim(ClaimTypes.Email, autenticacao.Email ?? ""),
+                new Claim("Usuario_Id", autenticacao.Id.ToString()),
+                new Claim("Unidade_Id", autenticacao.UnidadeId?.ToString() ?? ""),
+                new Claim("Cliente_Id", autenticacao.ClienteId.ToString()),
+                new Claim("Cliente_NichoId", autenticacao.ClienteNichoId?.ToString() ?? ""),
+                new Claim("TipoUsuario", autenticacao.TipoUsuario?.ToString() ?? ""),
+                new Claim("Usuario_Email", autenticacao.Email ?? "")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenSettings.SecretKey));
@@ -136,6 +134,31 @@ namespace TSmartClinic.Core.Infra.Security.Services
         public void InValidarRefreshToken(string refreshToken, int usuarioId)
         {
             throw new NotImplementedException();
+        }
+
+        public string GerarTokenSelecaoUnidade(int usuarioId)
+        {
+            if (_tokenSettings == null || string.IsNullOrWhiteSpace(_tokenSettings.SecretKey))
+                throw new InvalidOperationException("TokenSettings inválido.");
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, usuarioId.ToString()),
+                new Claim("purpose", "select_unit"),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N"))
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenSettings.SecretKey));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _tokenSettings.Issuer,
+                audience: _tokenSettings.Audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(5),
+                signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
