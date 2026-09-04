@@ -10,13 +10,13 @@ namespace TSmartClinic.API.Services
     {
         private readonly IPacienteRepository _pacienteRepository;
         private readonly IUsuarioLogadoService _usuarioLogadoService;
-        private readonly IUsuarioClientePerfilService _usuarioClientePerfilService;
+        private readonly IUsuarioUnidadePerfilService _usuarioUnidadePerfilService;
 
-        public PacienteService(IUsuarioLogadoService usuarioLogadoService, IUsuarioClientePerfilService usuarioClientePerfilService, IPacienteRepository pacienteRepository) : base(pacienteRepository)
+        public PacienteService(IUsuarioLogadoService usuarioLogadoService, IUsuarioUnidadePerfilService usuarioUnidadePerfilService, IPacienteRepository pacienteRepository) : base(pacienteRepository)
         {
             _pacienteRepository = pacienteRepository;
             _usuarioLogadoService = usuarioLogadoService;
-            _usuarioClientePerfilService = usuarioClientePerfilService;
+            _usuarioUnidadePerfilService = usuarioUnidadePerfilService;
         }
 
         public override Paciente Atualizar(Guid publicId, Paciente paciente)
@@ -93,10 +93,10 @@ namespace TSmartClinic.API.Services
 
             var usuarioId = _usuarioLogadoService.UsuarioLogadoId.Value;
 
-            var clinicas = _usuarioClientePerfilService.ObterClinicasDoUsuario(usuarioId);
+            var unidades = _usuarioUnidadePerfilService.ObterUnidadesDoUsuario(usuarioId);
 
-            var clienteIds = clinicas
-                .Select(x => x.Id)
+            var clienteIds = unidades
+                .Select(x => x.ClienteId)
                 .Distinct()
                 .ToList();
 

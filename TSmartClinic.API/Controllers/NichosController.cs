@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TSmartClinic.API.Controllers;
 using TSmartClinic.API.Handles;
@@ -12,6 +13,7 @@ using TSmartClinic.Shared.DTOs.Responses;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Policy = "MasterOnly")]
 [PermissionModule("Nichos")]
 public class NichosController : BaseController<Nicho, IBaseService<Nicho>, BaseFiltro, BaseNichoRequestDTO, NichoUpdateRequestDTO, NichoResponseDTO>
 {

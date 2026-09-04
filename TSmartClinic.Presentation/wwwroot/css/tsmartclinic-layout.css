@@ -607,3 +607,64 @@ body {
     position: relative;
     width: 100%;
 }
+
+/* =========================================================
+   MODAL - CONFIRMAÇÃO DE TROCA DE UNIDADE
+   ========================================================= */
+
+.tsmart-confirm-modal {
+    border: 0;
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.18);
+    overflow: hidden;
+}
+
+    .tsmart-confirm-modal .modal-body {
+        padding: 32px !important;
+    }
+
+.tsmart-confirm-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(85, 110, 230, 0.10);
+    color: #556ee6;
+    font-size: 30px;
+}
+
+.tsmart-confirm-modal h5 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #253858;
+}
+
+.tsmart-confirm-info {
+    background: #f7f8fa;
+    border: 1px solid #eef0f3;
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+    .tsmart-confirm-info strong {
+        color: #253858;
+        font-size: 15px;
+    }
+
+    .tsmart-confirm-info span {
+        color: #74788d;
+        font-size: 13px;
+    }
+
+.tsmart-confirm-modal .btn {
+    min-width: 130px;
+    border-radius: 9px;
+    padding: 9px 18px;
+    font-weight: 500;
+}

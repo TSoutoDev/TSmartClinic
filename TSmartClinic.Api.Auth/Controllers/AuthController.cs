@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TSmartClinic.Api.Auth.DTOs;
 using TSmartClinic.Api.Auth.Interfaces.Services;
+using TSmartClinic.Core.Domain.Exceptions;
 
 namespace TSmartClinic.Api.Auth.Controllers
 {
@@ -72,6 +73,42 @@ namespace TSmartClinic.Api.Auth.Controllers
         public IActionResult Logout()
         {
             return Ok("Logout realizado");
+        }
+
+        [Authorize]
+        [Route("trocar-unidade")]
+        [HttpPost]
+        [ProducesResponseType(typeof(LoginResponseDto), 200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        public IActionResult TrocarUnidade(TrocarUnidadeRequestDto request)
+        {
+            try
+            {
+                var usuarioIdClaim = User.FindFirst("Usuario_Id")?.Value;
+
+                if (!int.TryParse(usuarioIdClaim, out var usuarioId))
+                    return Unauthorized("Usuário inválido.");
+
+                var usuario = _autenticacaoService.TrocarUnidade(usuarioId, request);
+
+                if (usuario == null)
+                    return Unauthorized("Não foi possível trocar a unidade.");
+
+                return Ok(usuario);
+            }
+            catch (AcessoNegadoException ex)
+            {
+                return StatusCode(403, ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

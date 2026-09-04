@@ -2,8 +2,8 @@
 {
     public interface IPermissaoCacheService
     {
-        List<string>? ObterPermissoes(int usuarioId);
-        void SalvarPermissoes(int usuarioId, IEnumerable<string> permissoes);
-        void RemoverPermissoes(int usuarioId);
+        List<string>? ObterPermissoes(int usuarioId, int unidadeId);
+        void SalvarPermissoes(int usuarioId, int unidadeId, IEnumerable<string> permissoes);
+        void RemoverPermissoes(int usuarioId, int unidadeId);
     }
 }

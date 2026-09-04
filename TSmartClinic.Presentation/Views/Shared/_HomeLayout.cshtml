@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Antiforgery
 @using System.Linq
 @using TSmartClinic.Presentation.Services.Interfaces
+@using TSmartClinic.Presentation.Models
 
 @inject IAntiforgery Antiforgery
 @inject IHttpContextAccessor HttpContextAccessor
@@ -9,9 +10,22 @@
 
 @{
     var nome = HttpContextAccessor.HttpContext?.Session.GetString("Usuario_Nome") ?? "Usuário";
-    var nomeClinica = HttpContextAccessor.HttpContext?.Session.GetString("Cliente_Nome") ?? "TSmartClinic";
+    var nomeCliente = HttpContextAccessor.HttpContext?.Session.GetString("Cliente_Nome") ?? "TSmartClinic";
+    var nomeUnidade = HttpContextAccessor.HttpContext?.Session.GetString("Unidade_Nome") ?? nomeCliente;
+    var unidadeId = HttpContextAccessor.HttpContext?.Session.GetString("Unidade_Id");
     var usuarioId = HttpContextAccessor.HttpContext?.Session.GetString("Usuario_Id");
+    var clienteId = HttpContextAccessor.HttpContext?.Session.GetString("Cliente_Id") ?? "";
+    var unidadesJson = HttpContextAccessor.HttpContext?.Session.GetString("Unidades");
+    var unidades = new List<UnidadeLoginViewModel>();
+
+    if (!string.IsNullOrWhiteSpace(unidadesJson))
+    {
+        unidades = System.Text.Json.JsonSerializer.Deserialize<List<UnidadeLoginViewModel>>(unidadesJson)
+            ?? new List<UnidadeLoginViewModel>();
+    }
+
     var usuarioMaster = _usuarioLogadoService.UsuarioMaster;
+
     var iniciais = string.Join("", nome.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(p => char.ToUpperInvariant(p[0])));
     var titulo = ViewBag.Titulo as string ?? "Início";
 }
@@ -49,7 +63,13 @@
 <body data-sidebar="dark" data-keep-enlarged="true" class="tsmart-app">
 
     @Html.AntiForgeryToken()
+    @Html.AntiForgeryToken()
     <input id="IdEmpresaAtiva" type="hidden" />
+    <input type="hidden" id="ClienteIdAtivo" value="@clienteId" />
+
+    <script id="UnidadesUsuario" type="application/json">
+        @Html.Raw(System.Text.Json.JsonSerializer.Serialize(unidades))
+    </script>
 
     <div id="layout-wrapper">
 
@@ -78,9 +98,43 @@
                 </div>
 
                 <div class="tsmart-user-area">
-                    <div class="tsmart-clinic-context d-none d-md-flex">
-                        <span class="context-label">Clínica ativa</span>
-                        <span class="context-name" title="@nomeClinica">@nomeClinica</span>
+                    <div class="dropdown d-none d-md-flex">
+                        <button type="button"
+                                class="btn tsmart-clinic-context"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            <span class="context-label">Unidade ativa</span>
+                            <span class="context-name" title="@nomeUnidade">
+                                @nomeUnidade
+                                <i class="mdi mdi-chevron-down ms-1"></i>
+                            </span>
+                        </button>
+
+                        <div class="dropdown-menu dropdown-menu-end">
+                            @foreach (var unidade in unidades)
+                            {
+                                var unidadeAtiva = unidade.Id.ToString() == unidadeId;
+
+                                <form asp-controller="Account" asp-action="TrocarUnidade" method="post">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden" name="unidadeId" value="@unidade.Id" />
+
+                                    <button type="submit"
+                                            class="dropdown-item @(unidadeAtiva ? "active" : "")"
+                                            @(unidadeAtiva ? "disabled" : "")>
+                                        <i class="bx bx-building-house me-2"></i>
+                                        @unidade.NomeUnidade
+
+                                        @if (unidadeAtiva)
+                                        {
+                                            <span class="ms-2">✓</span>
+                                        }
+                                    </button>
+                                </form>
+                            }
+                        </div>
                     </div>
 
                     <div class="dropdown">
@@ -196,13 +250,15 @@
                                 <!-- NICHOS                    -->
                                 <!-- NÍVEL 2 / HABILITADO      -->
                                 <!-- ========================= -->
-                                <li>
-                                    <a href="/Nichos/Consulta"
-                                       asp-permissao="Nichos_Acessar">
-                                        <i class="bx bx-list-ul"></i>
+                                @if (usuarioMaster)
+                                {
+                                    <a href="/Nichos">
+                                        <i class="bx bx-category"></i>
+                                        <i class="bx bx-crown ms-1 text-warning" title="Exclusivo para Master"></i>
                                         <span>Nichos</span>
+                                        
                                     </a>
-                                </li>
+                                }
 
 
                                 <!-- ========================= -->
@@ -351,6 +407,44 @@
         </div>
     </div>
 
+
+    <!-- CONFIRMAÇÃO DE TROCA DE UNIDADE -->
+    <div class="modal fade" id="modalConfirmarTrocaUnidade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content tsmart-confirm-modal">
+
+                <div class="modal-body text-center p-4">
+
+                    <div class="tsmart-confirm-icon mb-3">
+                        <i class="bx bx-building-house"></i>
+                    </div>
+
+                    <h5 class="mb-2">Alterar unidade?</h5>
+
+                    <p class="text-muted mb-3">
+                        Este paciente pertence a outra unidade.
+                    </p>
+
+                    <div class="tsmart-confirm-info">
+                        <strong id="trocaPacienteNome"></strong>
+                        <span id="trocaClinicaNome"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+
+                        <button type="button" class="btn btn-primary" id="btnConfirmarTrocaUnidade">
+                            Mudar e acessar
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
     <!-- SCRIPTS -->
     <environment include="Development">
         <script src="~/_framework/aspnetcore-browser-refresh.js"></script>

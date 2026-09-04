@@ -1,18 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using TSmartClinic.API.Handles;
+using TSmartClinic.Core.Domain.Entities;
 using TSmartClinic.Core.Domain.Interfaces.Services;
 
 public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
 {
     private readonly IPermissaoCacheService _permissaoCacheService;
     private readonly IUsuarioService _usuarioService;
-    private readonly IUsuarioClientePerfilService _usuarioClientePerfilService;
+    private readonly IUsuarioUnidadePerfilService _usuarioUnidadePerfilService;
 
-    public PermissionAuthorizationHandler(IPermissaoCacheService permissaoCacheService, IUsuarioService usuarioService, IUsuarioClientePerfilService usuarioClientePerfilService)
+    public PermissionAuthorizationHandler(IPermissaoCacheService permissaoCacheService, IUsuarioService usuarioService, IUsuarioUnidadePerfilService usuarioUnidadePerfilService)
     {
         _permissaoCacheService = permissaoCacheService;
         _usuarioService = usuarioService;
-        _usuarioClientePerfilService = usuarioClientePerfilService;
+        _usuarioUnidadePerfilService = usuarioUnidadePerfilService;
     }
 
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
@@ -27,22 +28,29 @@ public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionReq
         }
 
         var usuarioIdClaim = context.User.FindFirst("Usuario_Id")?.Value;
+        var unidadeIdClaim = context.User.FindFirst("Unidade_Id")?.Value;
 
         if (!int.TryParse(usuarioIdClaim, out var usuarioId))
             return Task.CompletedTask;
 
+        if (!int.TryParse(unidadeIdClaim, out var unidadeId))
+            return Task.CompletedTask;
+
         // tenta buscar no cache
-        var permissoes =  _permissaoCacheService.ObterPermissoes(usuarioId);
+        var permissoes = _permissaoCacheService.ObterPermissoes(usuarioId, unidadeId);
 
         // se não encontrou, busca no banco
         if (permissoes == null)
         {
-            var clinicas = _usuarioClientePerfilService.ObterClinicasDoUsuario(usuarioId);
+            var perfilId = _usuarioUnidadePerfilService.ObterPerfilIdPorUsuarioUnidade(usuarioId, unidadeId);
 
-            permissoes = _usuarioService.ObterPermissaoUsuario(usuarioId, clinicas);
+            if (!perfilId.HasValue)
+                return Task.CompletedTask;
+
+            permissoes = _usuarioService.ObterPermissoesPorPerfil(perfilId.Value);
 
             // salva no cache
-            _permissaoCacheService.SalvarPermissoes(usuarioId, permissoes);
+            _permissaoCacheService.SalvarPermissoes(usuarioId, unidadeId, permissoes);
         }
 
         //valida a permissão

@@ -134,14 +134,9 @@
             item.type = 'button';
             item.className = 'qp-result-item';
 
-            const nome =
-                paciente.nomePaciente || 'Paciente sem nome';
-
-            const cpf =
-                paciente.cpf || 'CPF não informado';
-
-            const clinica =
-                paciente.nomeClinica || 'Clínica não informada';
+            const nome = paciente.nomePaciente || 'Paciente sem nome';
+            const cpf = paciente.cpf || 'CPF não informado';
+            const clinica = paciente.nomeClinica || 'Clínica não informada';
 
             item.innerHTML = `
             <div class="qp-result-avatar">
@@ -174,7 +169,91 @@
         `;
 
             item.addEventListener('click', function () {
-                abrirPaciente(paciente.publicId);
+
+                const clienteIdAtivo = parseInt(
+                    document.getElementById('ClienteIdAtivo')?.value || '0'
+                );
+
+                if (paciente.clienteId === clienteIdAtivo) {
+                    abrirPaciente(paciente.publicId);
+                    return;
+                }
+
+                const modalElement = document.getElementById('modalConfirmarTrocaUnidade');
+
+                if (!modalElement)
+                    return;
+
+                document.getElementById('trocaPacienteNome').textContent =
+                    paciente.nomePaciente || 'Paciente';
+
+                document.getElementById('trocaClinicaNome').textContent =
+                    paciente.nomeClinica || 'Clínica';
+
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+
+                const btnConfirmar = document.getElementById('btnConfirmarTrocaUnidade');
+
+                btnConfirmar.onclick = function () {
+
+                    const unidadesJson =
+                        document.getElementById('UnidadesUsuario')?.textContent || '[]';
+
+                    const unidadesUsuario = JSON.parse(unidadesJson);
+
+                    const unidadeDestino = unidadesUsuario.find(function (unidade) {
+                        return unidade.ClienteId === paciente.clienteId;
+                    });
+
+                    if (!unidadeDestino) {
+                        modal.hide();
+                        alert('Você não possui acesso a uma unidade vinculada a este paciente.');
+                        return;
+                    }
+
+                    const returnUrl =
+                        `/Pacientes/CentralPaciente?publicId=${encodeURIComponent(paciente.publicId)}`;
+
+                    const form = document.createElement('form');
+
+                    form.method = 'POST';
+                    form.action = '/Account/TrocarUnidade';
+
+                    const token =
+                        document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+                    if (token) {
+                        const antiForgery = document.createElement('input');
+
+                        antiForgery.type = 'hidden';
+                        antiForgery.name = '__RequestVerificationToken';
+                        antiForgery.value = token;
+
+                        form.appendChild(antiForgery);
+                    }
+
+                    const unidadeInput = document.createElement('input');
+
+                    unidadeInput.type = 'hidden';
+                    unidadeInput.name = 'unidadeId';
+                    unidadeInput.value = unidadeDestino.Id;
+
+                    form.appendChild(unidadeInput);
+
+                    const returnUrlInput = document.createElement('input');
+
+                    returnUrlInput.type = 'hidden';
+                    returnUrlInput.name = 'returnUrl';
+                    returnUrlInput.value = returnUrl;
+
+                    form.appendChild(returnUrlInput);
+
+                    document.body.appendChild(form);
+
+                    modal.hide();
+                    form.submit();
+                };
             });
 
             container.appendChild(item);

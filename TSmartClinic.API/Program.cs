@@ -2,9 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Text.Json.Serialization;
 using TSmartClinic.Api.TSmartClinic.Extensions;
 using TSmartClinic.API.Extensions;
-using TSmartClinic.API.Handles;
 using TSmartClinic.Core.Domain.Middlewares;
-using TSmartClinic.Core.Infra.CrossCutting.Email;
 using TSmartClinic.Core.Infra.CrossCutting.Extensions;
 using TSmartClinic.Core.Infra.CrossCutting.Providers;
 
@@ -26,7 +24,16 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 // Registrar configurações
 builder.Services.Configure<CryptoSettings>(builder.Configuration.GetSection("CryptoSettings"));
-builder.Services.AddEmailConfiguration(builder.Configuration); 
+builder.Services.AddEmailConfiguration(builder.Configuration);
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("MasterOnly", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("TipoUsuario", "M");
+    });
+});
 
 var app = builder.Build();
 

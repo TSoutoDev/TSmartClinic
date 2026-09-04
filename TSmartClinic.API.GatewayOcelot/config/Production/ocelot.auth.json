@@ -1,5 +1,6 @@
 {
   "Routes": [
+    //LOGIN
     {
       "DownstreamPathTemplate": "/api/auth/login",
       "DownstreamScheme": "http",
@@ -12,6 +13,8 @@
       "UpstreamPathTemplate": "/auth/login",
       "UpstreamHttpMethod": [ "POST" ]
     },
+
+    //SELECOIONAR UNIDADE
     {
       "DownstreamPathTemplate": "/api/auth/selecionar-unidade",
       "DownstreamScheme": "http",
@@ -24,6 +27,22 @@
       "UpstreamPathTemplate": "/auth/selecionar-unidade",
       "UpstreamHttpMethod": [ "POST" ]
     },
+
+    //TROCAR UNIDADE
+    {
+      "DownstreamPathTemplate": "/api/auth/trocar-unidade",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5296
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/trocar-unidade",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+
+    //LOGOUT
     {
       "DownstreamPathTemplate": "/api/auth/logout",
       "DownstreamScheme": "http",

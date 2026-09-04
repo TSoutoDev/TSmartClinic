@@ -97,8 +97,7 @@ namespace TSmartClinic.Presentation.Controllers
             if (string.IsNullOrWhiteSpace(termo))
                 return Json(new List<PacienteBuscaHeaderViewModel>());
 
-            var resultado =
-                await _pacienteService.BuscarPacientesHeader(termo);
+            var resultado =  await _pacienteService.BuscarPacientesHeader(termo);
 
             return Json(resultado);
         }

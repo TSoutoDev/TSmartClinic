@@ -182,6 +182,7 @@ namespace TSmartClinic.Presentation.Controllers
                         HttpContext.Session.SetString("Cliente_NichoId", cliente.NichoId.ToString());
                         // Permissões da Presentation
                         HttpContext.Session.SetString("Permissoes", string.Join(",", permissoes));
+                        HttpContext.Session.SetString("Unidades", JsonSerializer.Serialize(autenticacao.Unidades));
 
                         return RedirectToAction("Index", "Home");
                         // return RedirectToAction("Login", "Account");
@@ -209,6 +210,8 @@ namespace TSmartClinic.Presentation.Controllers
 
             // Depois encerra a autenticação local
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            HttpContext.Session.Remove("LoginPendente");
 
             // Limpa os dados da sessão da Presentation
             HttpContext.Session.Clear();
@@ -437,6 +440,87 @@ namespace TSmartClinic.Presentation.Controllers
             HttpContext.Session.SetString("Permissoes", string.Join(",", permissoes));
 
             HttpContext.Session.Remove("LoginPendente");
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TrocarUnidade(int unidadeId, string? returnUrl = null)
+        {
+            var response = await _autenticacaoService.TrocarUnidade(unidadeId);
+
+            if (!response.Sucesso || response.Itens == null || !response.Itens.Any())
+            {
+                TempData["MensagemErro"] = response.Mensagem ?? "Não foi possível trocar a unidade.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var autenticacao = response.Itens.First();
+
+            if (!autenticacao.UnidadeId.HasValue)
+            {
+                TempData["MensagemErro"] = "Unidade não identificada.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var unidade = autenticacao.Unidades.FirstOrDefault(x => x.Id == autenticacao.UnidadeId.Value);
+
+            if (unidade == null)
+            {
+                TempData["MensagemErro"] = "Unidade selecionada não encontrada.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var cliente = autenticacao.ListClientes.FirstOrDefault(x => x.Id == unidade.ClienteId);
+
+            if (cliente == null)
+            {
+                TempData["MensagemErro"] = "Cliente da unidade selecionada não encontrado.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            _accessTokenService.Salvar(autenticacao.AccessToken);
+
+            var permissoes = autenticacao.Permissoes ?? new List<string>();
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, autenticacao.Nome ?? ""),
+                new Claim(ClaimTypes.Email, autenticacao.Email ?? ""),
+                new Claim("Usuario_Id", autenticacao.IdUsuario.ToString() ?? ""),
+                new Claim("Usuario_Tipo", autenticacao.TipoUsuario ?? ""),
+                new Claim("Cliente_Nome", cliente.NomeCliente ?? ""),
+                new Claim("Cliente_Cnpj", cliente.CNPJ ?? ""),
+                new Claim("Cliente_Id", cliente.Id.ToString()),
+                new Claim("Cliente_NichoId", cliente.NichoId.ToString()),
+                new Claim("Unidade_Id", unidade.Id.ToString()),
+                new Claim("Unidade_Nome", unidade.NomeUnidade ?? ""),
+                new Claim("Usuario_Email", autenticacao.Email ?? "")
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            HttpContext.Session.SetString("Usuario_Nome", autenticacao.Nome ?? "");
+            HttpContext.Session.SetString("Usuario_Email", autenticacao.Email ?? "");
+            HttpContext.Session.SetString("Usuario_Id", autenticacao.IdUsuario.ToString() ?? "");
+            HttpContext.Session.SetString("Usuario_Tipo", autenticacao.TipoUsuario ?? "");
+
+            HttpContext.Session.SetString("Cliente_Nome", cliente.NomeCliente ?? "");
+            HttpContext.Session.SetString("Cliente_Id", cliente.Id.ToString());
+            HttpContext.Session.SetString("Cliente_NichoId", cliente.NichoId.ToString());
+
+            HttpContext.Session.SetString("Unidade_Id", unidade.Id.ToString());
+            HttpContext.Session.SetString("Unidade_Nome", unidade.NomeUnidade ?? "");
+
+            HttpContext.Session.SetString("Permissoes", string.Join(",", permissoes));
+            HttpContext.Session.SetString("Unidades", JsonSerializer.Serialize(autenticacao.Unidades));
+
+            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return LocalRedirect(returnUrl);
 
             return RedirectToAction("Index", "Home");
         }

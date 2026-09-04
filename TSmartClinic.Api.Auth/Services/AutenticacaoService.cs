@@ -188,8 +188,7 @@ namespace TSmartClinic.Api.Auth.Services
             if (!string.Equals(purpose, "select_unit", StringComparison.OrdinalIgnoreCase))
                 throw new UnauthorizedAccessException("Token inválido para seleção de unidade.");
 
-            var usuarioIdClaim = principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
-                ?? principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var usuarioIdClaim = principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (!int.TryParse(usuarioIdClaim, out var usuarioId))
                 throw new UnauthorizedAccessException("Usuário inválido no token de seleção.");
@@ -241,6 +240,93 @@ namespace TSmartClinic.Api.Auth.Services
                 Email = usuario.Email,
                 IdUsuario = usuario.Id,
                 TipoUsuario = usuario.TipoUsuario.ToString(),
+                UnidadeId = unidadeSelecionada.Id,
+                NecessitaSelecionarUnidade = false,
+
+                ListClientes = unidadesUsuario
+                    .Where(x => x.Cliente != null)
+                    .Select(x => x.Cliente!)
+                    .GroupBy(x => x.Id)
+                    .Select(x => x.First())
+                    .Select(c => new LoginClienteDto
+                    {
+                        Id = c.Id,
+                        PublicId = c.PublicId,
+                        NomeCliente = c.NomeCliente,
+                        RazaoSocial = c.RazaoSocial,
+                        Cnpj = c.Cnpj,
+                        NichoId = c.NichoId
+                    })
+                    .ToList(),
+
+                Unidades = unidadesUsuario
+                    .Select(u => new UnidadeLoginDto
+                    {
+                        Id = u.Id,
+                        PublicId = u.PublicId,
+                        NomeUnidade = u.NomeUnidade,
+                        ClienteId = u.ClienteId,
+                        UnidadePadrao = unidadePadrao != null && unidadePadrao.Id == u.Id
+                    })
+                    .ToList(),
+
+                PrimeiroAcesso = usuario.PrimeiroAcesso,
+                Permissoes = permissoes
+            };
+        }
+
+        public LoginResponseDto? TrocarUnidade(int usuarioId, TrocarUnidadeRequestDto request)
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+            var possuiAcesso = _usuarioUnidadePerfilService.UsuarioPossuiAcessoUnidade(usuarioId, request.UnidadeId);
+
+            if (!possuiAcesso)
+                throw new AcessoNegadoException("Usuário não possui acesso à unidade selecionada.");
+
+            var usuario = _usuarioService?.ObterPorId(usuarioId);
+
+            if (usuario == null)
+                throw new ApplicationException("Usuário não encontrado.");
+
+            var unidadesUsuario = _usuarioUnidadePerfilService.ObterUnidadesDoUsuario(usuarioId);
+            var unidadeSelecionada = unidadesUsuario.FirstOrDefault(x => x.Id == request.UnidadeId);
+
+            if (unidadeSelecionada == null)
+                throw new AcessoNegadoException("Unidade selecionada não encontrada.");
+
+            if (unidadeSelecionada.Cliente == null)
+                throw new ApplicationException("Cliente da unidade não encontrado.");
+
+            var clienteSelecionado = unidadeSelecionada.Cliente;
+
+            var perfilId = _usuarioUnidadePerfilService.ObterPerfilIdPorUsuarioUnidade(usuarioId, unidadeSelecionada.Id);
+
+            if (!perfilId.HasValue)
+                throw new AcessoNegadoException("Usuário não possui perfil vinculado à unidade selecionada.");
+
+            var usuarioAutenticacao = _mapper.Map<AutenticacaoModel>(usuario);
+            usuarioAutenticacao.Id = usuario.Id;
+            usuarioAutenticacao.TipoUsuario = usuario.TipoUsuario;
+            usuarioAutenticacao.UnidadeId = unidadeSelecionada.Id;
+            usuarioAutenticacao.ClienteId = unidadeSelecionada.ClienteId;
+            usuarioAutenticacao.ClienteNichoId = clienteSelecionado.NichoId;
+
+            var permissoes = _usuarioService.ObterPermissoesPorPerfil(perfilId.Value);
+            var accessToken = _tokenService.GerarToken(usuarioAutenticacao);
+            var unidadePadrao = _usuarioUnidadePerfilService.ObterUnidadePadraoDoUsuario(usuarioId);
+
+            return new LoginResponseDto
+            {
+                AccessToken = accessToken,
+                TokenSelecaoUnidade = null,
+
+                Nome = usuario.Nome,
+                Email = usuario.Email,
+                IdUsuario = usuario.Id,
+                TipoUsuario = usuario.TipoUsuario.ToString(),
+
                 UnidadeId = unidadeSelecionada.Id,
                 NecessitaSelecionarUnidade = false,
 

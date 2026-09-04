@@ -90,11 +90,15 @@ namespace TSmartClinic.API.Controllers
         public IActionResult LimparCache()
         {
             var usuarioIdClaim = User.FindFirst("Usuario_Id")?.Value;
+            var unidadeIdClaim = User.FindFirst("Unidade_Id")?.Value;
 
             if (!int.TryParse(usuarioIdClaim, out var usuarioId))
                 return Unauthorized();
 
-            _permissaoCacheService.RemoverPermissoes(usuarioId);
+            if (!int.TryParse(unidadeIdClaim, out var unidadeId))
+                return Unauthorized();
+
+            _permissaoCacheService.RemoverPermissoes(usuarioId, unidadeId);
 
             return Ok();
         }

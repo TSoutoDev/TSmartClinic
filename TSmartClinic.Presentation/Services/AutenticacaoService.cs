@@ -193,5 +193,53 @@ namespace TSmartClinic.Presentation.Services
                 }
             }
         }
+
+        public async Task<ResponseViewModel<AccountViewModel>> TrocarUnidade(int unidadeId)
+        {
+            var retorno = new ResponseViewModel<AccountViewModel>();
+
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
+
+                    var request = new
+                    {
+                        UnidadeId = unidadeId
+                    };
+
+                    var response = await client.PostAsJsonAsync($"{_baseUrlController}/trocar-unidade", request);
+                    retorno.StatusCode = response.StatusCode.GetHashCode();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                        var obj = JsonSerializer.Deserialize<AccountViewModel>(content, options);
+
+                        retorno.Itens = obj != null ? new List<AccountViewModel> { obj } : new List<AccountViewModel>();
+                        retorno.Sucesso = obj != null;
+
+                        return retorno;
+                    }
+
+                    var conteudoErro = await response.Content.ReadAsStringAsync();
+
+                    retorno.Sucesso = false;
+                    retorno.Mensagem = string.IsNullOrWhiteSpace(conteudoErro) ? "Não foi possível trocar a unidade." : conteudoErro;
+
+                    return retorno;
+                }
+                catch (Exception ex)
+                {
+                    retorno.Sucesso = false;
+                    retorno.StatusCode = 500;
+                    retorno.Mensagem = $"Erro ao trocar unidade: {ex.Message}";
+
+                    return retorno;
+                }
+            }
+        }
     }
 }
