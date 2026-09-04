@@ -19,9 +19,7 @@ namespace TSmartClinic.Core.Domain.Entities
         public List<OperacaoPerfil> OperacaoPerfis { get; set; } = new(); 
         public Cliente? Cliente { get; set; }
 
-        public List<UsuarioClientePerfil> UsuarioClientePerfil { get; set; } = new();
         #endregion
-
         public override void Atualizar(object obj)
         {
             Perfil perfil = obj as Perfil;
@@ -33,6 +31,7 @@ namespace TSmartClinic.Core.Domain.Entities
             ResponsavelTecnico = perfil.ResponsavelTecnico;
             Ativo = perfil.Ativo;
             NichoId = perfil.NichoId;
+            ClienteId = perfil.ClienteId;
 
             this.OperacaoPerfis = perfil.OperacaoPerfis
            .Select(e => new OperacaoPerfil

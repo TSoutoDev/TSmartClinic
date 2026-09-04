@@ -18,13 +18,11 @@ namespace TSmartClinic.API.Repositories
 
         private readonly IMapper _mapper;
         private readonly TSmartClinicContext _dbContext;
-        private readonly IUsuarioClientePerfilRepository _operacaoPerfilRepository;
         private readonly IUsuarioLogadoService _usuarioLogadoService;
         private readonly ICriptografiaProvider _criptografiaProvider;
 
         public UsuarioRepository(
             IUsuarioLogadoService usuarioLogadoService,
-            IUsuarioClientePerfilRepository usuarioClientePerfilRepository,
             IMapper mapper,
             TSmartClinicContext tSmartClinicContext,
             ICriptografiaProvider criptografiaProvider = null
@@ -32,43 +30,8 @@ namespace TSmartClinic.API.Repositories
         {
             _mapper = mapper;
             _dbContext = tSmartClinicContext;
-            _operacaoPerfilRepository = usuarioClientePerfilRepository;
             _usuarioLogadoService = usuarioLogadoService;
             _criptografiaProvider = criptografiaProvider;
-        }
-
-        public List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clientesUsuario)
-        {
-            if (clientesUsuario == null || !clientesUsuario.Any())
-                return new List<string>();
-
-            var clienteIds = clientesUsuario
-                .Select(c => c.Id)
-                .ToList();
-
-            var perfilIds = _dbContext.UsuarioClientePerfil
-                .Where(ucp =>
-                    ucp.UsuarioId == usuarioId &&
-                    clienteIds.Contains(ucp.ClienteId))
-                .Select(ucp => ucp.PerfilId)
-                .Distinct()
-                .ToList();
-
-            if (!perfilIds.Any())
-                return new List<string>();
-
-            var permissoes =
-                (from opPerfil in _dbContext.OperacaoPerfil
-                 join operacao in _dbContext.Operacao
-                     on opPerfil.OperacaoId equals operacao.Id
-                 join funcionalidade in _dbContext.Funcionalidade
-                     on operacao.FuncionalidadeId equals funcionalidade.Id
-                 where perfilIds.Contains(opPerfil.PerfilId)
-                 select operacao.Descricao)
-                .Distinct()
-                .ToList();
-
-            return permissoes;
         }
 
         public Usuario ObterPorEmail(string email)
@@ -85,9 +48,11 @@ namespace TSmartClinic.API.Repositories
             query = query?.Where(x => (int)x.Id == id);
 
             query = query?
-                .Include(x => x.UsuarioClientePerfil)
-                .ThenInclude(x => x.Perfil)
-                .ThenInclude(x => x.Cliente);
+             .Include(x => x.Cliente)
+             .Include(x => x.UsuarioUnidadePerfil)
+                 .ThenInclude(x => x.Perfil)
+             .Include(x => x.UsuarioUnidadePerfil)
+                 .ThenInclude(x => x.Unidade);
 
             var usuario = query?.FirstOrDefault();
 
@@ -103,9 +68,11 @@ namespace TSmartClinic.API.Repositories
             var query = MontarFiltro(filtro, properties);
 
             query = query
-                .Include(x => x.Cliente)
-                .Include(x => x.UsuarioClientePerfil)
-                    .ThenInclude(x => x.Perfil);
+            .Include(x => x.Cliente)
+            .Include(x => x.UsuarioUnidadePerfil)
+                .ThenInclude(x => x.Perfil)
+            .Include(x => x.UsuarioUnidadePerfil)
+                .ThenInclude(x => x.Unidade);
 
             // Não mostrar usuário master (exceto se o próprio estiver logado)
             if (!_usuarioLogadoService.UsuarioMaster)
@@ -137,103 +104,31 @@ namespace TSmartClinic.API.Repositories
         public override Usuario Atualizar(Usuario entity)
         {
             var usuarioDb = _dbSet
-                .Include(u => u.UsuarioClientePerfil) // importante: carregar a coleção
-                .FirstOrDefault(p => p.Id == entity.Id);
+                .FirstOrDefault(x => x.Id == entity.Id);
 
-            if (usuarioDb == null) 
-                throw new Exception("Usuário não encontrado");
+            if (usuarioDb == null)
+                throw new Exception("Usuário não encontrado.");
 
-            var strategy = _dbContext.Database.CreateExecutionStrategy();
+            usuarioDb.Atualizar(entity);
 
-            strategy.Execute(() =>
-            {
-                using var transaction = _dbContext.Database.BeginTransaction();
-                try
-                {
-                    // 1) Atualiza campos simples
-                    usuarioDb.Atualizar(entity);
-
-                    // 2) Delta de UsuarioClientePerfil
-                    var atuais = usuarioDb.UsuarioClientePerfil.ToList();
-
-                    var novos = entity.UsuarioClientePerfil?
-                        .Select(x => new UsuarioClientePerfil
-                        {
-                            UsuarioId = usuarioDb.Id,
-                            ClienteId = x.ClienteId,
-                            PerfilId = x.PerfilId,
-                            ClientePadrao = x.ClientePadrao
-                        }).ToList() ?? new List<UsuarioClientePerfil>();
-
-                    // 2a) Remover vínculos que não existem mais
-                    var paraRemover = atuais
-                        .Where(atual => !novos.Any(n =>
-                            n.ClienteId == atual.ClienteId &&
-                            n.PerfilId == atual.PerfilId))
-                        .ToList();
-
-                    if (paraRemover.Any())
-                        _dbContext.RemoveRange(paraRemover);
-
-                    // 2b) Adicionar vínculos que não existiam
-                    var paraAdicionar = novos
-                        .Where(novo => !atuais.Any(a =>
-                            a.ClienteId == novo.ClienteId &&
-                            a.PerfilId == novo.PerfilId))
-                        .ToList();
-
-                    if (paraAdicionar.Any())
-                        _dbContext.AddRange(paraAdicionar);
-
-                    // 2c) Atualizar vínculos que continuam (ex.: ClientePadrao pode mudar)
-                    foreach (var atual in atuais)
-                    {
-                        var correspondente = novos.FirstOrDefault(n =>
-                            n.ClienteId == atual.ClienteId &&
-                            n.PerfilId == atual.PerfilId);
-
-                        if (correspondente != null)
-                        {
-                            atual.ClientePadrao = correspondente.ClientePadrao;
-                            // se houver outros campos além de ClientePadrao, atualize aqui
-                        }
-                    }
-
-               
-                    // 3) Persiste tudo
-                    _dbContext.SaveChanges();
-                    transaction.Commit();
-                }
-                catch
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            });
-
-            // Recarrega navegação
-            _dbContext.Entry(usuarioDb).Collection(p => p.UsuarioClientePerfil).Load();
+            _dbContext.SaveChanges();
 
             return usuarioDb;
         }
 
         public override void Excluir(Usuario entity)
         {
-            // Carregar vínculos
             _dbContext.Entry(entity)
-                .Collection(u => u.UsuarioClientePerfil)
+                .Collection(u => u.UsuarioUnidadePerfil)
                 .Load();
 
-            // Remover vínculos primeiro
-            if (entity.UsuarioClientePerfil.Any())
+            if (entity.UsuarioUnidadePerfil != null && entity.UsuarioUnidadePerfil.Any())
             {
-                _dbContext.UsuarioClientePerfil.RemoveRange(entity.UsuarioClientePerfil);
+                _dbContext.UsuarioUnidadePerfil.RemoveRange(entity.UsuarioUnidadePerfil);
             }
 
-            // Agora remover o usuário
             _dbContext.Remove(entity);
             _dbContext.SaveChanges();
-
         }
 
         public void AtualizarSenhaHash(int usuarioId, string senhaHash)
@@ -252,10 +147,12 @@ namespace TSmartClinic.API.Repositories
         public override Usuario ObterPorPublicId(Guid publicId, params Expression<Func<Usuario, object>>[] properties)
         {
             var query = _dbSet
-                .Include(u => u.Cliente)
-                .Include(u => u.UsuarioClientePerfil)
-                    .ThenInclude(ucp => ucp.Perfil)
-                .AsQueryable();
+             .Include(u => u.Cliente)
+             .Include(u => u.UsuarioUnidadePerfil)
+                 .ThenInclude(uup => uup.Perfil)
+             .Include(u => u.UsuarioUnidadePerfil)
+                 .ThenInclude(uup => uup.Unidade)
+             .AsQueryable();
 
             query = AplicarFiltroCliente(query);
 

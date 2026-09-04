@@ -38,7 +38,7 @@ namespace TSmartClinic.Presentation.Controllers.Usuarios
                 Email = usuario.Email,
                 Celular = usuario.Celular,
                 Foto = usuario.Foto,
-                NomePerfil = usuario.UsuarioClientePerfil?
+                NomePerfil = usuario.UsuarioUnidadePerfil?
                  .Select(up => up.Perfil.NomePerfil)
                  .FirstOrDefault() 
             };

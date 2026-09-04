@@ -72,5 +72,28 @@ namespace TSmartClinic.Data.Repositories
             _dbContext.SaveChanges();
         }
 
+        public void Inserir(UsuarioUnidadePerfil usuarioUnidadePerfil)
+        {
+            _dbContext.UsuarioUnidadePerfil.Add(usuarioUnidadePerfil);
+            _dbContext.SaveChanges();
+        }
+
+        public void AtualizarVinculos(int usuarioId, List<UsuarioUnidadePerfil> vinculos)
+        {
+            var atuais = _dbContext.UsuarioUnidadePerfil
+                .Where(x => x.UsuarioId == usuarioId)
+                .ToList();
+
+            _dbContext.UsuarioUnidadePerfil.RemoveRange(atuais);
+
+            foreach (var vinculo in vinculos)
+            {
+                vinculo.UsuarioId = usuarioId;
+                _dbContext.UsuarioUnidadePerfil.Add(vinculo);
+            }
+
+            _dbContext.SaveChanges();
+        }
+
     }
 }

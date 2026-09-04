@@ -24,6 +24,7 @@ namespace TSmartClinic.Presentation.Extentions
             services.AddTransient<IPerfilPermissaoService, PerfilPermissaoService>();
             services.AddTransient<IPacienteService, PacienteService>();
             services.AddTransient<IConvenioService, ConvenioService>();
+            services.AddTransient<IUnidadeService, UnidadeService>();
 
             return services;
         }

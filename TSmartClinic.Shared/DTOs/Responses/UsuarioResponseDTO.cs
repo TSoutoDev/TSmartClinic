@@ -24,7 +24,6 @@ namespace TSmartClinic.Shared.DTOs.Responses
         public bool Ativo { get; set; }
         public int ClienteId { get; set; }
         public string? NomePerfil { get; set; }
-        public List<UsuarioClientePerfilUpdateRequestDto>? UsuarioClientePerfil { get; set; }
-        //public Cliente? Cliente { get; set; } = null!; // Navegação para Cliente
+        public List<UsuarioUnidadePerfilResponseDTO>? UsuarioUnidadePerfil { get; set; }
     }
 }

@@ -22,12 +22,10 @@ namespace TSmartClinic.Api.Auth.Extensions
             //SERVICES
             services.AddTransient<IUsuarioUnidadePerfilService, UsuarioUnidadePerfilService>();
             services.AddTransient<IUsuarioService, UsuarioService>();
-            services.AddTransient<IUsuarioClientePerfilService, UsuarioClinicaPerfilService>();    
 
             //REPOSITORIES
             services.AddTransient<IUsuarioUnidadePerfilRepository, UsuarioUnidadePerfilRepository>();
             services.AddTransient<IUsuarioRepository, UsuarioRepository>();
-            services.AddTransient<IUsuarioClientePerfilRepository, UsuarioClinicaPerfilRepository>();
 
             services.AddSqlServerConfig(configuration); // usa a sua extensão para configurar o DbContext
             services.AddTransient<IAutenticacaoService, AutenticacaoService>();

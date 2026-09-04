@@ -55,9 +55,9 @@ namespace TSmartClinic.Shared.DTOs.Validator.Insert
             RuleFor(x => x.PrimeiroAcesso)
                 .NotNull().WithMessage("O flag de primeiro acesso precisa ser definido.");
 
-            // UsuarioClientePerfil: lista opcional, mas se existir, não pode conter nulos
-            RuleForEach(x => x.UsuarioClientePerfil)
-                .NotNull().WithMessage("Os perfis de cliente não podem ser nulos.");
+           // UsuarioUnidadePerfil: lista opcional, mas se existir, não pode conter nulosexistir, não pode conter nulos
+            RuleForEach(x => x.UsuarioUnidadePerfil)
+                .NotNull().WithMessage("Os vínculos de unidade e perfil não podem ser nulos.");
 
         }
     }

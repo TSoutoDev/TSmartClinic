@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TSmartClinic.Presentation.Models;
 using TSmartClinic.Presentation.Services.Interfaces;
 using TSmartClinic.Presentation.ViewModels.Filters;
-using System.Linq;
-using TSmartClinic.Shared.DTOs.Requests.Base; // precisa pra FirstOrDefault
-using AutoMapper;
+using TSmartClinic.Shared.DTOs.Requests.Base;
 
 namespace TSmartClinic.Presentation.Controllers
 {
+    /// <summary>
+    /// Controller responsável pelo gerenciamento dos perfis de acesso.
+    /// </summary>
     public class PerfisController : BaseController<IPerfilService, BaseFilterViewModel, PerfilViewModel>
     {
         private readonly IPerfilService _perfilService;
@@ -18,12 +20,16 @@ namespace TSmartClinic.Presentation.Controllers
         private readonly IPerfilPermissaoService _perfilPermissaoService;
         private readonly IMapper _mapper;
 
-        public PerfisController(IClienteService clienteService,
-                                INichoService nichoService,
-                                IPerfilService perfilService,
-                                IUsuarioLogadoService usuarioLogadoService,
-                                IPerfilPermissaoService perfilPermissaoService,
-                                IMapper mapper) : base(perfilService)
+        /// <summary>
+        /// Inicializa uma nova instância do controller de perfis.
+        /// </summary>
+        public PerfisController(
+            IClienteService clienteService,
+            INichoService nichoService,
+            IPerfilService perfilService,
+            IUsuarioLogadoService usuarioLogadoService,
+            IPerfilPermissaoService perfilPermissaoService,
+            IMapper mapper) : base(perfilService)
         {
             _perfilService = perfilService;
             _nichoService = nichoService;
@@ -33,17 +39,19 @@ namespace TSmartClinic.Presentation.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Realiza a inclusão ou alteração de um perfil.
+        /// </summary>
+        /// <param name="model">Dados do perfil informados na tela.</param>
+        /// <returns>Resultado da operação de cadastro.</returns>
         public override async Task<IActionResult> Cadastro(PerfilViewModel model)
         {
-            await CriarViewBags();
+            await CriarViewBags(model.ClienteId, model.NichoId);
 
             var ids = (model.SelectedOperacaoIds ?? Enumerable.Empty<int>()).Distinct();
 
             model.OperacaoPerfis = ids
-                .Select(id => new OperacaoPerfilViewModel
-                {
-                    OperacaoId = id
-                })
+                .Select(id => new OperacaoPerfilViewModel { OperacaoId = id })
                 .ToList();
 
             model.Modulos = await _perfilPermissaoService.ListarArvorePermissoesAsync();
@@ -51,44 +59,71 @@ namespace TSmartClinic.Presentation.Controllers
             return await base.Cadastro(model);
         }
 
+        /// <summary>
+        /// Carrega a tela de inclusão ou edição de perfil.
+        /// </summary>
+        /// <param name="publicId">
+        /// Identificador público do perfil. Nulo para uma nova inclusão.
+        /// </param>
+        /// <returns>Tela de cadastro do perfil.</returns>
         public override async Task<IActionResult> Cadastro(Guid? publicId)
         {
-            await CriarViewBags();
-
             var arvore = await _perfilPermissaoService.ListarArvorePermissoesAsync();
 
+            // NOVO CADASTRO
             if (!publicId.HasValue)
             {
-                return View(new PerfilViewModel { Modulos = arvore });
+                await CriarViewBags();
+
+                return View(new PerfilViewModel
+                {
+                    Modulos = arvore
+                });
             }
 
-            //ResponseViewModel<List<PerfilViewModel>>
+            // EDIÇÃO
             var resp = await _perfilService.ObterPorPublicId(publicId.Value);
 
-            // "Objeto" ITENS do payload
             var model = (resp?.Itens ?? new List<PerfilViewModel>()).FirstOrDefault();
 
             if (model == null)
             {
-                ModelState.AddModelError("", resp?.Mensagem ?? "Perfil não encontrado.");
-                return View(new PerfilViewModel { Modulos = arvore });
+                await CriarViewBags();
+
+                ModelState.AddModelError("",  resp?.Mensagem ?? "Perfil não encontrado."
+                );
+
+                return View(new PerfilViewModel
+                {
+                    Modulos = arvore
+                });
             }
 
+            // Agora já temos ClienteId e NichoId do perfil
+            await CriarViewBags( model.ClienteId,   model.NichoId);
+
             model.Modulos = arvore;
-            model.SelectedOperacaoIds = await _perfilPermissaoService.ObterOperacoesDoPerfilAsync(publicId.Value);
+
+            model.SelectedOperacaoIds =  await _perfilPermissaoService.ObterOperacoesDoPerfilAsync(publicId.Value);
 
             return View(model);
         }
 
-
-        private async Task CriarViewBags()
+        /// <summary>
+        /// Prepara os dados auxiliares utilizados pela tela de cadastro de perfil.
+        /// </summary>
+        private async Task CriarViewBags(int? clienteId = null, int? nichoId = null)
         {
-            await CriarViewBagNicho();
-            await CriarViewClientes();
+            await CriarViewBagNicho(nichoId);
+            await CriarViewClientes(clienteId);
+
             ViewBag.UsuarioMaster = _usuarioLogadoService.UsuarioMaster;
         }
 
-        private async Task CriarViewBagNicho()
+        /// <summary>
+        /// Carrega os nichos disponíveis para exibição no combo de nichos.
+        /// </summary>
+        private async Task CriarViewBagNicho(int? nichoId = null)
         {
             var resultado = await _nichoService.ListarNichos();
 
@@ -96,12 +131,17 @@ namespace TSmartClinic.Presentation.Controllers
                 .Select(x => new SelectListItem
                 {
                     Text = x.NomeNicho,
-                    Value = x.Id.ToString()
-                });
+                    Value = x.Id.ToString(),
+                    Selected = x.Id == nichoId
+                })
+                .ToList();
         }
 
-
-        private async Task CriarViewClientes()
+        /// <summary>
+        /// Carrega os clientes disponíveis e mantém selecionado o cliente informado.
+        /// </summary>
+        /// <param name="clienteId">Identificador do cliente que deverá permanecer selecionado.</param>
+        private async Task CriarViewClientes(int? clienteId = null)
         {
             var resultado = await _clienteService.ListarClientes();
 
@@ -109,9 +149,10 @@ namespace TSmartClinic.Presentation.Controllers
                 .Select(x => new SelectListItem
                 {
                     Text = x.NomeCliente,
-                    Value = x.Id.ToString()
-                });
+                    Value = x.Id.ToString(),
+                    Selected = x.Id == clienteId
+                })
+                .ToList();
         }
-
     }
 }

@@ -13,11 +13,13 @@ namespace TSmartClinic.Presentation.Controllers.Usuarios
         private readonly IPerfilService _perfilService;
         private readonly IUsuarioLogadoService _usuarioLogadoService;
         private readonly IClienteService _clienteService;
+        private readonly IUnidadeService _unidadeService;
 
-        public UsuariosController(IClienteService clienteService, IUsuarioLogadoService usuarioLogadoService, IPerfilService perfilService, IUsuarioService usuarioService) : base(usuarioService)
+        public UsuariosController(IClienteService clienteService, IUsuarioLogadoService usuarioLogadoService, IPerfilService perfilService, IUsuarioService usuarioService, IUnidadeService unidadeService) : base(usuarioService)
         {
             _usuarioService = usuarioService;
             _perfilService = perfilService;
+            _unidadeService = unidadeService;
             _usuarioLogadoService = usuarioLogadoService;
             _clienteService = clienteService;
         }
@@ -26,44 +28,86 @@ namespace TSmartClinic.Presentation.Controllers.Usuarios
         [HttpPost]
         public override async Task<IActionResult> Cadastro(UsuarioViewModel model)
         {
-            // Validação: usuário precisa selecionar um perfil
+            if (!model.UnidadeId.HasValue)
+            {
+                ModelState.AddModelError("UnidadeId", "Selecione uma unidade válida.");
+            }
+
             if (!model.PerfilClienteId.HasValue)
             {
                 ModelState.AddModelError("PerfilClienteId", "Selecione um perfil válido.");
             }
 
+            // Usuário não Master sempre utiliza o Cliente do contexto ativo
+            if (!_usuarioLogadoService.UsuarioMaster && _usuarioLogadoService.ClienteId.HasValue)
+            {
+                model.ClienteId = _usuarioLogadoService.ClienteId.Value;
+            }
+
+            if (model.ClienteId > 0)
+            {
+                if (model.UnidadeId.HasValue)
+                {
+                    var unidadesCliente = await _unidadeService.ListarPorCliente(model.ClienteId);
+
+                    if (!unidadesCliente.Any(x => x.Id == model.UnidadeId.Value))
+                    {
+                        ModelState.AddModelError("UnidadeId", "A unidade selecionada não pertence ao cliente informado.");
+                    }
+                }
+
+                if (model.PerfilClienteId.HasValue)
+                {
+                    var perfisCliente = await _perfilService.ListarPerfilPorCliente(model.ClienteId);
+
+                    if (!perfisCliente.Any(x => x.Id == model.PerfilClienteId.Value))
+                    {
+                        ModelState.AddModelError("PerfilClienteId", "O perfil selecionado não pertence ao cliente informado.");
+                    }
+                }
+            }
+
             if (!ModelState.IsValid)
             {
-                // Recria dropdown caso haja erro
-                await CriarViewPerfisPorCliente(model.ClienteId);
+                await CriarViewBags();
+
+                if (model.ClienteId > 0)
+                {
+                    await CriarViewUnidadesPorCliente(model.ClienteId, model.UnidadeId);
+                    await CriarViewPerfisPorCliente(model.ClienteId, model.PerfilClienteId);
+                }
+
                 return View(model);
             }
 
-            // Processa a foto e preenche dados
             var foto = Request.Form["Foto"].ToString();
+
             await _usuarioService.ProcessarFotoAsync(model, foto);
             await _usuarioService.PreencherDados(model);
 
-            var ucp = new UsuarioClientePerfilViewModel
+            var vinculo = new UsuarioUnidadePerfilViewModel
             {
-                // se master, usa o cliente escolhido na tela senão, pega da sessão
-                ClienteId = _usuarioLogadoService.UsuarioMaster ? model.ClienteId : _usuarioLogadoService.ClienteId.Value,
+                UnidadeId = model.UnidadeId.Value,
                 PerfilId = model.PerfilClienteId.Value,
-                ClientePadrao = false
+                UnidadePadrao = true
             };
 
-            model.ClienteId = ucp.ClienteId;
-            model.UsuarioClientePerfil = new List<UsuarioClientePerfilViewModel> { ucp };
-            await CriarViewBags();
-            return await base.Cadastro(model);
+            model.UsuarioUnidadePerfil = new List<UsuarioUnidadePerfilViewModel> { vinculo };
+
+            var publicId = model.PublicId;
+
+            var resultado = await base.Cadastro(model);
+
+            if (publicId.HasValue && publicId.Value != Guid.Empty && TempData["MensagemErro"] == null)
+                return RedirectToAction(nameof(Cadastro), new { publicId });
+
+            return resultado;
         }
 
         // GET: Cadastro
         [HttpGet]
         public override async Task<IActionResult> Cadastro(Guid? publicId)
         {
-            await CriarViewBags();
-
             var result = await base.Cadastro(publicId) as ViewResult;
 
             if (result?.Model is UsuarioViewModel model)
@@ -74,27 +118,34 @@ namespace TSmartClinic.Presentation.Controllers.Usuarios
                     model.DataExpiracaoSenha = DateTime.Today.AddDays(365);
                 }
 
-                // Obtem cliente do claim
-                var tipoUsuario = User.FindFirst("Usuario_Tipo")?.Value;
-                var clienteIdClaim = User.FindFirst("Cliente_Id")?.Value;
-                int clienteId = model.ClienteId;
-
-                if (!string.IsNullOrEmpty(tipoUsuario) && tipoUsuario != "M" && !string.IsNullOrEmpty(clienteIdClaim))
+                // EDIÇÃO - recupera Unidade e Perfil do vínculo existente
+                if (model.UsuarioUnidadePerfil != null && model.UsuarioUnidadePerfil.Any())
                 {
-                    clienteId = int.Parse(clienteIdClaim); //usuario cliente
+                    var vinculo = model.UsuarioUnidadePerfil.First();
+
+                    model.UnidadeId = vinculo.UnidadeId;
+                    model.PerfilClienteId = vinculo.PerfilId;
+                }
+
+                // Usuário não Master trabalha dentro do Cliente ativo
+                if (!_usuarioLogadoService.UsuarioMaster && _usuarioLogadoService.ClienteId.HasValue)
+                {
+                    model.ClienteId = _usuarioLogadoService.ClienteId.Value;
+                }
+
+                await CriarViewBags(model.ClienteId);
+
+                // Carrega Unidade e Perfil mantendo os selecionados
+                if (model.ClienteId > 0)
+                {
+                    await CriarViewUnidadesPorCliente(model.ClienteId, model.UnidadeId);
+                    await CriarViewPerfisPorCliente(model.ClienteId, model.PerfilClienteId);
                 }
                 else
                 {
-                    clienteId = 1; //master
+                    ViewBag.Unidades = new List<SelectListItem>();
+                    ViewBag.Perfis = new List<SelectListItem>();
                 }
-
-                if (model.UsuarioClientePerfil != null && model.UsuarioClientePerfil.Any())
-                {
-                    model.PerfilClienteId = model.UsuarioClientePerfil.First().PerfilId;
-                }
-
-                await CriarViewPerfisPorCliente(clienteId, model.PerfilClienteId);
-                await CriarViewBags();
             }
 
             return result;
@@ -114,9 +165,43 @@ namespace TSmartClinic.Presentation.Controllers.Usuarios
             return await base.Consulta();
         }
 
-        private async Task CriarViewBags()
+        private async Task CriarViewBags(int? clienteSelecionado = null)
         {
-            await CriarViewClientes();
+            await CriarViewClientes(clienteSelecionado);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObterUnidadesPorCliente(int clienteId)
+        {
+            if (clienteId <= 0)
+                return Json(new List<object>());
+
+            var unidades = await _unidadeService.ListarPorCliente(clienteId);
+
+            var resultado = unidades.Select(x => new
+            {
+                id = x.Id,
+                nome = x.NomeUnidade
+            });
+
+            return Json(resultado);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObterPerfisPorCliente(int clienteId)
+        {
+            if (clienteId <= 0)
+                return Json(new List<object>());
+
+            var perfis = await _perfilService.ListarPerfilPorCliente(clienteId);
+
+            var resultado = perfis.Select(x => new
+            {
+                id = x.Id,
+                nome = x.NomePerfil
+            });
+
+            return Json(resultado);
         }
 
         private async Task CriarViewPerfisPorCliente(int clienteId, int? perfilSelecionado = null)
@@ -127,26 +212,54 @@ namespace TSmartClinic.Presentation.Controllers.Usuarios
                 .Select(x => new SelectListItem
                 {
                     Text = x.NomePerfil,
-                    Value = x.Id.ToString()
+                    Value = x.Id.ToString(),
+                    Selected = perfilSelecionado.HasValue && x.Id == perfilSelecionado.Value
                 })
                 .ToList();
 
-            // Insere opção inicial (placeholder) sem definir Selected
-            lista.Insert(0, new SelectListItem { Text = "- Selecione o Perfil -", Value = "" });
+            lista.Insert(0, new SelectListItem
+            {
+                Text = "- Selecione o Perfil -",
+                Value = ""
+            });
 
             ViewBag.Perfis = lista;
         }
 
-        private async Task CriarViewClientes()
+        private async Task CriarViewUnidadesPorCliente(int clienteId, int? unidadeSelecionada = null)
+        {
+            var resultado = await _unidadeService.ListarPorCliente(clienteId);
+
+            var lista = resultado
+                .Select(x => new SelectListItem
+                {
+                    Text = x.NomeUnidade,
+                    Value = x.Id.ToString(),
+                    Selected = unidadeSelecionada.HasValue && x.Id == unidadeSelecionada.Value
+                })
+                .ToList();
+
+            lista.Insert(0, new SelectListItem
+            {
+                Text = "- Selecione a Unidade -",
+                Value = ""
+            });
+
+            ViewBag.Unidades = lista;
+        }
+
+        private async Task CriarViewClientes(int? clienteSelecionado = null)
         {
             var resultado = await _clienteService.ListarClientes();
 
             ViewBag.Clientes = resultado
                 .Select(x => new SelectListItem
                 {
-                    Text = $"{x.NomeCliente} - {x.CNPJ}", // Nome + CNPJ
-                    Value = x.Id.ToString()
-                });
+                    Text = $"{x.NomeCliente} - {x.CNPJ}",
+                    Value = x.Id.ToString(),
+                    Selected = clienteSelecionado.HasValue && x.Id == clienteSelecionado.Value
+                })
+                .ToList();
         }
     }
 }

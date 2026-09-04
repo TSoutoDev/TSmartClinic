@@ -10,5 +10,7 @@ namespace TSmartClinic.Core.Domain.Interfaces.Repositories
         bool UsuarioPossuiAcessoUnidade(int usuarioId, int unidadeId);
         int? ObterPerfilIdPorUsuarioUnidade(int usuarioId, int unidadeId);
         void DefinirUnidadePadrao(int usuarioId, int unidadeId);
+        void Inserir(UsuarioUnidadePerfil usuarioUnidadePerfil);
+        void AtualizarVinculos(int usuarioId, List<UsuarioUnidadePerfil> vinculos);
     }
 }

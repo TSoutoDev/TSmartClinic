@@ -28,14 +28,15 @@ namespace AgendaApp.API.Mapper
             CreateMap<Paciente, BasePacienteRequestDTO>().ReverseMap();
             CreateMap<OperacaoPerfil, BaseOperacaoPerfilRequestDTO>().ReverseMap();
             CreateMap<Perfil, BasePerfilRequestDTO>().ReverseMap();
-            CreateMap<UsuarioClientePerfil, BaseUsuarioClientePerfilRequestDto>().ReverseMap();
             CreateMap<Convenio, BaseConvenioRequestDTO>().ReverseMap();
             CreateMap<BaseEnderecoRequestDTO, Endereco>().ReverseMap();
             CreateMap<BaseClienteRequestDTO, Cliente>()
             .ForMember(dest => dest.ClienteEndereco,
                 opt => opt.MapFrom(src => src.ClienteEnderecos));
             CreateMap<BaseClienteEnderecoRequestDTO, ClienteEndereco>().ReverseMap();
+            CreateMap<BaseUnidadeRequestDTO, Unidade>();
 
+          
             //insert
             CreateMap<Categoria, CategoriaInsertRequestDTO>().ReverseMap();
             CreateMap<Paciente, PacienteInsertRequestDTO>().ReverseMap();
@@ -45,8 +46,9 @@ namespace AgendaApp.API.Mapper
                 .ForMember(d => d.DataInclusao,
                     opt => opt.MapFrom(src => src.DataInclusao ?? DateTime.UtcNow))
                 .ReverseMap();
-            CreateMap<UsuarioClientePerfil, UsuarioClientePerfilInsertRequestDto>()
-                .ReverseMap();
+            
+            CreateMap<UsuarioUnidadePerfil, UsuarioUnidadePerfilInsertRequestDto>().ReverseMap();
+            CreateMap<UnidadeInsertRequestDTO, Unidade>();
 
             //Update
             CreateMap<Categoria, CategoriaUpdateRequestDTO>().ReverseMap();
@@ -67,24 +69,22 @@ namespace AgendaApp.API.Mapper
             CreateMap<NichoUpdateRequestDTO, Nicho>().ReverseMap();
 
             CreateMap<UsuarioUpdateRequestDTO, Usuario>()
-            .ForMember(dest => dest.PublicId, opt => opt.Ignore())
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.UsuarioClientePerfil,
-                opt => opt.MapFrom(src => src.UsuarioClientePerfil));
+                .ForMember(dest => dest.PublicId, opt => opt.Ignore())
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.UsuarioUnidadePerfil,
+                    opt => opt.MapFrom(src => src.UsuarioUnidadePerfil));
 
             CreateMap<Usuario, UsuarioUpdateRequestDTO>()
-                .ForMember(dest => dest.UsuarioClientePerfil,
-                    opt => opt.MapFrom(src => src.UsuarioClientePerfil));
+                .ForMember(dest => dest.UsuarioUnidadePerfil,
+                    opt => opt.MapFrom(src => src.UsuarioUnidadePerfil));
 
-            CreateMap<UsuarioClientePerfilUpdateRequestDto, UsuarioClientePerfil>()
-                .ForMember(dest => dest.UsuarioId, opt => opt.Ignore());
-
-            CreateMap<UsuarioClientePerfil, UsuarioClientePerfilUpdateRequestDto>();
             CreateMap<ConvenioUpdateRequestDTO, Convenio>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.PublicId, opt => opt.Ignore());
-
-
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.PublicId, opt => opt.Ignore());
+            CreateMap<UsuarioUnidadePerfil, UsuarioUnidadePerfilUpdateRequestDto>().ReverseMap();
+            CreateMap<UnidadeUpdateRequestDTO, Unidade>()
+                .ForMember(dest => dest.PublicId, opt => opt.Ignore())
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
 
             //Response
             CreateMap<Nicho, NichoResponseDTO>();
@@ -109,17 +109,15 @@ namespace AgendaApp.API.Mapper
             CreateMap<Paciente, PacienteResponseDTO>().ReverseMap();
             CreateMap<Usuario, UsuarioResponseDTO>().ReverseMap();
 
-            CreateMap<UsuarioClientePerfil, UsuarioClientePerfilResponseDto>()
-                .ForMember(dest => dest.Perfil,
-                    opt => opt.MapFrom(src => src.Perfil))
-                .ReverseMap();
-
             CreateMap<Cliente, ClienteResponseDTO>()
                 .ForMember(dest => dest.ClienteEnderecos,
                     opt => opt.MapFrom(src => src.ClienteEndereco))
                 .ReverseMap();
 
             CreateMap<ClienteEndereco, ClienteEnderecoResponseDTO>().ReverseMap();
+            CreateMap<Unidade, UnidadeResponseDTO>();
+            CreateMap<UsuarioUnidadePerfil, UsuarioUnidadePerfilResponseDTO>();
+
         }
     }
 }

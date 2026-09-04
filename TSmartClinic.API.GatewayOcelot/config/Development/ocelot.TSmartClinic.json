@@ -555,6 +555,23 @@
       },
       "UpstreamPathTemplate": "/nichos",
       "UpstreamHttpMethod": [ "POST" ]
+    },
+
+    //UNIDADES
+    {
+      "DownstreamPathTemplate": "/api/unidades/dropdown-unidades/{clienteId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamPathTemplate": "/unidades/dropdown-unidades/{clienteId}",
+      "UpstreamHttpMethod": [ "GET" ]
     }
 
   ]

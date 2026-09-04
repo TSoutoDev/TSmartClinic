@@ -23,7 +23,6 @@ namespace TSmartClinic.Core.Domain.Entities
         public Nicho? Nicho { get; set; }
         public ICollection<Perfil> Perfis { get; set; } = new List<Perfil>();
         public ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
-        public List<UsuarioClientePerfil> UsuarioClientePerfil { get; set; } = new();
         public ICollection<ClienteEndereco>? ClienteEndereco { get; set; }
 
         #endregion

@@ -16,7 +16,7 @@ namespace TSmartClinic.API.Services
     public class UsuarioService : BaseService<Usuario>, IUsuarioService
     {
         private readonly IUsuarioRepository? _usuarioRepository;
-        private readonly IUsuarioClientePerfilRepository? _usuarioClientePerfilRepository;
+        private readonly IUsuarioUnidadePerfilRepository? _usuarioUnidadePerfilRepository;
         private readonly IPerfilRepository? _perfilRepository;
         private readonly ICriptografiaProvider _criptografiaProvider;
         private readonly IUsuarioLogadoService _usuarioLogadoService;
@@ -24,7 +24,7 @@ namespace TSmartClinic.API.Services
         private readonly ITokenService _tokenService;
         private readonly IConfiguration _configuration; // injete no ctor
 
-        public UsuarioService(IUsuarioClientePerfilRepository usuarioClientePerfilRepository,
+        public UsuarioService(IUsuarioUnidadePerfilRepository usuarioUnidadePerfilRepository,
                                 IUsuarioLogadoService usuarioLogadoService,
                                 EmailQueue emailQueue,
                                 IPerfilRepository perfilRepository,
@@ -39,7 +39,7 @@ namespace TSmartClinic.API.Services
             _criptografiaProvider = criptografiaProvider;
             _usuarioLogadoService = usuarioLogadoService;
             _configuration = configuration;
-            _usuarioClientePerfilRepository = usuarioClientePerfilRepository;
+            _usuarioUnidadePerfilRepository = usuarioUnidadePerfilRepository;
             _emailQueue = emailQueue;
             _tokenService = tokenService;
         }
@@ -82,8 +82,8 @@ namespace TSmartClinic.API.Services
             }
 
             // guarda a lista antes e zera para evitar save em cascata indevido
-            var perfis = usuario.UsuarioClientePerfil?.ToList();
-            usuario.UsuarioClientePerfil = null;
+            var perfis = usuario.UsuarioUnidadePerfil?.ToList();
+            usuario.UsuarioUnidadePerfil = null;
             usuario.LoginInclusao = _usuarioLogadoService.Email;
 
             // 1) Persistir o usuário
@@ -95,9 +95,10 @@ namespace TSmartClinic.API.Services
                 foreach (var p in perfis)
                 {
                     p.UsuarioId = usuarioGravado.Id;
-                    _usuarioClientePerfilRepository!.Inserir(p);
+                    _usuarioUnidadePerfilRepository!.Inserir(p);
                 }
-                usuarioGravado.UsuarioClientePerfil = perfis;
+
+                usuarioGravado.UsuarioUnidadePerfil = perfis;
             }
 
             // 3) Gerar token de primeiro acesso (purpose=set_password)
@@ -144,6 +145,9 @@ namespace TSmartClinic.API.Services
             // Recupera o Id interno através do PublicId
             usuario.Id = usuarioExistente.Id;
 
+            var vinculos = usuario.UsuarioUnidadePerfil?.ToList() ?? new List<UsuarioUnidadePerfil>();
+            usuario.UsuarioUnidadePerfil = null;
+
             // Garantir que a data seja convertido para UTC  ants de persistir.
             if (usuario.DataExpiracaoSenha.HasValue)
             {
@@ -158,12 +162,13 @@ namespace TSmartClinic.API.Services
                 usuario.Senha = _criptografiaProvider.Criptografar(usuario.Senha);
             }
 
-            return _usuarioRepository!.Atualizar(usuario);
-        }
+            var usuarioAtualizado = _usuarioRepository!.Atualizar(usuario);
 
-        public List<string> ObterPermissaoUsuario(int usuarioId, List<Cliente> clinicasUsuario)
-        {
-            return _usuarioRepository.ObterPermissaoUsuario(usuarioId, clinicasUsuario);
+            _usuarioUnidadePerfilRepository!.AtualizarVinculos(usuarioExistente.Id, vinculos);
+
+            usuarioAtualizado.UsuarioUnidadePerfil = vinculos;
+
+            return usuarioAtualizado;
         }
 
         public void DefinirSenha(string token, string novaSenha)

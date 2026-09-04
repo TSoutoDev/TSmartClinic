@@ -24,8 +24,7 @@ namespace TSmartClinic.Core.Domain.Entities
         public bool PrimeiroAcesso { get; set; }
         public int ClienteId {  get; set; } 
         public virtual  Cliente? Cliente { get; set; } = null!; // Navegação para Cliente
-        public virtual  List<UsuarioClientePerfil>? UsuarioClientePerfil { get; set; } = new();      // Relação com UsuarioClientePerfil
-
+        public virtual List<UsuarioUnidadePerfil>? UsuarioUnidadePerfil { get; set; } = new();
         public void Bloquear()
         {
             this.FlagBloqueado = true;
@@ -63,15 +62,6 @@ namespace TSmartClinic.Core.Domain.Entities
             // Só altera a senha se uma nova senha vier preenchida
             if (!string.IsNullOrWhiteSpace(usuario.Senha))
                 Senha = usuario.Senha;
-
-            UsuarioClientePerfil = usuario.UsuarioClientePerfil?
-                .Select(e => new UsuarioClientePerfil
-                {
-                    PerfilId = e.PerfilId,
-                    ClienteId = e.ClienteId,
-                    ClientePadrao = e.ClientePadrao
-                })
-                .ToList() ?? new List<UsuarioClientePerfil>();
 
             this.RemoverEspacosEmBranco();
         }

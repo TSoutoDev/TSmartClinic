@@ -10,7 +10,7 @@ namespace TSmartClinic.Shared.DTOs.Requests.Insert
         [JsonIgnore] // o cliente não controla isso
         public DateTime? DataInclusao { get; set; } = DateTime.UtcNow;
         public bool PrimeiroAcesso { get; set; } = true;
-        public List<UsuarioClientePerfilInsertRequestDto>? UsuarioClientePerfil {  get; set; }
+        public List<UsuarioUnidadePerfilInsertRequestDto>? UsuarioUnidadePerfil { get; set; }
     }
 }
 

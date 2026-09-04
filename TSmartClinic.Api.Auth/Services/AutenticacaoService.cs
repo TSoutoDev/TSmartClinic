@@ -16,17 +16,15 @@ namespace TSmartClinic.Api.Auth.Services
     public class AutenticacaoService : IAutenticacaoService
     {
         private readonly IUsuarioService? _usuarioService;
-        private readonly IUsuarioClientePerfilService? _usuarioClinicaPerfilService;
         private readonly ICriptografiaProvider _criptografiaProvider;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly IUsuarioUnidadePerfilService _usuarioUnidadePerfilService;
-        public AutenticacaoService(IUsuarioUnidadePerfilService usuarioUnidadePerfilService, IUsuarioService? usuarioService, IUsuarioClientePerfilService usuarioClinicaPerfil, ICriptografiaProvider criptografiaProvider = null, ITokenService tokenService = null, IMapper mapper = null, IHttpContextAccessor httpContextAccessor = null)
+        public AutenticacaoService(IUsuarioUnidadePerfilService usuarioUnidadePerfilService, IUsuarioService? usuarioService, ICriptografiaProvider criptografiaProvider = null, ITokenService tokenService = null, IMapper mapper = null, IHttpContextAccessor httpContextAccessor = null)
         {
             _usuarioUnidadePerfilService = usuarioUnidadePerfilService;
             _usuarioService = usuarioService;
-            _usuarioClinicaPerfilService = usuarioClinicaPerfil;
             _criptografiaProvider = criptografiaProvider;
             _tokenService = tokenService;
             _mapper = mapper;

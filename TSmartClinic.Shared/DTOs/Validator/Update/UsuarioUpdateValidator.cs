@@ -51,8 +51,8 @@ namespace TSmartClinic.Shared.DTOs.Validator.Update
                 .Must(data => data == null || data <= DateTime.UtcNow)
                 .WithMessage("A data de inclusão não pode ser futura.");
 
-            // UsuarioClientePerfil: lista opcional, mas se existir, não pode conter nulos
-            RuleForEach(x => x.UsuarioClientePerfil)
+            // UsuarioUnidadePerfil: lista opcional, mas se existir, não pode conter nulos
+            RuleForEach(x => x.UsuarioUnidadePerfil)
                 .NotNull().WithMessage("Os perfis de cliente não podem ser nulos.");
         }
     }

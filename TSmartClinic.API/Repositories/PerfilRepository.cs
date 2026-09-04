@@ -67,7 +67,7 @@ namespace TSmartClinic.API.Repositories
             // Não mostrar perfil master para usuários que não são master
             if (!_usuarioLogadoService.UsuarioMaster)
             {
-                query = query.Where(u => !u.UsuarioClientePerfil.Any(p => p.PerfilId == 1));
+                query = query.Where(p => p.Id != 1);
             }
 
             //Filtrar pelo nome se estiver presente no filtro

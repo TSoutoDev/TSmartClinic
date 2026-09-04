@@ -27,12 +27,20 @@ namespace TSmartClinic.API.Services
         {
             if (!_usuarioLogadoService.UsuarioMaster)
             {
-                if (!_usuarioLogadoService.NichoClienteId.HasValue)
-                    throw new UnauthorizedAccessException("Não foi possivel acessar a area de atuação do cliente.");
+                if (!_usuarioLogadoService.ClienteId.HasValue)
+                    throw new UnauthorizedAccessException("Não foi possível identificar o cliente do usuário.");
 
-                // Preenche o ID do nicho e cliente no perfil que vai ser inserido
-                entity.NichoId = _usuarioLogadoService?.NichoClienteId.Value;//trocar p pegar da model (tela)
-                entity.ClienteId = _usuarioLogadoService?.ClienteId.Value;
+                var clienteId = _usuarioLogadoService.ClienteId.Value;
+                var cliente = _dbContext.Cliente.FirstOrDefault(x => x.Id == clienteId);
+
+                if (cliente == null)
+                    throw new UnauthorizedAccessException("Cliente do usuário não encontrado.");
+
+                if (!cliente.NichoId.HasValue)
+                    throw new UnauthorizedAccessException("A área de atuação do cliente não está definida.");
+
+                entity.ClienteId = clienteId;
+                entity.NichoId = cliente.NichoId.Value;
             }
 
             return base.Inserir(entity);

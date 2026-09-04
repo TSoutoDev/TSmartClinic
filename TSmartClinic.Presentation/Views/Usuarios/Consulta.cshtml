@@ -81,8 +81,7 @@
                     <tr>
                         <th class="col-md-3" width="200">Nome</th>
                         <th class="col-md-3" width="200">Emai</th>
-                        <th class="col-md-3" width="200">Perfil</th>
-                                 
+                        <th class="col-md-3" width="200">Perfil</th>                                 
                     </tr>
                 </thead>
 
@@ -93,12 +92,27 @@
                                 onclick="location.href='@Url.Action("Cadastro", "Usuarios", new { publicId = item.PublicId })'">
                                 <td>@item.Nome?.ToUpper()</td>
                                 <td>@item.Email?.ToUpper()</td>
-                                <td>@item.UsuarioClientePerfil.FirstOrDefault()?.Perfil?.NomePerfil</td>
+                            <td>@item.UsuarioUnidadePerfil?.FirstOrDefault()?.Perfil?.NomePerfil</td>
                             </tr>
-                        }
-                    
+                        }                    
                 </tbody>
             </table>
         </div>
     </div>
+
+}
+
+@section Scripts
+{
+
+    <script>
+           //grid
+        $(document).ready(function () {
+
+            $('#gridResultados').DataTable(
+                dataTableLocalInit()
+            );
+
+        });
+    </script>
 }

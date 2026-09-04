@@ -7,6 +7,6 @@
         public string? Celular { get; set; }
         public byte[]? Foto { get; set; }
         public string? NomePerfil { get; set; }
-        public List<UsuarioClientePerfilViewModel>? UsuarioClientePerfil { get; set; }
+        public List<UsuarioUnidadePerfilViewModel>? UsuarioUnidadePerfil { get; set; }
     }
 }

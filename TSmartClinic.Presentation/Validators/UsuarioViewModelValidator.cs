@@ -15,7 +15,7 @@ namespace TSmartClinic.Presentation.Validators
               .NotEmpty().WithMessage("O email é obrigatório.")
               .Length(2, 510).WithMessage("O email deve ter entre 2 e 510 caracteres.");
 
-            RuleForEach(x => x.UsuarioClientePerfil)
+            RuleForEach(x => x.UsuarioUnidadePerfil)
                 .NotNull().WithMessage("Os perfis de cliente não podem ser nulos.");
 
             RuleFor(x => x.DataExpiracaoSenha)

@@ -102,6 +102,9 @@ namespace TSmartClinic.Data.Repositories
                 {
                     switch (pg.SqlState)
                     {
+                        case "23001":
+                            throw new ExclusaoRegistroAssociadoException();
+
                         case PostgresErrorCodes.ForeignKeyViolation:    // 23503
                             throw new GravacaoChaveInexistenteException();
 
@@ -126,10 +129,15 @@ namespace TSmartClinic.Data.Repositories
             }
             catch (PostgresException pg) // caso alguma operação lance direto (sem DbUpdateException)
             {
+                if (pg.SqlState == "23001")
+                    throw new ExclusaoRegistroAssociadoException();
+
                 if (pg.SqlState == PostgresErrorCodes.ForeignKeyViolation)
                     throw new GravacaoChaveInexistenteException();
+
                 if (pg.SqlState == PostgresErrorCodes.UniqueViolation)
                     throw new RegistroDuplicadoException();
+
                 if (pg.SqlState == PostgresErrorCodes.NotNullViolation)
                     throw new CampoObrigatorioException();
 
